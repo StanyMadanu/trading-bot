@@ -1,0 +1,59 @@
+.custom-progress {
+  appearance: none;
+  //   width: 200px;
+  height: 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+
+  &::-webkit-progress-bar {
+    background-color: #f3f3f3;
+    border-radius: 2px;
+  }
+
+  &::-webkit-progress-value {
+    background-color: rgb(var(--primary-color));
+    border-radius: 2px;
+  }
+
+  &:hover {
+    &::-webkit-progress-value {
+      background-color: rgb(var(--primary-color), 0.8);
+    }
+  }
+
+  &.bitget-progress {
+    &::-webkit-progress-value {
+      background-color: rgb(var(--secondary-color));
+    }
+
+    &:hover {
+      &::-webkit-progress-value {
+        background-color: rgb(var(--secondary-color, 0.8));
+      }
+    }
+  }
+}
+
+.binance-spot-bot,
+.bitget-spot-bot {
+  border: 1px solid rgb(var(--primary-color));
+  color: rgb(var(--primary-color));
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(var(--primary-color));
+    color: rgb(var(--fx-white));
+  }
+
+  &.active {
+    background-color: rgb(var(--primary-color));
+    color: rgb(var(--fx-white));
+  }
+}
+.status-percent {
+  background-color: #94bf36;
+  color: #fff;
+  padding: 5px;
+}

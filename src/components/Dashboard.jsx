@@ -2,24 +2,12 @@ import React from "react";
 import Table from "../common/Table";
 import mainLogo from "../assets/images/7pools-logo.png";
 import SpeedOMeter from "../common/SpeedOMeter";
+import Header from "./Header";
 
 const Dashboard = () => {
-  const handleTheme = () => {
-    console.log("inside handle theme");
-
-    document.body.classList.toggle("dark");
-  };
-
   return (
     <>
       <div className="container-fluid">
-        <div className="header py-2">
-          <div
-            className="theme-toggle rounded-circle ms-auto"
-            onClick={handleTheme}
-          ></div>
-        </div>
-
         <div className="row pb-2 row-gap-2">
           <div className="col-xl-9 col-lg-9 col-md-8 col-sm-7">
             <div className="card">
@@ -64,30 +52,42 @@ const Dashboard = () => {
         </div>
 
         <div className="row row-gap-2 pb-2">
-          <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+          <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
               <div className="card-body">
+                <p className="text-capitalize primary-color fw-bold fs-14">
+                  binance SPOT balance
+                </p>
                 <SpeedOMeter />
               </div>
             </div>
           </div>
-          <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+          <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
               <div className="card-body">
+                <p className="text-capitalize primary-color fw-bold fs-14">
+                  binance FUTURE balance
+                </p>
                 <SpeedOMeter />
               </div>
             </div>
           </div>
-          <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+          <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
               <div className="card-body">
+                <p className="text-capitalize primary-color fw-bold fs-14">
+                  bitget SPOT balance
+                </p>
                 <SpeedOMeter />
               </div>
             </div>
           </div>
-          <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+          <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
               <div className="card-body">
+                <p className="text-capitalize primary-color fw-bold fs-14">
+                  bitget FUTURE balance
+                </p>
                 <SpeedOMeter />
               </div>
             </div>
@@ -112,21 +112,23 @@ const Dashboard = () => {
                 </div>
 
                 <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
-                  <div className="border d-flex flex-column align-items-center justify-content-center flex-fill p-2">
-                    <h6 className="mb">4000</h6>
-                    <p className="mb-0 text-capitalize primary-color fs-13">
+                  <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+                    <h6 className="mb-0 fw-bold">4000</h6>
+                    <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                       capital assigned
                     </p>
                   </div>
-                  <div className="border d-flex flex-column align-items-center justify-content-center flex-fill p-2">
-                    <h6 className="mb">5500</h6>
-                    <p className="mb-0 text-capitalize primary-color fs-13">
+                  <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+                    <h6 className="mb-0 fw-bold">5500</h6>
+                    <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                       current balance
                     </p>
                   </div>
-                  <div className="border d-flex flex-column align-items-center justify-content-center flex-fill p-2">
-                    <h6 className="mb status-percent">+ 10%</h6>
-                    <p className="mb-0 text-capitalize primary-color fs-13">
+                  <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+                    <h6 className="mb-0 status-percent fw-bold px-2 py-0">
+                      + 10%
+                    </h6>
+                    <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                       % change
                     </p>
                   </div>
@@ -157,21 +159,23 @@ const Dashboard = () => {
                 </div>
 
                 <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
-                  <div className="border d-flex flex-column align-items-center justify-content-center flex-fill p-2">
-                    <h6 className="mb">4000</h6>
-                    <p className="mb-0 text-capitalize primary-color fs-13">
+                  <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2 ">
+                    <h6 className="mb-0 fw-bold">4000</h6>
+                    <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                       capital assigned
                     </p>
                   </div>
-                  <div className="border d-flex flex-column align-items-center justify-content-center flex-fill p-2">
-                    <h6 className="mb">5500</h6>
-                    <p className="mb-0 text-capitalize primary-color fs-13">
+                  <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+                    <h6 className="mb-0 fw-bold">5500</h6>
+                    <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                       current balance
                     </p>
                   </div>
-                  <div className="border d-flex flex-column align-items-center justify-content-center flex-fill p-2">
-                    <h6 className="mb status-percent">+ 10%</h6>
-                    <p className="mb-0 text-capitalize primary-color fs-13">
+                  <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+                    <h6 className="mb-0 status-percent fw-bold py-0 px-2">
+                      + 10%
+                    </h6>
+                    <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                       % change
                     </p>
                   </div>

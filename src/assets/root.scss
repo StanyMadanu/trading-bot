@@ -11,8 +11,12 @@
 
 body {
   &.dark {
-    --theme-primary: 40, 44, 49; // #282C31
-    --theme-secondary: 29, 29, 31; // #1D1D1F
-    --text-color: 240, 240, 240; // #F0F0F0
+    //--theme-primary: 40, 44, 49; // #282C31
+    //--theme-secondary: 29, 29, 31; // #1D1D1F
+    //--text-color: 240, 240, 240; // #F0F0F0
+
+    // other color theme
+    --primary-color: 68, 61, 186; //  #443DBA
+    --secondary-color: 151, 146, 232; // #9792E8
   }
 }

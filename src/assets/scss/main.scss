@@ -39,6 +39,16 @@ button {
 .secondary-color {
   color: rgb(var(--secondary-color));
 }
+.fx-white {
+  color: rgb(var(--fx-white));
+}
+.fx-dark {
+  color: rgb(var(--fx-dark));
+}
+
+.muted-text {
+  color: rgb(var(muted-text));
+}
 
 .fs-10 {
   font-size: 10px;

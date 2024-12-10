@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import Table from "../../common/Table";
-import { backEndCallObjNoDcyt } from "../../services/mainService";
-import { bitgetSpotRedx } from "../reduxStore/slice/bitgitspotSlice";
-import { connect } from "react-redux";
-import BitgetSpotTable from "../../common/BitgetSpotTable";
+import React, { useEffect, useState } from 'react'
+import Table from '../../common/Table'
+import { backEndCallObjNoDcyt } from '../../services/mainService';
+import { bitgetSpotRedx } from '../reduxStore/slice/bitgitspotSlice';
+import { connect } from 'react-redux';
+import BitgetSpotTable from '../../common/BitgetSpotTable';
+import ConfirmPopup from '../models/ConfirmPopup';
+
 
 const BinanceSpotBot = ({ dispatch, bitgetSpot }) => {
   const [formData] = useState({

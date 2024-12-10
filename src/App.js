@@ -11,6 +11,7 @@ import Controls from "./components/Controls";
 import Api from "./components/Api";
 import Profile from "./components/Profile";
 import Settings from "./components/Settings";
+import AllDataTable from "./common/AllDataTable";
 
 function App() {
   const router = createBrowserRouter([
@@ -45,6 +46,10 @@ function App() {
         {
           path: "/settings",
           element: <Settings />,
+        },
+        {
+          path: "/allDataTable",
+          element: <AllDataTable />,
         },
       ],
     },

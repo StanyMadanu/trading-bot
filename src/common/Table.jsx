@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Table = ({ data, thead }) => {
   return (
@@ -41,7 +42,9 @@ const Table = ({ data, thead }) => {
 
           <tr>
             <td colSpan={3} className="text-center">
-              <button className="py-1">view all</button>
+              <Link to="/allDataTable">
+                <button className="py-1">view all</button>
+              </Link>
             </td>
           </tr>
         </tbody>

@@ -1,34 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import Table from '../../common/Table';
-import { backEndCallObjNoDcyt } from '../../services/mainService';
-import { connect } from 'react-redux';
-import { binancefutureRedx } from '../reduxStore/slice/binancefutureSlice';
+import React, { useEffect, useState } from "react";
+import Table from "../../common/Table";
+import { backEndCallObjNoDcyt } from "../../services/mainService";
+import { connect } from "react-redux";
+import { binancefutureRedx } from "../reduxStore/slice/binancefutureSlice";
 
 const BinanceFutureBot = ({ dispatch, binanceFuture }) => {
   const [formData] = useState({
-    platform: 'BINANCE',
-    bot: 'FUTURES',
+    platform: "BINANCE",
+    bot: "FUTURES",
+    platform: "BINANCE",
+    bot: "FUTURES",
   });
 
   const { usdt_balance, open_trades } = binanceFuture || {}; // Ensure it's not undefined
-  console.log(usdt_balance, open_trades)
+  console.log(usdt_balance, open_trades);
 
   const fetchData = async () => {
     try {
       const response = await backEndCallObjNoDcyt(
-        '/trades/get_open_trades_data',
+        "/trades/get_open_trades_data",
         formData
       );
       dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
-      console.log('Fetched Data:', response);
+      console.log("Fetched Data:", response);
     } catch (error) {
-      console.error('Error fetching open trades data:', error);
+      console.error("Error fetching open trades data:", error);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, [dispatch]);
+
+  //table header data
+  const theadData = ["Symbol", "Price", "Org Qty"];
 
   return (
     <>
@@ -41,7 +46,9 @@ const BinanceFutureBot = ({ dispatch, binanceFuture }) => {
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 fw-bold">{ parseFloat(usdt_balance?.balance).toFixed(2) || "0"}</h6>
+          <h6 className="mb-0 fw-bold">
+            {parseFloat(usdt_balance?.balance).toFixed(2) || "0"}
+          </h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             current balance
           </p>
@@ -57,8 +64,8 @@ const BinanceFutureBot = ({ dispatch, binanceFuture }) => {
         </div>
       </div>
       {/* Table Component */}
-      
-      <Table data={open_trades} />
+
+      <Table data={open_trades} thead={theadData} />
     </>
   );
 };

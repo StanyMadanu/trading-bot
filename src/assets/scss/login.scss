@@ -1,5 +1,6 @@
 .login {
   height: 100vh;
+  overflow: hidden;
   background-color: rgb(var(--primary-color));
 
   background: rgb(28, 82, 109);
@@ -10,6 +11,12 @@
     rgba(55, 121, 149, 1) 71%,
     rgba(124, 219, 249, 1) 100%
   );
+
+  .logoImg {
+    mix-blend-mode: color-burn;
+    backdrop-filter: drop-shadow(3px 4px 6px white);
+    transform: translateY(2rem);
+  }
 
   .trading-bot-img {
     width: 600px;

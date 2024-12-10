@@ -19,49 +19,7 @@ const Dashboard = () => {
   console.log(profile);
   return (
     <>
-      <div className="container-fluid">
-        <div className="row pb-2 row-gap-2">
-          <div className="col-xl-9 col-lg-9 col-md-8 col-sm-7">
-            <div className="card">
-              <div className="card-body">
-                <div className="d-flex gap-3 align-items-center">
-                  <div>
-                    <img src={mainLogo} alt="7pools-logo" />
-                  </div>
-                  <h5 className="mb-0 text-uppercase fw-bold d-flex align-items-center">
-                    trading bot
-                  </h5>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
-            <div className="card">
-              <div className="card-body">
-                <h6 className="text-capitalize primary-color">bot status</h6>
-                <div className="d-flex align-items-center">
-                  <p className="mb-0 flex-fill text-capitalize fs-13">
-                    binance
-                  </p>
-                  <progress
-                    className="custom-progress"
-                    max="100"
-                    value="90"
-                  ></progress>
-                </div>
-                <div className="d-flex align-items-center gap-2">
-                  <p className="mb-0 flex-fill text-capitalize fs-13">bitget</p>
-                  <progress
-                    className="custom-progress bitget-progress"
-                    max="100"
-                    value="60"
-                  ></progress>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <div>
         <div className="row row-gap-2 pb-2">
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">

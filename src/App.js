@@ -1,43 +1,65 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
-import Auth from "./components/auth"; // You might not need this if Login is the only auth-related component
+import Auth from "./components/auth";
 import NotFound from "./components/NotFound";
 import Layout from "./components/Layout";
 import Login from "./components/Login";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
+import "react-toastify/dist/ReactToastify.css";
 
+import Controls from "./components/Controls";
+import Api from "./components/Api";
+import Profile from "./components/Profile";
+import Settings from "./components/Settings";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
-      element: <Login />, // Default route should render Login component
+      path: "/login",
+      element: <Login />,
     },
     {
-      path: "/dashboard",
-      element: <Layout />, // Layout should wrap the dashboard and other components
+      path: "/",
+      element: <Layout />,
       children: [
         {
-          path: "",
+          path: "/",
           element: <Dashboard />,
+        },
+        {
+          path: "/dashboard",
+          element: <Dashboard />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
+        },
+        {
+          path: "/api",
+          element: <Api />,
+        },
+        {
+          path: "/controls",
+          element: <Controls />,
+        },
+        {
+          path: "/settings",
+          element: <Settings />,
         },
       ],
     },
     {
-      path: "*", // For any unmatched routes
+      path: "*",
       element: <NotFound />,
     },
   ]);
 
-  return(
+  return (
     <>
-      <ToastContainer position="top-right" autoClose={3000}  />
+      <ToastContainer position="top-right" autoClose={3000} />
       <RouterProvider router={router} />
     </>
   );
- 
-    
 }
 
-    export default App;
+export default App;

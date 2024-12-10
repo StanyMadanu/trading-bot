@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import Joi from "joi-browser";
 import Form from "../basic/form"; // Import the Form base class
 import { backEndCallObj, setLocalToken } from "../services/mainService";
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 import tradingBott from "../assets/images/tradingbott.webp";
-import { pushRoute } from '../services/pushRoute';
-
+import mainLogoLight from "../assets/images/7pools-logo.png";
+import { pushRoute } from "../services/pushRoute";
 
 class Login extends Form {
   state = {
@@ -14,11 +14,8 @@ class Login extends Form {
     errors: {},
     isLogin: true,
     btnDisable: false,
-    otp: ""
-
+    otp: "",
   };
-
- 
 
   // Joi validation schema
   schema = {
@@ -30,15 +27,13 @@ class Login extends Form {
         language: {
           string: {
             regex: {
-              base: "Must contain at least 1 lowercase,1 uppercase alphabetical,1 numeric and one special Character"
-            }
-          }
-        }
+              base: "Must contain at least 1 lowercase,1 uppercase alphabetical,1 numeric and one special Character",
+            },
+          },
+        },
       })
-      .label("Password")
+      .label("Password"),
   };
-
-
 
   // Handle login submit
   doSubmit = async () => {
@@ -61,14 +56,14 @@ class Login extends Form {
       }
     } else {
       const { otp } = this.state;
-      const {navigate} = this.props;
-      console.log(otp)
+      const { navigate } = this.props;
+      console.log(otp);
       if (otp.length !== 6) {
         toast.warning("Please Enter a 6-Digit OTP", "error");
         return;
       }
-      
-      const obj = { otp, email: this.state.data.email};
+
+      const obj = { otp, email: this.state.data.email };
 
       this.setState({ btnDisable: true });
       try {
@@ -76,13 +71,16 @@ class Login extends Form {
         if (res) {
           setLocalToken(res.jwt);
           if (res.jwt) {
-              setTimeout(() => {
-                  navigate('/dashboard');
-              }, 200);
+            setTimeout(() => {
+              navigate("/dashboard");
+            }, 200);
           }
-      }
+        }
       } catch (error) {
-        toast.error(error?.response?.data || "OTP Verification Failed", "error");
+        toast.error(
+          error?.response?.data || "OTP Verification Failed",
+          "error"
+        );
       } finally {
         this.setState({ btnDisable: false });
       }
@@ -90,17 +88,29 @@ class Login extends Form {
   };
 
   render() {
-    const { data, otp ,errors } = this.state;
-    console.log(this.state)
+    const { data, otp, errors } = this.state;
+    console.log(this.state);
     return (
       <div className="login">
+        <div className="d-flex justify-content-end pe-5 position-relative">
+          <img
+            className="logoImg position-absolute"
+            src={mainLogoLight}
+            alt="7pools-logo"
+          />
+        </div>
         <div className="row align-items-center justify-content-center">
           <div className="col-xl-5 col-lg-5 d-none d-lg-flex login-leftside-content flex-column align-items-center justify-content-center fx-white">
-            <img className="trading-bot-img" src={tradingBott} alt="trading-bot" />
-            <div className="text-center my-3">
+            <img
+              className="trading-bot-img"
+              src={tradingBott}
+              alt="trading-bot"
+            />
+            <div className="text-center">
               <h4 className="fw-bold secondary-color">Enroll Smart Trading</h4>
               <p className="muted-text fs-14">
-                Empowering your trades with precision and <br /> automation – the ultimate trading bot solution.
+                Empowering your trades with precision and <br /> automation –
+                the ultimate trading bot solution.
               </p>
             </div>
           </div>
@@ -109,7 +119,10 @@ class Login extends Form {
             <div className="d-flex flex-column align-items-center justify-content-center login-credentials-wrapper rounded px-4 px-lg-5 py-5">
               {this.state.isLogin ? (
                 <>
-                  <h4 className="mb-5 primary-color fw-bold">Login</h4>
+                  <h4 className="mb-0 primary-color fw-bold">Welcome back</h4>
+                  <p className="mb-5 fs-13 text-muted">
+                    Please enter your details
+                  </p>
                   <div className="inputGroup field mb-4">
                     <input
                       className="inputField px-2"
@@ -121,8 +134,10 @@ class Login extends Form {
                       required=""
                       onChange={this.handleChange}
                     />
-                    <label htmlFor="userEmail" className="inputLabel">Email</label>
-                    <p className='fs-13 text-danger'>{errors?.email}</p>
+                    <label htmlFor="userEmail" className="inputLabel">
+                      Email
+                    </label>
+                    <p className="fs-13 text-danger">{errors?.email}</p>
                   </div>
 
                   <div className="inputGroup field mb-4">
@@ -136,8 +151,10 @@ class Login extends Form {
                       required=""
                       onChange={this.handleChange}
                     />
-                    <label htmlFor="userPassword" className="inputLabel">Password</label>
-                    <p className='fs-13 text-danger'>{errors?.password}</p>
+                    <label htmlFor="userPassword" className="inputLabel">
+                      Password
+                    </label>
+                    <p className="fs-13 text-danger">{errors?.password}</p>
                   </div>
                 </>
               ) : (
@@ -154,14 +171,20 @@ class Login extends Form {
                       name="otp"
                       required=""
                       onChange={(e) =>
-                        this.setState({ otp: e.target.value.replace(/[^\d\.]/g, '') })
+                        this.setState({
+                          otp: e.target.value.replace(/[^\d\.]/g, ""),
+                        })
                       }
                     />
-                    <label htmlFor="userOtp" className="inputLabel">OTP</label>
+                    <label htmlFor="userOtp" className="inputLabel">
+                      OTP
+                    </label>
                   </div>
                 </>
               )}
-              <Link to="" className="fs-13 ms-auto mb-2 primary-color">Forgot password?</Link>
+              <Link to="" className="fs-13 ms-auto mb-2 primary-color">
+                Forgot password?
+              </Link>
 
               <div className="w-100 my-3">
                 <button
@@ -175,7 +198,9 @@ class Login extends Form {
 
               <div className="my-3">
                 <span className="fs-13">Are you new? </span>
-                <Link to="" className="fs-13 ms-auto mb-2 primary-color">Create an Account</Link>
+                <Link to="" className="fs-13 ms-auto mb-2 primary-color">
+                  Create an Account
+                </Link>
               </div>
             </div>
           </div>

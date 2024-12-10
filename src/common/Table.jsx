@@ -23,7 +23,10 @@ const Table = () => {
           {tableData.map((data, index) => (
             <tr key={index}>
               <td>
-                <p className="mb-0 fs-13 fw-semibold">data</p>
+                <div className="d-flex gap-3 align-items-center">
+                  <p className="mb-0 table-dot"></p>
+                  <p className="mb-0 fs-13 fw-semibold">data</p>
+                </div>
               </td>
               <td>
                 <p className="mb-0 fs-13 fw-semibold">data</p>

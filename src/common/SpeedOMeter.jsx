@@ -1,35 +1,24 @@
 import React from "react";
-import GaugeComponent from "react-gauge-component";
+import ReactSpeedometer from "react-d3-speedometer";
 
-const SpeedOMeter = () => {
+const SpeedOMeter = ({ title, balance, target }) => {
   return (
     <>
-      <GaugeComponent
-        value={50}
-        type="semicircle"
-        labels={{
-          tickLabels: {
-            type: "outer",
-            ticks: [
-              { value: 20 },
-              { value: 40 },
-              { value: 60 },
-              { value: 80 },
-              { value: 100 },
-            ],
-          },
-        }}
-        arc={{
-          colorArray: ["#2D799D", "#49B6DD", "#7CDBF9"],
-          subArcs: [{ limit: 10 }, { limit: 30 }, {}, {}, {}],
-          padding: 0.02,
-          width: 0.3,
-        }}
-        pointer={{
-          elastic: true,
-          animationDelay: 0,
-        }}
+      <p className="text-capitalize primary-color fw-bold fs-14">{title}</p>
+      <ReactSpeedometer
+        forceRender={true}
+        value={balance}
+        maxValue={10000}
+        segments={5}
+        needleColor="#000"
+        startColor="#1C526D"
+        endColor="#7CDBF9"
+        fluidWidth={false}
+        height={180}
       />
+      <p className="text-center mt-2 mb-0 fs-14 text-muted">
+        Target: {target}K
+      </p>
     </>
   );
 };

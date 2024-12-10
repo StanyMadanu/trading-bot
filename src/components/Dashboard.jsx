@@ -55,40 +55,44 @@ const Dashboard = () => {
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
               <div className="card-body">
-                <p className="text-capitalize primary-color fw-bold fs-14">
-                  binance SPOT balance
-                </p>
-                <SpeedOMeter />
+                <SpeedOMeter
+                  title="binance SPOT balance"
+                  balance={2000}
+                  target={5000}
+                />
               </div>
             </div>
           </div>
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
               <div className="card-body">
-                <p className="text-capitalize primary-color fw-bold fs-14">
-                  binance FUTURE balance
-                </p>
-                <SpeedOMeter />
+                <SpeedOMeter
+                  title="binance FUTURE balance"
+                  balance={6000}
+                  target={5000}
+                />
               </div>
             </div>
           </div>
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
               <div className="card-body">
-                <p className="text-capitalize primary-color fw-bold fs-14">
-                  bitget SPOT balance
-                </p>
-                <SpeedOMeter />
+                <SpeedOMeter
+                  title="bitget SPOT balance"
+                  balance={8000}
+                  target={5000}
+                />
               </div>
             </div>
           </div>
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
               <div className="card-body">
-                <p className="text-capitalize primary-color fw-bold fs-14">
-                  bitget FUTURE balance
-                </p>
-                <SpeedOMeter />
+                <SpeedOMeter
+                  title="bitget FUTURE balance"
+                  balance={3000}
+                  target={5000}
+                />
               </div>
             </div>
           </div>

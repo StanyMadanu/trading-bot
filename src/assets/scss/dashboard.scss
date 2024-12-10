@@ -57,3 +57,12 @@
   color: #fff;
   padding: 5px;
 }
+
+//table styles
+
+.table-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgb(var(--secondary-color));
+}

@@ -32,7 +32,7 @@ const Login = () => {
                 id="userEmail"
                 required=""
               />
-              <label for="userEmail" class="inputLabel">
+              <label htmlFor="userEmail" className="inputLabel">
                 Username or email
               </label>
             </div>
@@ -45,7 +45,7 @@ const Login = () => {
                 id="userPassword"
                 required=""
               />
-              <label for="userPassword" class="inputLabel">
+              <label htmlFor="userPassword" className="inputLabel">
                 Password
               </label>
             </div>

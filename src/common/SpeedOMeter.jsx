@@ -15,6 +15,7 @@ const SpeedOMeter = ({ title, balance, target }) => {
         endColor="#7CDBF9"
         fluidWidth={false}
         height={180}
+        width={250}
       />
       <p className="text-center mt-2 mb-0 fs-14 text-muted">
         Target: {target}K

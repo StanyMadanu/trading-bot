@@ -3,6 +3,7 @@ import Dashboard from "./components/Dashboard";
 import Auth from "./components/auth";
 import NotFound from "./components/NotFound";
 import Layout from "./components/Layout";
+import Login from "./components/Login";
 
 function App() {
   const router = createBrowserRouter([
@@ -18,7 +19,7 @@ function App() {
     },
     {
       path: "/login",
-      element: <Auth />,
+      element: <Login />,
     },
     {
       path: "*",

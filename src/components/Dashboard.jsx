@@ -1,13 +1,12 @@
 import React, { useState, Suspense } from "react";
 import { useSelector } from "react-redux";
-
 import mainLogo from "../assets/images/7pools-logo.png";
 import SpeedOMeter from "../common/SpeedOMeter";
 
-
-
 const BinanceSpotBot = React.lazy(() => import("./bots-table/BinanceSpotBot"));
-const BinanceFutureBot = React.lazy(() => import("./bots-table/BinanceFutureBot"));
+const BinanceFutureBot = React.lazy(() =>
+  import("./bots-table/BinanceFutureBot")
+);
 const BitgitSpotBot = React.lazy(() => import("./bots-table/BitgitSpotBot"));
 const BitgitFutureBot = React.lazy(() => import("./bots-table/BitgitFuture"));
 
@@ -17,7 +16,7 @@ const Dashboard = () => {
 
   const profile = useSelector((state) => state.getProfile.value);
 
-  console.log(profile)
+  console.log(profile);
   return (
     <>
       <div className="container-fluid">
@@ -66,7 +65,7 @@ const Dashboard = () => {
         <div className="row row-gap-2 pb-2">
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
-              <div className="card-body">
+              <div className="card-body text-center">
                 <SpeedOMeter
                   title="binance SPOT balance"
                   balance={2000}
@@ -78,7 +77,7 @@ const Dashboard = () => {
 
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
-              <div className="card-body">
+              <div className="card-body text-center">
                 <SpeedOMeter
                   title="binance FUTURE balance"
                   balance={6000}
@@ -90,7 +89,7 @@ const Dashboard = () => {
 
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
-              <div className="card-body">
+              <div className="card-body text-center">
                 <SpeedOMeter
                   title="bitget SPOT balance"
                   balance={8000}
@@ -100,10 +99,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
-              <div className="card-body">
+              <div className="card-body text-center">
                 <SpeedOMeter
                   title="bitget FUTURE balance"
                   balance={3000}
@@ -121,8 +119,9 @@ const Dashboard = () => {
               <div className="card-body">
                 <div className="the-bots d-flex gap-2 pb-3">
                   <div
-                    className={`binance-spot-bot flex-fill text-center p-2 ${activeSpotBot === "binance" ? "active" : ""
-                      }`}
+                    className={`binance-spot-bot flex-fill text-center p-2 ${
+                      activeSpotBot === "binance" ? "active" : ""
+                    }`}
                     onClick={() => setActiveSpotBot("binance")}
                   >
                     <p className="mb-0 text-capitalize fs-14 fw-semibold">
@@ -130,8 +129,9 @@ const Dashboard = () => {
                     </p>
                   </div>
                   <div
-                    className={`binance-spot-bot flex-fill text-center p-2 ${activeSpotBot === "bitget" ? "active" : ""
-                      }`}
+                    className={`binance-spot-bot flex-fill text-center p-2 ${
+                      activeSpotBot === "bitget" ? "active" : ""
+                    }`}
                     onClick={() => setActiveSpotBot("bitget")}
                   >
                     <p className="mb-0 text-capitalize fs-14 fw-semibold">
@@ -139,12 +139,13 @@ const Dashboard = () => {
                     </p>
                   </div>
                 </div>
-                <Suspense fallback={<div>Loading...</div>}>{
-                  activeSpotBot === "binance" ? <BinanceSpotBot /> : <BitgitSpotBot />
-                }
+                <Suspense fallback={<div>Loading...</div>}>
+                  {activeSpotBot === "binance" ? (
+                    <BinanceSpotBot />
+                  ) : (
+                    <BitgitSpotBot />
+                  )}
                 </Suspense>
-
-
               </div>
             </div>
           </div>
@@ -155,8 +156,9 @@ const Dashboard = () => {
               <div className="card-body">
                 <div className="the-bots d-flex gap-2 pb-3">
                   <div
-                    className={`binance-spot-bot flex-fill text-center p-2 ${activeFutureBot === "binance" ? "active" : ""
-                      }`}
+                    className={`binance-spot-bot flex-fill text-center p-2 ${
+                      activeFutureBot === "binance" ? "active" : ""
+                    }`}
                     onClick={() => setActiveFutureBot("binance")}
                   >
                     <p className="mb-0 text-capitalize fs-14 fw-semibold">
@@ -164,8 +166,9 @@ const Dashboard = () => {
                     </p>
                   </div>
                   <div
-                    className={`binance-spot-bot flex-fill text-center p-2 ${activeFutureBot === "bitget" ? "active" : ""
-                      }`}
+                    className={`binance-spot-bot flex-fill text-center p-2 ${
+                      activeFutureBot === "bitget" ? "active" : ""
+                    }`}
                     onClick={() => setActiveFutureBot("bitget")}
                   >
                     <p className="mb-0 text-capitalize fs-14 fw-semibold">
@@ -173,10 +176,13 @@ const Dashboard = () => {
                     </p>
                   </div>
                 </div>
-                <Suspense fallback={<div>Loading...</div>}>{
-                  activeFutureBot === "binance" ? <BinanceFutureBot /> : <BitgitFutureBot />
-                }</Suspense>
-
+                <Suspense fallback={<div>Loading...</div>}>
+                  {activeFutureBot === "binance" ? (
+                    <BinanceFutureBot />
+                  ) : (
+                    <BitgitFutureBot />
+                  )}
+                </Suspense>
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Table = ({data}) => {
+const bitgetSpotTable = ({data}) => {
 
   
   return (
@@ -32,10 +32,10 @@ const Table = ({data}) => {
                     </div>
                   </td>
                   <td>
-                    <p className="mb-0 fs-13 fw-semibold">{data.entryPrice}</p>
+                    <p className="mb-0 fs-13 fw-semibold">{parseFloat(data?.priceAvg).toFixed(2)}</p>
                   </td>
                   <td>
-                    <p className="mb-0 fs-13 fw-semibold">{data.adlQuantile}</p>
+                    <p className="mb-0 fs-13 fw-semibold">{parseFloat(data?.size).toFixed(2)}</p>
                   </td>
                 </tr>
               ))
@@ -61,4 +61,4 @@ const Table = ({data}) => {
   );
 };
 
-export default Table;
+export default bitgetSpotTable;

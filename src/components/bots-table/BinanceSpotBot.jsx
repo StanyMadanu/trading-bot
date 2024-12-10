@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Table from '../../common/Table';
 import { backEndCallObjNoDcyt } from '../../services/mainService';
+import {binancespotRedx} from '../reduxStore/slice/binancespotSlice'
+import { connect } from 'react-redux';
+import BinanceSpotTable from '../../common/BinanceSpotTable';
 
 const BinanceSpotBot = ({dispatch, binanceSpot}) => {
 
@@ -11,6 +14,12 @@ const BinanceSpotBot = ({dispatch, binanceSpot}) => {
 
   // const { usdt_balance, open_trades } = binanceSpot || {}; // Ensure it's not undefined
   // console.log(usdt_balance, open_trades)
+  console.log(binanceSpot)
+
+
+  const {open_trades , totalBalance} = binanceSpot || {};
+
+  console.log(open_trades)
 
 
   const fetchData = async () => {
@@ -19,8 +28,7 @@ const BinanceSpotBot = ({dispatch, binanceSpot}) => {
         '/trades/get_open_trades_data',
         formData
       );
-      // dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
-      console.log('Fetched Data:', response);
+      dispatch(binancespotRedx(response)); // Dispatch the action to Redux
     } catch (error) {
       console.error('Error fetching open trades data:', error);
     }
@@ -40,7 +48,7 @@ const BinanceSpotBot = ({dispatch, binanceSpot}) => {
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 fw-bold">5500</h6>
+          <h6 className="mb-0 fw-bold">{parseFloat(totalBalance).toFixed(2) || "0"}</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             current balance
           </p>
@@ -59,9 +67,16 @@ const BinanceSpotBot = ({dispatch, binanceSpot}) => {
           </button>
         </div>
       </div>
-      <Table  />
+      <BinanceSpotTable data={open_trades}/>
     </>
   );
 };
 
-export default BinanceSpotBot;
+// Map Redux state to props
+const mapStateToProps = (state) => {
+  return {
+    binanceSpot: state.binanceSpot.value, // Access the slice state
+  };
+};
+
+export default connect(mapStateToProps)(BinanceSpotBot);

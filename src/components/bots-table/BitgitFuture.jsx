@@ -1,7 +1,44 @@
-import React from 'react'
-import Table from '../../common/Table'
+import React, { useEffect, useState } from 'react'
+import { bitgetFutureRdx } from '../reduxStore/slice/bitgetfutureSlice';
+import { backEndCallObjNoDcyt } from '../../services/mainService';
+import BitgetFutureTable from '../../common/BitgetFutureTable';
+import { connect } from 'react-redux';
+const BitgitFuture = ({dispatch , bitgetFuture}) => {
 
-const BitgitFuture = () => {
+  const [formData] = useState({
+    platform: 'BITGET',
+    bot: 'FUTURES',
+  });
+
+  // const { usdt_balance, open_trades } = binanceSpot || {}; // Ensure it's not undefined
+  // console.log(usdt_balance, open_trades)
+  // console.log(binanceSpot)
+
+
+  const {open_trades , totalBalance} = bitgetFuture || {};
+
+  console.log(open_trades)
+
+
+  const fetchData = async () => {
+    try {
+      const response = await backEndCallObjNoDcyt(
+        '/trades/get_open_trades_data',
+        formData
+      );
+      dispatch(bitgetFutureRdx(response)); // Dispatch the action to Redux
+    } catch (error) {
+      console.error('Error fetching open trades data:', error);
+    }
+  };
+
+  useEffect(()=>{
+   fetchData()
+  },[dispatch])
+
+
+
+
   return (
     <>
     <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
@@ -31,9 +68,17 @@ const BitgitFuture = () => {
                     </button>
                   </div>
                 </div>
-                <Table />
+                <BitgetFutureTable data={bitgetFuture}/>
     </>
   )
+
 }
 
-export default BitgitFuture
+// Map Redux state to props
+const mapStateToProps = (state) => {
+  return {
+    bitgetFuture: state.bitgetFuture.value, // Access the slice state
+  };
+};
+
+export default connect(mapStateToProps)(BitgitFuture)

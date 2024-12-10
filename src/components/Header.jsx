@@ -101,8 +101,13 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
-                  
-              <div>{JSON.stringify(profile?.value?.profile?.user_name || "loading..")}</div>
+
+                  <div onClick={LogoutHandler} className="nav-link ms-auto">
+                    Logout
+                  </div>
+
+
+                  {/* <div>{JSON.stringify(profile?.value?.profile?.user_name || "loading..")}</div> */}
 
                 </li>
                 <li className="nav-item ms-auto">

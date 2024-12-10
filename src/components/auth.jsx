@@ -9,9 +9,6 @@ import { backEndCall, backEndCallObj, setLocalToken, getJwt } from '../services/
 import { toastFun } from '../basic/toast';
 import { pushRoute } from '../services/pushRoute';
 
-
-
-
 class Auth extends Form {
     state = {
         isOtpView: false,
@@ -25,6 +22,7 @@ class Auth extends Form {
         showPassword: false,
 
     };
+
     schema = {
         email: Joi.string().min(5).max(40).required().label('Email'),
         password: Joi.string()

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import Table from '../../common/Table'
 import { backEndCallObjNoDcyt } from '../../services/mainService';
+import { bitgetSpotRedx } from '../reduxStore/slice/bitgitspotSlice';
+import { connect } from 'react-redux';
+import BitgetSpotTable from '../../common/BitgetSpotTable';
 
-const BinanceSpotBot = () => {
+
+const BinanceSpotBot = ({dispatch , bitgetSpot}) => {
 
     
   const [formData] = useState({
@@ -10,15 +14,16 @@ const BinanceSpotBot = () => {
     bot: 'AMM',
   });
 
+  const {open_trades,totalBalance} = bitgetSpot || {}
 
-
+console.log(open_trades)
     const fetchData = async () => {
         try {
           const response = await backEndCallObjNoDcyt(
             '/trades/get_open_trades_data',
             formData
           );
-          // dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
+          dispatch(bitgetSpotRedx(response)); // Dispatch the action to Redux
           console.log('Fetched Data:', response);
         } catch (error) {
           console.error('Error fetching open trades data:', error);
@@ -27,7 +32,7 @@ const BinanceSpotBot = () => {
     
       useEffect(()=>{
        fetchData()
-      },[])
+      },[dispatch])
 
     return (
         <>
@@ -39,7 +44,7 @@ const BinanceSpotBot = () => {
                     </p>
                 </div>
                 <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-                    <h6 className="mb-0 fw-bold">500</h6>
+                    <h6 className="mb-0 fw-bold">{parseFloat(totalBalance).toFixed(2)}</h6>
                     <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                         current balance
                     </p>
@@ -58,9 +63,16 @@ const BinanceSpotBot = () => {
                     </button>
                 </div>
             </div>
-            <Table />
+            <BitgetSpotTable data={open_trades} />
         </>
     )
 }
 
-export default BinanceSpotBot;
+// Map Redux state to props
+const mapStateToProps = (state) => {
+    return {
+      bitgetSpot: state.bitgetSpot.value, // Access the slice state
+    };
+  };
+
+export default connect(mapStateToProps)(BinanceSpotBot);

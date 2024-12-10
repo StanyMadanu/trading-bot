@@ -30,7 +30,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture }) => {
   };
 
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, [dispatch]);
 
   //table header data

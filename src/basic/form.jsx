@@ -13,6 +13,7 @@ class Form extends Component {
     else delete errors[input.name];
     const data = { ...this.state.data };
     data[input.name] = input.value;
+    console.log(data)
     this.setState({ data, errors });
   };
 
@@ -26,6 +27,7 @@ class Form extends Component {
     data[input.name] = input.value
       .replace(/[^\d\.]/g, '')
       .replace(/\.(([^\.]*)\.)*/g, '.$2');
+      console.log(data)
     this.setState({ data, errors });
   };
 

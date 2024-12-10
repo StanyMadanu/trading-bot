@@ -3,12 +3,14 @@ import React, { Component } from 'react';
 class ConfirmPopup extends Component {
     render() {
 
-        const { label, msg , botStatus } = this.props;
+        const { label, msg , botStatus , toggleBotStatus, modelRef } = this.props;
+
+        
 
         return (
 
             <>
-                <div className="modal" id="confirmDelete">
+                <div className="modal fade" id="confirmDelete" ref={modelRef}>
                     <div className="modal-dialog text-dark">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -35,8 +37,10 @@ class ConfirmPopup extends Component {
                                     >
                                         Close
                                     </button>
-                                    <button className="btn btn-danger">
-                                        {botStatus}
+                                    <button className="btn btn-danger" onClick={toggleBotStatus}>
+                                        {
+                                            botStatus ? "Enable" : "Desable"
+                                        }
                                     </button>
                                 </div>
                             </div>

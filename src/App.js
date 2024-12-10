@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
-import Login from "./components/Login";
+import Auth from "./components/auth";
 import NotFound from "./components/NotFound";
 import Layout from "./components/Layout";
 
@@ -11,14 +11,14 @@ function App() {
       element: <Layout />,
       children: [
         {
-          path: "/",
+          path: "/dashboard",
           element: <Dashboard />,
         },
       ],
     },
     {
       path: "/login",
-      element: <Login />,
+      element: <Auth />,
     },
     {
       path: "*",

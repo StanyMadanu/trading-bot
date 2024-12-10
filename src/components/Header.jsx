@@ -1,18 +1,68 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { backEndCall, getJwt } from "../services/mainService";
+import { useDispatch, useSelector } from "react-redux";
+import { profileRedux } from "./reduxStore/slice/profileSlice";
 
 const Header = () => {
+  const [keysLoading, setKeysLoading] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+  const [apiKeys, setApiKeys] = useState(null);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const profile = useSelector((state) => state.getProfile); // Access Redux state
+
+  // Theme Toggle Handler
   const handleTheme = () => {
     document.body.classList.toggle("dark");
+  };
+
+  // Fetch profile and API keys
+  const fetchKeys = async () => {
+    if (keysLoading) return;
+
+    try {
+      setKeysLoading(true);
+      const res = await backEndCall("/admin_get/profile");
+
+      if (!res) return;
+
+      setProfileData(res);
+      setApiKeys(res.profile.api_keys || {});
+
+      // Dispatch the profile data to Redux
+      dispatch(profileRedux(res));
+      console.log('Fetched Data:', res);
+
+      const jwt = getJwt();
+      if (jwt && Object.keys(res.profile.api_keys || {}).length > 0) {
+        setTimeout(() => navigate("/dashboard"), 200);
+      } else {
+        setTimeout(() => navigate("/apis"), 200);
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    } finally {
+      setKeysLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchKeys();
+  }, [dispatch]);
+
+  // Logout Handler
+  const LogoutHandler = () => {
+    localStorage.clear();
+    localStorage.removeItem("k-token");
+    navigate("/"); // Redirect to home or login page
   };
 
   return (
     <div className="header">
       <nav className="navbar navbar-expand-lg bg-light sticky-top">
         <div className="container-fluid">
-          {/* <Link to="/" className="navbar-brand">
-            Trading Bot
-          </Link> */}
           <button
             className="navbar-toggler"
             type="button"

@@ -2,8 +2,33 @@ import React, { useEffect, useState } from 'react';
 import Table from '../../common/Table';
 import { backEndCallObjNoDcyt } from '../../services/mainService';
 
-const BinanceSpotBot = () => {
+const BinanceSpotBot = ({dispatch, binanceSpot}) => {
 
+  const [formData] = useState({
+    platform: 'BINANCE',
+    bot: 'AMM',
+  });
+
+  // const { usdt_balance, open_trades } = binanceSpot || {}; // Ensure it's not undefined
+  // console.log(usdt_balance, open_trades)
+
+
+  const fetchData = async () => {
+    try {
+      const response = await backEndCallObjNoDcyt(
+        '/trades/get_open_trades_data',
+        formData
+      );
+      // dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
+      console.log('Fetched Data:', response);
+    } catch (error) {
+      console.error('Error fetching open trades data:', error);
+    }
+  };
+
+  useEffect(()=>{
+   fetchData()
+  },[])
 
   return (
     <>

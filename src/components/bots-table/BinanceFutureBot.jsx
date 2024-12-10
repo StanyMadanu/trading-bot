@@ -4,11 +4,14 @@ import { backEndCallObjNoDcyt } from '../../services/mainService';
 import { connect } from 'react-redux';
 import { binancefutureRedx } from '../reduxStore/slice/binancefutureSlice';
 
-const BinanceFutureBot = ({ dispatch, futuresData }) => {
+const BinanceFutureBot = ({ dispatch, binanceFuture }) => {
   const [formData] = useState({
     platform: 'BINANCE',
     bot: 'FUTURES',
   });
+
+  const { usdt_balance, open_trades } = binanceFuture || {}; // Ensure it's not undefined
+  console.log(usdt_balance, open_trades)
 
   const fetchData = async () => {
     try {
@@ -38,7 +41,7 @@ const BinanceFutureBot = ({ dispatch, futuresData }) => {
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 fw-bold">5500</h6>
+          <h6 className="mb-0 fw-bold">{ parseFloat(usdt_balance?.balance).toFixed(2) || "0"}</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             current balance
           </p>
@@ -54,7 +57,8 @@ const BinanceFutureBot = ({ dispatch, futuresData }) => {
         </div>
       </div>
       {/* Table Component */}
-      <Table data={futuresData} />
+      
+      <Table data={open_trades} />
     </>
   );
 };
@@ -62,7 +66,7 @@ const BinanceFutureBot = ({ dispatch, futuresData }) => {
 // Map Redux state to props
 const mapStateToProps = (state) => {
   return {
-    binanceFuture: state.binanceFuture.futuresData, // Access the slice state
+    binanceFuture: state.binanceFuture.value, // Access the slice state
   };
 };
 

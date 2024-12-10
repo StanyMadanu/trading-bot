@@ -1,7 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Table from '../../common/Table'
+import { backEndCallObjNoDcyt } from '../../services/mainService';
 
 const BinanceSpotBot = () => {
+
+    
+  const [formData] = useState({
+    platform: 'BITGET',
+    bot: 'AMM',
+  });
+
+
+
+    const fetchData = async () => {
+        try {
+          const response = await backEndCallObjNoDcyt(
+            '/trades/get_open_trades_data',
+            formData
+          );
+          // dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
+          console.log('Fetched Data:', response);
+        } catch (error) {
+          console.error('Error fetching open trades data:', error);
+        }
+      };
+    
+      useEffect(()=>{
+       fetchData()
+      },[])
+
     return (
         <>
             <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">

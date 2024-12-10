@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { backEndCall, getJwt } from "../services/mainService";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { profileRedux } from "./reduxStore/slice/profileSlice";
 
 const Header = () => {
@@ -33,7 +33,6 @@ const Header = () => {
 
       // Dispatch the profile data to Redux
       dispatch(profileRedux(res));
-      console.log('Fetched Data:', res);
 
       const jwt = getJwt();
       if (jwt && Object.keys(res.profile.api_keys || {}).length > 0) {
@@ -100,6 +99,11 @@ const Header = () => {
                   <Link to="/login" className="nav-link">
                     Login
                   </Link>
+                </li>
+                <li>
+                  
+              <div>{JSON.stringify(profile?.value?.profile?.user_name || "loading..")}</div>
+
                 </li>
                 <li className="nav-item ms-auto">
                   <div

@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children }) => {
 
   // Redirect to login if JWT does not exist
   if (!jwt) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;

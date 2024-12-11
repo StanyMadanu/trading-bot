@@ -1,33 +1,33 @@
 import React, { useEffect, useRef, useState } from "react";
 import { bitgetFutureRdx } from "../reduxStore/slice/bitgetfutureSlice";
-import { backEndCallObj, backEndCallObjNoDcyt } from "../../services/mainService";
+import {
+  backEndCallObj,
+  backEndCallObjNoDcyt,
+} from "../../services/mainService";
 import BitgetFutureTable from "../../common/BitgetFutureTable";
 import { connect } from "react-redux";
 import useFetchKeys from "../../common/CotextTest";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-const BitgitFuture = ({ dispatch, bitgetFuture,getProfile }) => {
+const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   const [formData] = useState({
     platform: "BITGET",
     bot: "FUTURES",
   });
 
-  const [btnDisable, setBtnDisable] = useState(false)
+  const [btnDisable, setBtnDisable] = useState(false);
   const [botStatus, setBotStatus] = useState("ADD");
-
 
   const navigate = useNavigate();
 
   const { fetchKeys } = useFetchKeys();
 
-  const { bots , api_keys } = getProfile?.profile || {};
-
+  const { bots, api_keys } = getProfile?.profile || {};
 
   const { open_trades, usdt_balance } = bitgetFuture || {};
 
   // console.log(open_trades);
-  const modelRef = useRef(null)
-
+  const modelRef = useRef(null);
 
   const fetchData = async () => {
     try {
@@ -42,18 +42,17 @@ const BitgitFuture = ({ dispatch, bitgetFuture,getProfile }) => {
   };
 
   useEffect(() => {
-    if(bots){
+    if (bots) {
       // fetchData();
     }
-  }, [dispatch , bots]);
+  }, [dispatch, bots]);
 
   useEffect(() => {
     if (bots?.BITGET?.FUTURES?.status === "INACTIVE") {
       setBotStatus("Enable");
     } else if (bots?.BITGET?.FUTURES?.status === "ACTIVE") {
       setBotStatus("Disable");
-    }
-    else {
+    } else {
       setBotStatus("ADD");
     }
   }, [bots]);
@@ -70,9 +69,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture,getProfile }) => {
     const formattedData = {
       ...formData,
       status:
-        bots?.BINANCE?.FUTURES?.status === "INACTIVE"
-          ? "ACTIVE"
-          : "INACTIVE",
+        bots?.BINANCE?.FUTURES?.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
     };
 
     // console.log(formattedData)
@@ -80,8 +77,8 @@ const BitgitFuture = ({ dispatch, bitgetFuture,getProfile }) => {
       // console.log(formattedData);
       setBtnDisable(true);
       const response = await backEndCallObj(
-        "/admin/change_bot_status", formattedData
-
+        "/admin/change_bot_status",
+        formattedData
       );
       // console.log(response, "aaa");
       toast.success(response?.success);
@@ -93,22 +90,19 @@ const BitgitFuture = ({ dispatch, bitgetFuture,getProfile }) => {
     }
   };
 
-
   const toggleBotStatus = async (e) => {
-
     await handleSubmit(e);
 
     const modalInstance = window.bootstrap.Modal.getInstance(modelRef.current);
     if (modalInstance) modalInstance.hide();
-  }
+  };
 
   //table header data
   const theadData = ["Symbol", "Price", "Org Qty"];
 
-
   let button;
   switch (bots?.BINANCE?.FUTURES?.status) {
-    case 'INACTIVE':
+    case "INACTIVE":
       button = (
         <button
           className="theme-btn text-uppercase"
@@ -121,8 +115,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture,getProfile }) => {
       );
       break;
 
-
-    case 'ACTIVE':
+    case "ACTIVE":
       button = (
         <button
           className="text-uppercase btn theme-btn  btn-danger"
@@ -136,32 +129,30 @@ const BitgitFuture = ({ dispatch, bitgetFuture,getProfile }) => {
       break;
 
     default:
-      api_keys?.[formData.platform]?.api_key ? (
-        button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#addbot"
-          >
-            Add Bot
-          </button>
-        )) : (
-        button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            onClick={() => navigate('/api', { state: { platform: formData.platform } })}
-          >
-            Add Bot
-          </button>
-        )
-
-      )
+      api_keys?.[formData.platform]?.api_key
+        ? (button = (
+            <button
+              className="theme-btn text-uppercase btn btn-success"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#addbot"
+            >
+              Add Bot
+            </button>
+          ))
+        : (button = (
+            <button
+              className="theme-btn text-uppercase btn btn-success"
+              type="button"
+              onClick={() =>
+                navigate("/api", { state: { platform: formData.platform } })
+              }
+            >
+              Add Bot
+            </button>
+          ));
       break;
   }
-
-
 
   return (
     <>
@@ -173,7 +164,9 @@ const BitgitFuture = ({ dispatch, bitgetFuture,getProfile }) => {
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 fw-bold">{parseFloat(usdt_balance?.balance || '0').toFixed(2)}</h6>
+          <h6 className="mb-0 fw-bold">
+            {parseFloat(usdt_balance?.balance || "0").toFixed(2)}
+          </h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             current balance
           </p>
@@ -197,7 +190,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture,getProfile }) => {
 const mapStateToProps = (state) => {
   return {
     bitgetFuture: state.bitgetFuture.value, // Access the slice state
-    getProfile : state.getProfile.value,
+    getProfile: state.getProfile.value,
   };
 };
 

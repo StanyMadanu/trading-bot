@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Table from "../../common/Table";
-import { backEndCallObj, backEndCallObjNoDcyt } from "../../services/mainService";
+import {
+  backEndCallObj,
+  backEndCallObjNoDcyt,
+} from "../../services/mainService";
 import { connect } from "react-redux";
 import { binancefutureRedx } from "../reduxStore/slice/binancefutureSlice";
 import { toast } from "react-toastify";
@@ -16,9 +19,8 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     bot: "FUTURES",
   });
 
-  const [btnDisable, setBtnDisable] = useState(false)
+  const [btnDisable, setBtnDisable] = useState(false);
   const [botStatus, setBotStatus] = useState("ADD");
-
 
   const navigate = useNavigate();
 
@@ -27,9 +29,6 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const { bots, api_keys } = getProfile?.profile || {};
 
   const { usdt_balance, open_trades } = binanceFuture || {}; // Ensure it's not undefined
-
-
-
 
   const fetchData = async () => {
     try {
@@ -44,22 +43,20 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     }
   };
 
-  const modelRef = useRef(null)
-
+  const modelRef = useRef(null);
 
   useEffect(() => {
-    if(bots){
-    fetchData();
+    if (bots) {
+      fetchData();
     }
-  }, [dispatch , bots]);
+  }, [dispatch, bots]);
 
   useEffect(() => {
     if (bots?.BINANCE?.FUTURES?.status === "INACTIVE") {
       setBotStatus("Enable");
     } else if (bots?.BINANCE?.FUTURES?.status === "ACTIVE") {
       setBotStatus("Disable");
-    }
-    else {
+    } else {
       setBotStatus("ADD");
     }
   }, [bots]);
@@ -76,9 +73,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     const formattedData = {
       ...formData,
       status:
-        bots?.BINANCE?.FUTURES?.status === "INACTIVE"
-          ? "ACTIVE"
-          : "INACTIVE",
+        bots?.BINANCE?.FUTURES?.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
     };
 
     // console.log(formattedData)
@@ -86,8 +81,8 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       // console.log(formattedData);
       setBtnDisable(true);
       const response = await backEndCallObj(
-        "/admin/change_bot_status", formattedData
-
+        "/admin/change_bot_status",
+        formattedData
       );
       // console.log(response, "aaa");
       toast.success(response?.success);
@@ -99,21 +94,19 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     }
   };
 
-
   const toggleBotStatus = async (e) => {
-
     await handleSubmit(e);
 
     const modalInstance = window.bootstrap.Modal.getInstance(modelRef.current);
     if (modalInstance) modalInstance.hide();
-  }
+  };
 
   //table header data
   const theadData = ["Symbol", "Price", "Org Qty"];
 
   let button;
   switch (bots?.BINANCE?.FUTURES?.status) {
-    case 'INACTIVE':
+    case "INACTIVE":
       button = (
         <button
           className="theme-btn text-uppercase"
@@ -126,8 +119,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       );
       break;
 
-
-    case 'ACTIVE':
+    case "ACTIVE":
       button = (
         <button
           className="text-uppercase btn theme-btn  btn-danger"
@@ -141,32 +133,30 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       break;
 
     default:
-      api_keys?.[formData.platform]?.api_key ? (
-        button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#addbot"
-          >
-            Add Bot
-          </button>
-        )) : (
-        button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            onClick={() => navigate('/api', { state: { platform: formData.platform } })}
-          >
-            Add Bot
-          </button>
-        )
-
-      )
+      api_keys?.[formData.platform]?.api_key
+        ? (button = (
+            <button
+              className="theme-btn text-uppercase btn btn-success"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#addbot"
+            >
+              Add Bot
+            </button>
+          ))
+        : (button = (
+            <button
+              className="theme-btn text-uppercase btn btn-success"
+              type="button"
+              onClick={() =>
+                navigate("/api", { state: { platform: formData.platform } })
+              }
+            >
+              Add Bot
+            </button>
+          ));
       break;
   }
-
- 
 
   return (
     <>
@@ -180,7 +170,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
           <h6 className="mb-0 fw-bold">
-            {parseFloat(usdt_balance?.balance || "0" ).toFixed(2) || "0"}
+            {parseFloat(usdt_balance?.balance || "0").toFixed(2) || "0"}
           </h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             current balance
@@ -198,7 +188,14 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       </div>
       {/* Table Component */}
 
-      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+      <ConfirmPopup
+        label="Bot Status"
+        msg={`${botStatus} bot`}
+        botStatus={botStatus}
+        toggleBotStatus={toggleBotStatus}
+        modelRef={modelRef}
+        btnDisable={btnDisable}
+      />
       <EditInvestment />
       <AddBot platform={formData.platform} botType={formData.bot} />
       <Table data={open_trades} thead={theadData} />

@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Table from "../../common/Table";
-import { backEndCallObj, backEndCallObjNoDcyt } from "../../services/mainService";
+import {
+  backEndCallObj,
+  backEndCallObjNoDcyt,
+} from "../../services/mainService";
 import { binancespotRedx } from "../reduxStore/slice/binancespotSlice";
 import { connect } from "react-redux";
 import BinanceSpotTable from "../../common/BinanceSpotTable";
@@ -10,15 +13,13 @@ import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
 import { useNavigate } from "react-router-dom";
 
-
-
 const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   const [formData] = useState({
     platform: "BINANCE",
     bot: "AMM",
   });
 
-  const [botStatus, setBotStatus] = useState('ADD');
+  const [botStatus, setBotStatus] = useState("ADD");
 
   const [btnDisable, setBtnDisable] = useState(false);
 
@@ -26,20 +27,15 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
 
   const { fetchKeys } = useFetchKeys();
 
-
-
   const navigate = useNavigate();
-
-
 
   // const { usdt_balance, open_trades } = binanceSpot || {}; // Ensure it's not undefined
   // console.log(usdt_balance, open_trades)
 
   const { open_trades, totalBalance } = binanceSpot || {};
-  const { bots, api_keys } = getProfile?.profile || {}
+  const { bots, api_keys } = getProfile?.profile || {};
 
   // console.log(getProfile, binanceSpot)
-
 
   // console.log(open_trades);
 
@@ -56,11 +52,9 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   };
 
   useEffect(() => {
-
     if (bots) {
       fetchData();
     }
-
   }, [dispatch, bots]);
 
   useEffect(() => {
@@ -68,12 +62,10 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       setBotStatus("Enable");
     } else if (bots?.BINANCE?.AMM?.status === "ACTIVE") {
       setBotStatus("Disable");
-    }
-    else {
+    } else {
       setBotStatus("ADD");
     }
   }, [bots]);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,10 +78,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     // }
     const formattedData = {
       ...formData,
-      status:
-        bots?.BINANCE.AMM.status === "INACTIVE"
-          ? "ACTIVE"
-          : "INACTIVE",
+      status: bots?.BINANCE.AMM.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
     };
 
     // console.log(formattedData)
@@ -97,8 +86,8 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       // console.log(formattedData);
       setBtnDisable(true);
       const response = await backEndCallObj(
-        "/admin/change_bot_status", formattedData
-
+        "/admin/change_bot_status",
+        formattedData
       );
       // console.log(response, "aaa");
       toast.success(response?.success);
@@ -110,13 +99,11 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     }
   };
 
-
   const toggleBotStatus = async (e) => {
-    await handleSubmit(e)
+    await handleSubmit(e);
     const modalInstance = window.bootstrap.Modal.getInstance(modelRef.current);
     if (modalInstance) modalInstance.hide();
-  }
-
+  };
 
   //table header data
   const theadData = ["Symbol", "Price", "Org Qty"];
@@ -126,8 +113,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   // console.log(bots.BINANCE.AMM.status)
 
   switch (bots?.BINANCE?.AMM?.status) {
-
-    case 'INACTIVE':
+    case "INACTIVE":
       button = (
         <button
           className="theme-btn text-uppercase"
@@ -140,8 +126,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       );
       break;
 
-
-    case 'ACTIVE':
+    case "ACTIVE":
       button = (
         <button
           className="btn text-uppercase btn-danger"
@@ -155,33 +140,30 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       break;
 
     default:
-      api_keys?.[formData.platform]?.api_key ? (
-        button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#addbot"
-          >
-            Add Bot
-          </button>
-        )) : (
-        button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            onClick={() => navigate('/api', { state: { platform: formData.platform } })}
+      api_keys?.[formData.platform]?.api_key
+        ? (button = (
+            <button
+              className="theme-btn text-uppercase btn btn-success"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#addbot"
             >
-            Add Bot
-          </button>
-        )
-
-      )
+              Add Bot
+            </button>
+          ))
+        : (button = (
+            <button
+              className="theme-btn text-uppercase btn btn-success"
+              type="button"
+              onClick={() =>
+                navigate("/api", { state: { platform: formData.platform } })
+              }
+            >
+              Add Bot
+            </button>
+          ));
       break;
   }
-
-
-
 
   return (
     <>
@@ -212,7 +194,14 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       </div>
       <BinanceSpotTable data={open_trades} tdata={theadData} />
 
-      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+      <ConfirmPopup
+        label="Bot Status"
+        msg={`${botStatus} bot`}
+        botStatus={botStatus}
+        toggleBotStatus={toggleBotStatus}
+        modelRef={modelRef}
+        btnDisable={btnDisable}
+      />
       <AddBot platform={formData.platform} botType={formData.bot} />
     </>
   );
@@ -222,7 +211,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
 const mapStateToProps = (state) => {
   return {
     binanceSpot: state.binanceSpot.value, // Access the slice state
-    getProfile: state.getProfile.value // Access the slice state
+    getProfile: state.getProfile.value, // Access the slice state
   };
 };
 

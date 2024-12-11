@@ -3,6 +3,7 @@ import { Suspense, lazy } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "./common/Loader";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import("./components/Dashboard"));
@@ -14,7 +15,6 @@ const Controls = lazy(() => import("./components/Controls"));
 const Api = lazy(() => import("./components/Api"));
 const AllDataTable = lazy(() => import("./common/AllDataTable"));
 const AddCoins = lazy(() => import("./components/AddCoins"));
-import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const router = createBrowserRouter([
@@ -26,8 +26,8 @@ function App() {
       path: "/",
       element: (
         <ProtectedRoute>
-        <Layout />
-      </ProtectedRoute>
+          <Layout />
+        </ProtectedRoute>
       ),
       children: [
         {

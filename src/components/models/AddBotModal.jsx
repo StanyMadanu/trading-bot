@@ -24,7 +24,7 @@ constructor(props) {
       botType
     };
 
-    console.log(formattedData)
+    // console.log(formattedData)
     try {
       // console.log(formattedData);
       const response = await backEndCallObj("admin/add_bot", );

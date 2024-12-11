@@ -1,7 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+
 
 const Table = ({ data, thead }) => {
+
+  const navigate = useNavigate()
+
   return (
     <div className="table-responsive">
       <table className="table table-bordered">
@@ -42,9 +46,9 @@ const Table = ({ data, thead }) => {
 
           <tr>
             <td colSpan={3} className="text-center">
-              <Link to="/allDataTable">
+              <div onClick={()=>{navigate('/allDataTable' , { state: { reduxName: "binanceFuture" } })}}>
                 <button className="py-1">view all</button>
-              </Link>
+              </div>
             </td>
           </tr>
         </tbody>

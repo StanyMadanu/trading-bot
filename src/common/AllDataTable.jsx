@@ -1,6 +1,18 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 const AllDataTable = ({ theadings, tdata }) => {
+
+  // Get reduxName from location state
+  const location = useLocation();
+  const { reduxName } = location.state || {}; // Destructure reduxName from state
+
+  const getRedux = useSelector((state) => state?.[reduxName]); // Access Redux state
+
+
+  // console.log('Redux Name:', getRedux);  // For debugging
+
   return (
     <div className="card">
       <div className="card-body">
@@ -41,5 +53,7 @@ const AllDataTable = ({ theadings, tdata }) => {
     </div>
   );
 };
+
+
 
 export default AllDataTable;

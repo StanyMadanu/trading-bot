@@ -27,13 +27,13 @@ const useFetchKeys = () => {
 
       // Dispatch the profile data to Redux
       dispatch(profileRedux(res));
-      console.log("Fetched Data:", res);
+      // console.log("Fetched Data:", res);
 
       const jwt = getJwt();
       if (jwt && Object.keys(res.profile.api_keys || {}).length > 0) {
         setTimeout(() => navigate("/dashboard"), 200);
       } else {
-        setTimeout(() => navigate("/apis"), 200);
+        setTimeout(() => navigate("/api"), 200);
       }
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -41,6 +41,11 @@ const useFetchKeys = () => {
       setKeysLoading(false);
     }
   };
+
+
+  
+
+
 
   // Return states and functions for use in components
   return { fetchKeys, keysLoading, profileData, apiKeys };

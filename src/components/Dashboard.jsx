@@ -16,7 +16,6 @@ const Dashboard = () => {
 
   const profile = useSelector((state) => state.getProfile.value);
 
-  console.log(profile);
   return (
     <>
       <div>

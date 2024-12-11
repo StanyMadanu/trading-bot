@@ -9,6 +9,7 @@ import EditInvestment from '../models/EditInvestmentModel';
 import AddBot from '../models/AddBotModal';
 import { toast } from 'react-toastify';
 import useFetchKeys from '../../common/CotextTest';
+import { useNavigate } from 'react-router-dom';
 
 
 const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
@@ -19,15 +20,22 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   const [btnDisable, setBtnDisable] = useState(false)
   const [botStatus, setBotStatus] = useState("ADD");
 
+
+  const navigate = useNavigate();
+
   const { fetchKeys } = useFetchKeys();
 
 
-  const { bots } = getProfile?.profile || {};
+  const { bots, api_keys } = getProfile?.profile || {};
+
 
 
   const modelRef = useRef(null)
 
   const { open_trades, totalBalance } = bitgetSpot || {};
+
+  // console.log(getProfile, bitgetSpot)
+
 
   const fetchData = async () => {
     try {
@@ -43,8 +51,10 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [dispatch]);
+    if (bots) {
+      fetchData();
+    }
+  }, [dispatch, bots]);
 
   useEffect(() => {
     if (bots?.BITGET?.AMM?.status === "INACTIVE") {
@@ -75,7 +85,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
           : "INACTIVE",
     };
 
-    console.log(formattedData)
+    // console.log(formattedData)
     try {
       // console.log(formattedData);
       setBtnDisable(true);
@@ -137,20 +147,39 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
       break;
 
     default:
-      button = (
-        <button
-          className="theme-btn text-uppercase btn btn-success"
-          type="button"
-          data-bs-toggle="modal"
-          data-bs-target="#addbot"
-        >
-          Add Bot
-        </button>
-      );
+
+      api_keys?.[formData.platform]?.api_key ? (
+        button = (
+          <button
+            className="theme-btn text-uppercase btn btn-success"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#addbot"
+          >
+            Add Bot
+          </button>
+        )) : (
+        button = (
+          <button
+            className="theme-btn text-uppercase btn btn-success"
+            type="button"
+            onClick={() => navigate('/api', { state: { platform: formData.platform } })}
+          >
+            Add Bot
+          </button>
+        )
+
+      )
+
+
+
+
 
       break;
 
   }
+
+
 
 
   return (
@@ -158,14 +187,14 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2" data-bs-toggle="modal"
           data-bs-target="#editInvest">
-          <h6 className="mb-0 fw-bold">400</h6>
+          <h6 className="mb-0 fw-bold">0</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             capital assigned
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
           <h6 className="mb-0 fw-bold">
-            {parseFloat(totalBalance).toFixed(2)}
+            {parseFloat(totalBalance || '0').toFixed(2)}
           </h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             current balance

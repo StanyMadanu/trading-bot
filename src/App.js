@@ -14,6 +14,7 @@ const Controls = lazy(() => import("./components/Controls"));
 const Api = lazy(() => import("./components/Api"));
 const AllDataTable = lazy(() => import("./common/AllDataTable"));
 const AddCoins = lazy(() => import("./components/AddCoins"));
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const router = createBrowserRouter([
@@ -23,7 +24,11 @@ function App() {
     },
     {
       path: "/",
-      element: <Layout />,
+      element: (
+        <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+      ),
       children: [
         {
           path: "/",

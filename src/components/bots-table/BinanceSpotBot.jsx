@@ -8,6 +8,9 @@ import ConfirmPopup from "../models/ConfirmPopup";
 import AddBot from "../models/AddBotModal";
 import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
+import { useNavigate } from "react-router-dom";
+
+
 
 const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   const [formData] = useState({
@@ -17,7 +20,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
 
   const [botStatus, setBotStatus] = useState('ADD');
 
-  const [btnDisable, setBtnDisable] = useState(false)
+  const [btnDisable, setBtnDisable] = useState(false);
 
   const modelRef = useRef(null);
 
@@ -25,11 +28,18 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
 
 
 
+  const navigate = useNavigate();
+
+
+
   // const { usdt_balance, open_trades } = binanceSpot || {}; // Ensure it's not undefined
   // console.log(usdt_balance, open_trades)
 
   const { open_trades, totalBalance } = binanceSpot || {};
-  const { bots } = getProfile?.profile || {}
+  const { bots, api_keys } = getProfile?.profile || {}
+
+  // console.log(getProfile, binanceSpot)
+
 
   // console.log(open_trades);
 
@@ -46,8 +56,12 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [dispatch]);
+
+    if (bots) {
+      fetchData();
+    }
+
+  }, [dispatch, bots]);
 
   useEffect(() => {
     if (bots?.BINANCE?.AMM?.status === "INACTIVE") {
@@ -78,7 +92,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
           : "INACTIVE",
     };
 
-    console.log(formattedData)
+    // console.log(formattedData)
     try {
       // console.log(formattedData);
       setBtnDisable(true);
@@ -111,7 +125,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
 
   // console.log(bots.BINANCE.AMM.status)
 
-  switch (bots.BINANCE.AMM.status) {
+  switch (bots?.BINANCE?.AMM?.status) {
 
     case 'INACTIVE':
       button = (
@@ -141,31 +155,46 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       break;
 
     default:
-      button = (
-        <button
-          className="theme-btn text-uppercase btn btn-success"
-          type="button"
-          data-bs-toggle="modal"
-          data-bs-target="#addbot"
-        >
-          Add Bot
-        </button>
-      );
+      api_keys?.[formData.platform]?.api_key ? (
+        button = (
+          <button
+            className="theme-btn text-uppercase btn btn-success"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#addbot"
+          >
+            Add Bot
+          </button>
+        )) : (
+        button = (
+          <button
+            className="theme-btn text-uppercase btn btn-success"
+            type="button"
+            onClick={() => navigate('/api', { state: { platform: formData.platform } })}
+            >
+            Add Bot
+          </button>
+        )
+
+      )
       break;
   }
+
+
+
 
   return (
     <>
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 fw-bold">4000</h6>
+          <h6 className="mb-0 fw-bold">0</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             capital assigned
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
           <h6 className="mb-0 fw-bold">
-            {parseFloat(totalBalance).toFixed(2) || "0"}
+            {parseFloat(totalBalance || 0).toFixed(2)}
           </h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             current balance

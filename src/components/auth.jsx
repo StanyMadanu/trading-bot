@@ -62,7 +62,7 @@ class Auth extends Form {
         email: data?.email,
       };
 
-      console.log(obj.otp);
+      // console.log(obj.otp);
 
       const res = await backEndCallObj("/admin/verify_login", obj);
       if (res) {

@@ -1,7 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const BitgetFutureTable = ({ data }) => {
+
+  const navigate = useNavigate()
+
   return (
     <div className="table-responsive">
       <table className="table table-bordered">
@@ -50,9 +53,9 @@ const BitgetFutureTable = ({ data }) => {
 
           <tr>
             <td colSpan={3} className="text-center">
-              <Link to="/allDataTable">
+            <div onClick={()=>{navigate('/allDataTable' , { state: { reduxName: "BitgetFuture" } })}}>
                 <button className="py-1">view all</button>
-              </Link>
+              </div>
             </td>
           </tr>
         </tbody>

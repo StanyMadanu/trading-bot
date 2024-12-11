@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export const bitgetFutureSlice = createSlice({
-    name: 'binanceFuture',
+    name: 'bitgetFuture',
     initialState: {
       value: null,
     },

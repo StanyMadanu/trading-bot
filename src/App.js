@@ -1,21 +1,24 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Dashboard from "./components/Dashboard";
-import Auth from "./components/auth";
-import NotFound from "./components/NotFound";
-import Layout from "./components/Layout";
-import Login from "./components/Login";
+import { Suspense, lazy } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "./common/Loader";
 
-import Controls from "./components/Controls";
-import Api from "./components/Api";
-import AllDataTable from "./common/AllDataTable";
-import AddCoins from "./components/AddCoins";
+// Lazy-loaded components
+const Dashboard = lazy(() => import("./components/Dashboard"));
+const Auth = lazy(() => import("./components/auth"));
+const NotFound = lazy(() => import("./components/NotFound"));
+const Layout = lazy(() => import("./components/Layout"));
+const Login = lazy(() => import("./components/Login"));
+const Controls = lazy(() => import("./components/Controls"));
+const Api = lazy(() => import("./components/Api"));
+const AllDataTable = lazy(() => import("./common/AllDataTable"));
+const AddCoins = lazy(() => import("./components/AddCoins"));
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "/login",
       element: <Login />,
     },
     {
@@ -53,7 +56,9 @@ function App() {
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
-      <RouterProvider router={router} />
+      <Suspense fallback={<Loader />}>
+        <RouterProvider router={router} />
+      </Suspense>
     </>
   );
 }

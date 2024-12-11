@@ -57,7 +57,7 @@ class Login extends Form {
     } else {
       const { otp } = this.state;
       const { navigate } = this.props;
-      console.log(otp);
+      // console.log(otp);
       if (otp.length !== 6) {
         toast.warning("Please Enter a 6-Digit OTP", "error");
         return;
@@ -89,7 +89,7 @@ class Login extends Form {
 
   render() {
     const { data, otp, errors } = this.state;
-    console.log(this.state);
+    // console.log(this.state);
     return (
       <div className="login">
         <div className="d-flex justify-content-end pe-5 position-relative">

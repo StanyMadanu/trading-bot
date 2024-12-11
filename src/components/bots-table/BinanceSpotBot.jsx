@@ -9,7 +9,7 @@ import AddBot from "../models/AddBotModal";
 import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
 
-const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
+const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   const [formData] = useState({
     platform: "BINANCE",
     bot: "AMM",
@@ -17,11 +17,11 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
 
   const [botStatus, setBotStatus] = useState('ADD');
 
-  const [btnDisable ,setBtnDisable] = useState(false)
+  const [btnDisable, setBtnDisable] = useState(false)
 
   const modelRef = useRef(null);
 
-  const {fetchKeys} = useFetchKeys();
+  const { fetchKeys } = useFetchKeys();
 
 
 
@@ -29,7 +29,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
   // console.log(usdt_balance, open_trades)
 
   const { open_trades, totalBalance } = binanceSpot || {};
-  const {bots} = getProfile?.profile || {}
+  const { bots } = getProfile?.profile || {}
 
   // console.log(open_trades);
 
@@ -50,12 +50,13 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (bots?.BINANCE?.AMM?.status === "true") {
-      setBotStatus("ADD");
-    } else if (bots?.BINANCE?.AMM?.status === "INACTIVE") {
+    if (bots?.BINANCE?.AMM?.status === "INACTIVE") {
       setBotStatus("Enable");
     } else if (bots?.BINANCE?.AMM?.status === "ACTIVE") {
       setBotStatus("Disable");
+    }
+    else {
+      setBotStatus("ADD");
     }
   }, [bots]);
 
@@ -70,7 +71,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
     //   return;
     // }
     const formattedData = {
-     ...formData,
+      ...formData,
       status:
         bots?.BINANCE.AMM.status === "INACTIVE"
           ? "ACTIVE"
@@ -82,8 +83,8 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
       // console.log(formattedData);
       setBtnDisable(true);
       const response = await backEndCallObj(
-        "/admin/change_bot_status",
-        
+        "/admin/change_bot_status", formattedData
+
       );
       // console.log(response, "aaa");
       toast.success(response?.success);
@@ -96,7 +97,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
   };
 
 
-  const toggleBotStatus =async(e) => {
+  const toggleBotStatus = async (e) => {
     await handleSubmit(e)
     const modalInstance = window.bootstrap.Modal.getInstance(modelRef.current);
     if (modalInstance) modalInstance.hide();
@@ -109,25 +110,8 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
   let button;
 
   // console.log(bots.BINANCE.AMM.status)
-  
+
   switch (bots.BINANCE.AMM.status) {
-    case 'false':
-      button = null; // Do not render a button if AMM is "false"
-      break;
-
-    case 'true':
-      button = (
-        <button
-          className="theme-btn text-uppercase"
-          type="button"
-          data-bs-toggle="modal"
-          data-bs-target="#addbot"
-        >
-          Add Bot
-        </button>
-      );
-      break;
-
 
     case 'INACTIVE':
       button = (
@@ -146,7 +130,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
     case 'ACTIVE':
       button = (
         <button
-          className="btn text-uppercase btn-success"
+          className="btn text-uppercase btn-danger"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
@@ -157,7 +141,16 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
       break;
 
     default:
-      button = <span>Invalid Status</span>; // Fallback for unexpected values
+      button = (
+        <button
+          className="theme-btn text-uppercase btn btn-success"
+          type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#addbot"
+        >
+          Add Bot
+        </button>
+      );
       break;
   }
 
@@ -185,13 +178,13 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
           </p>
         </div>
         <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
-         {button}
+          {button}
         </div>
       </div>
       <BinanceSpotTable data={open_trades} tdata={theadData} />
 
-      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} />
-      <AddBot platform={formData.platform} botType={formData.bot}/>
+      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+      <AddBot platform={formData.platform} botType={formData.bot} />
     </>
   );
 };
@@ -200,7 +193,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot , getProfile }) => {
 const mapStateToProps = (state) => {
   return {
     binanceSpot: state.binanceSpot.value, // Access the slice state
-    getProfile : state.getProfile.value // Access the slice state
+    getProfile: state.getProfile.value // Access the slice state
   };
 };
 

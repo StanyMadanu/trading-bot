@@ -8,7 +8,7 @@ const BitgetFutureTable = ({ data }) => {
         <thead className="thead primary-bg">
           <tr>
             <th>
-              <p className="mb-0 primary-color fs-14">Symbole</p>
+              <p className="mb-0 primary-color fs-14">Symbol</p>
             </th>
             <th>
               <p className="mb-0 primary-color fs-14">Price</p>

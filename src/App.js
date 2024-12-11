@@ -15,17 +15,13 @@ import AddCoins from "./components/AddCoins";
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/login",
+      path: "/",
       element: <Login />,
     },
     {
       path: "/",
       element: <Layout />,
       children: [
-        {
-          path: "/",
-          element: <Dashboard />,
-        },
         {
           path: "/dashboard",
           element: <Dashboard />,

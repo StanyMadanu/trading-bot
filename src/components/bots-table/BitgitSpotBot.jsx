@@ -16,10 +16,10 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
     platform: "BITGET",
     bot: "AMM",
   });
-  const [btnDisable, setBtnDisable] =useState(false)
+  const [btnDisable, setBtnDisable] = useState(false)
   const [botStatus, setBotStatus] = useState("ADD");
 
-  const {fetchKeys} = useFetchKeys();
+  const { fetchKeys } = useFetchKeys();
 
 
   const { bots } = getProfile?.profile || {};
@@ -47,12 +47,13 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (bots?.BITGET?.AMM?.status === "true") {
-      setBotStatus("ADD");
-    } else if (bots?.BITGET?.AMM?.status === "INACTIVE") {
+    if (bots?.BITGET?.AMM?.status === "INACTIVE") {
       setBotStatus("Enable");
     } else if (bots?.BITGET?.AMM?.status === "ACTIVE") {
       setBotStatus("Disable");
+    }
+    else {
+      setBotStatus("ADD");
     }
   }, [bots]);
 
@@ -67,7 +68,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
     //   return;
     // }
     const formattedData = {
-     ...formData,
+      ...formData,
       status:
         bots?.BITGET.AMM.status === "INACTIVE"
           ? "ACTIVE"
@@ -79,8 +80,8 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
       // console.log(formattedData);
       setBtnDisable(true);
       const response = await backEndCallObj(
-        "/admin/change_bot_status",
-        
+        "/admin/change_bot_status", formattedData
+
       );
       // console.log(response, "aaa");
       toast.success(response?.success);
@@ -93,10 +94,10 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   };
 
 
-  const toggleBotStatus = async(e) => {
+  const toggleBotStatus = async (e) => {
 
     await handleSubmit(e);
-    
+
     const modalInstance = window.bootstrap.Modal.getInstance(modelRef.current);
     if (modalInstance) modalInstance.hide();
   }
@@ -107,24 +108,6 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
 
   let button;
   switch (bots?.BITGET?.AMM?.status) {
-    case 'false':
-      button = null; // Do not render a button if AMM is "false"
-      break;
-
-    case 'true':
-      button = (
-        <button
-          className="theme-btn text-uppercase"
-          type="button"
-          data-bs-toggle="modal"
-          data-bs-target="#addbot"
-        >
-          Add Bot
-        </button>
-      );
-
-      break;
-
 
     case 'INACTIVE':
       button = (
@@ -143,7 +126,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
     case 'ACTIVE':
       button = (
         <button
-          className="theme-btn text-uppercase btn btn-muted"
+          className="text-uppercase btn theme-btn  btn-danger"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
@@ -154,8 +137,19 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
       break;
 
     default:
-      button = <span>Invalid Status</span>; // Fallback for unexpected values
+      button = (
+        <button
+          className="theme-btn text-uppercase btn btn-success"
+          type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#addbot"
+        >
+          Add Bot
+        </button>
+      );
+
       break;
+
   }
 
 
@@ -187,10 +181,11 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
           {button}
         </div>
       </div >
-      <ConfirmPopup label="Bot Status" msg={`${botStatus } bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
       <EditInvestment />
+      <AddBot platform={formData.platform} botType={formData.bot} />
       <BitgetSpotTable data={open_trades} thead={theadData} />
-      <AddBot platform={formData.platform} botType={formData.bot}/>
+
     </>
   );
 };

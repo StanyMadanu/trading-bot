@@ -10,6 +10,7 @@ import { FaPowerOff } from "react-icons/fa";
 import { AiFillControl, AiFillApi } from "react-icons/ai";
 import { FaUser } from "react-icons/fa6";
 import { FaBitcoin } from "react-icons/fa";
+import useFetchKeys from "../common/CotextTest";
 
 const Header = () => {
   const [keysLoading, setKeysLoading] = useState(false);
@@ -20,41 +21,15 @@ const Header = () => {
   const navigate = useNavigate();
   const profile = useSelector((state) => state.getProfile); // Access Redux state
 
+  const {fetchKeys} = useFetchKeys();
+
   // Theme Toggle Handler
   const handleTheme = () => {
     document.body.classList.toggle("dark");
   };
 
   // Fetch profile and API keys
-  const fetchKeys = async () => {
-    if (keysLoading) return;
-
-    try {
-      setKeysLoading(true);
-      const res = await backEndCall("/admin_get/profile");
-
-      if (!res) return;
-
-      setProfileData(res);
-      setApiKeys(res.profile.api_keys || {});
-
-      // Dispatch the profile data to Redux
-      dispatch(profileRedux(res));
-      console.log("Fetched Data:", res);
-      console.log("Fetched Data:", res);
-
-      const jwt = getJwt();
-      if (jwt && Object.keys(res.profile.api_keys || {}).length > 0) {
-        setTimeout(() => navigate("/dashboard"), 200);
-      } else {
-        setTimeout(() => navigate("/apis"), 200);
-      }
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    } finally {
-      setKeysLoading(false);
-    }
-  };
+ 
 
   useEffect(() => {
     fetchKeys();

@@ -15,7 +15,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture }) => {
 
   const { open_trades, totalBalance } = bitgetFuture || {};
 
-  console.log(open_trades);
+  // console.log(open_trades);
 
   const fetchData = async () => {
     try {

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class ConfirmPopup extends Component {
     render() {
 
-        const { label, msg , botStatus , toggleBotStatus, modelRef } = this.props;
+        const { label, msg , botStatus , toggleBotStatus, modelRef , btnDisable } = this.props;
 
         
 
@@ -37,9 +37,9 @@ class ConfirmPopup extends Component {
                                     >
                                         Close
                                     </button>
-                                    <button className="btn btn-danger" onClick={toggleBotStatus}>
+                                    <button className="btn btn-danger" onClick={(e)=>{toggleBotStatus(e)}} disabled={btnDisable}>
                                         {
-                                            botStatus ? "Enable" : "Desable"
+                                            btnDisable ?"Wait...": botStatus
                                         }
                                     </button>
                                 </div>

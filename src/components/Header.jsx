@@ -48,7 +48,7 @@ const Header = () => {
           <div className="d-flex justify-content-between align-items-center flex-wrap">
             <div className="d-flex gap-5 flex-wrap">
               <div className="d-flex gap-3 align-items-center">
-                <Link to="/">
+                <Link to="/dashboard">
                   <img src={mainLogo} alt="7pools-logo" width={150} />
                 </Link>
                 <h5

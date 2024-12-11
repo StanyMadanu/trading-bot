@@ -1,0 +1,19 @@
+.api {
+  .binance-api,
+  .bitget-api {
+    border: 1px solid rgb(var(--primary-color));
+    color: rgb(var(--primary-color));
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgb(var(--primary-color));
+      color: rgb(var(--fx-white));
+    }
+
+    &.active {
+      background-color: rgb(var(--primary-color));
+      color: rgb(var(--fx-white));
+    }
+  }
+}

@@ -29,6 +29,12 @@ button {
     background-color: rgb(var(--secondary-color));
     color: rgb(var(--fx-dark));
   }
+
+  &.notactive {
+    background-color: transparent;
+    border: 1px solid rgb(var(--primary-color));
+    color: rgb(var(--fx-dark));
+  }
   .theme-btn {
   }
 }

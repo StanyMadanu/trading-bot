@@ -5,8 +5,46 @@ const Api = () => {
     <div className="card">
       <div className="card-body">
         <div className="container">
-          <h3 className="text-center">API</h3>
-          <p className="text-center">coming soon</p>
+          <h5 className="text-center text-uppercase fw-semibold mb-5 mt-3">
+            api settings
+          </h5>
+          <div className="d-flex gap-2 flex-wrap">
+            <button className="flex-fill text-capitalize">binance API</button>
+            <button className="flex-fill text-capitalize">bitget API</button>
+          </div>
+          <form className="my-5">
+            <div className="mb-4">
+              <label
+                htmlFor="apikey"
+                className="form-label text-uppercase fs-15 fw-bold"
+              >
+                api key
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="apikey"
+                placeholder="API key"
+              />
+            </div>
+            <div className="mb-5">
+              <label
+                htmlFor="secretkey"
+                className="form-label text-uppercase fs-15 fw-bold"
+              >
+                secret key
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                id="secretkey"
+                placeholder="secret key"
+              />
+            </div>
+            <div className="text-end">
+              <button className="text-capitalize">submit</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

@@ -12,6 +12,7 @@ import Api from "./components/Api";
 import Profile from "./components/Profile";
 import Settings from "./components/Settings";
 import AllDataTable from "./common/AllDataTable";
+import AddCoins from "./components/AddCoins";
 
 function App() {
   const router = createBrowserRouter([
@@ -42,6 +43,10 @@ function App() {
         {
           path: "/controls",
           element: <Controls />,
+        },
+        {
+          path: "/addcoins",
+          element: <AddCoins />,
         },
         {
           path: "/settings",

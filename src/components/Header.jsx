@@ -9,6 +9,7 @@ import { RiSettings3Fill } from "react-icons/ri";
 import { FaPowerOff } from "react-icons/fa";
 import { AiFillControl, AiFillApi } from "react-icons/ai";
 import { FaUser } from "react-icons/fa6";
+import { FaBitcoin } from "react-icons/fa";
 
 const Header = () => {
   const [keysLoading, setKeysLoading] = useState(false);
@@ -137,7 +138,7 @@ const Header = () => {
                     <span className="fs-14 fw-semibold">Profile</span>
                   </Link>
                 </li>
-                <li className="">
+                <li>
                   <Link to="/api" className="dropdown-item text-secondary">
                     <span className="me-2">
                       <AiFillApi size={17} />
@@ -146,11 +147,19 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/addcoins" className="dropdown-item text-secondary">
+                    <span className="me-2">
+                      <FaBitcoin size={17} />
+                    </span>
+                    <span className="fs-14 fw-semibold">Add Coins</span>
+                  </Link>
+                </li>
+                <li>
                   <Link to="/controls" className="dropdown-item text-secondary">
                     <span className="me-2">
                       <AiFillControl size={17} />
                     </span>
-                    <span className="fs-14 fw-semibold">Controls</span>
+                    <span className="fs-14 fw-semibold">Admin Controls</span>
                   </Link>
                 </li>
                 <li className="pb-2">

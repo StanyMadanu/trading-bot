@@ -5,7 +5,7 @@ const Table = ({ data, thead }) => {
   return (
     <div className="table-responsive">
       <table className="table table-bordered">
-        <thead className="thead">
+        <thead className="thead primary-bg">
           <tr>
             {thead.map((head) => (
               <th>

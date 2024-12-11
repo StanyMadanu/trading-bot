@@ -22,7 +22,7 @@ const Controls = () => {
             controls
           </h4>
           <table className="table table-bordered text-center">
-            <thead className="thead">
+            <thead className="thead primary-bg">
               <tr>
                 <th>
                   <p className="mb-0 primary-color fs-14 text-capitalize">

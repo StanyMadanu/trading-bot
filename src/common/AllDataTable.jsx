@@ -6,7 +6,7 @@ const AllDataTable = ({ theadings, tdata }) => {
       <div className="card-body">
         <div className="table-responsive">
           <table className="table table-bordered">
-            <thead className="thead">
+            <thead className="thead primary-bg">
               <tr>
                 <th>
                   <p className="mb-0 primary-color fs-14">heading 1</p>

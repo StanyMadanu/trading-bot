@@ -106,14 +106,6 @@ const Header = () => {
                   </div>
                 </li>
                 <li className="pt-2">
-                  <Link to="/profile" className="dropdown-item text-secondary">
-                    <span className="me-2">
-                      <FaUser size={17} />
-                    </span>
-                    <span className="fs-14 fw-semibold">Profile</span>
-                  </Link>
-                </li>
-                <li>
                   <Link to="/api" className="dropdown-item text-secondary">
                     <span className="me-2">
                       <AiFillApi size={17} />
@@ -129,20 +121,12 @@ const Header = () => {
                     <span className="fs-14 fw-semibold">Add Coins</span>
                   </Link>
                 </li>
-                <li>
+                <li className="pb-2">
                   <Link to="/controls" className="dropdown-item text-secondary">
                     <span className="me-2">
                       <AiFillControl size={17} />
                     </span>
                     <span className="fs-14 fw-semibold">Admin Controls</span>
-                  </Link>
-                </li>
-                <li className="pb-2">
-                  <Link to="/settings" className="dropdown-item text-secondary">
-                    <span className="me-2">
-                      <RiSettings3Fill size={17} />
-                    </span>
-                    <span className="fs-14 fw-semibold">Settings</span>
                   </Link>
                 </li>
                 <li className="border-top text-center py-2">

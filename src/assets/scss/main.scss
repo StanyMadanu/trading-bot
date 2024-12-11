@@ -36,6 +36,16 @@ button {
   color: rgb(var(--primary-color));
 }
 
+.primary-bg {
+  background-color: rgb(var(--primary-color));
+
+  th {
+    p {
+      color: rgb(var(--fx-white)) !important;
+    }
+  }
+}
+
 .secondary-color {
   color: rgb(var(--secondary-color));
 }

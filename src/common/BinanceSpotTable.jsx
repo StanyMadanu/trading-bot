@@ -5,7 +5,7 @@ const BinanceSpotTable = ({ data }) => {
   return (
     <div className="table-responsive">
       <table className="table table-bordered">
-        <thead className="thead">
+        <thead className="thead primary-bg">
           <tr>
             <th>
               <p className="mb-0 primary-color fs-14">Symbole</p>

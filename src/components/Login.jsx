@@ -97,6 +97,7 @@ class Login extends Form {
             className="logoImg position-absolute"
             src={mainLogoLight}
             alt="7pools-logo"
+            width={150}
           />
         </div>
         <div className="row align-items-center justify-content-center">
@@ -119,10 +120,8 @@ class Login extends Form {
             <div className="d-flex flex-column align-items-center justify-content-center login-credentials-wrapper rounded px-4 px-lg-5 py-5">
               {this.state.isLogin ? (
                 <>
-                  <h4 className="mb-0 primary-color fw-bold">Welcome back</h4>
-                  <p className="mb-5 fs-13 text-muted">
-                    Please enter your details
-                  </p>
+                  <h4 className="mb-0 fw-bold">Welcome back</h4>
+                  <p className="mb-5 fs-13">Please enter your details</p>
                   <div className="inputGroup field mb-4">
                     <input
                       className="inputField px-2"
@@ -137,7 +136,9 @@ class Login extends Form {
                     <label htmlFor="userEmail" className="inputLabel">
                       Email
                     </label>
-                    <p className="fs-13 text-danger">{errors?.email}</p>
+                    <span className="mb-0 fs-13 text-danger">
+                      {errors?.email}
+                    </span>
                   </div>
 
                   <div className="inputGroup field mb-4">
@@ -154,7 +155,9 @@ class Login extends Form {
                     <label htmlFor="userPassword" className="inputLabel">
                       Password
                     </label>
-                    <p className="fs-13 text-danger">{errors?.password}</p>
+                    <span className="fs-13 text-danger">
+                      {errors?.password}
+                    </span>
                   </div>
                 </>
               ) : (

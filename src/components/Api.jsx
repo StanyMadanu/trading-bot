@@ -6,7 +6,7 @@ const Api = () => {
       <div className="card">
         <div className="card-body">
           <div className="container">
-            <h5 className="text-center text-uppercase fw-semibold mb-5 mt-3">
+            <h5 className="text-center text-uppercase fw-bold mb-5 mt-3 primary-color">
               api settings
             </h5>
             <div className="d-flex gap-2 flex-wrap">

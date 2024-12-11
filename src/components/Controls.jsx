@@ -18,9 +18,9 @@ const Controls = () => {
     <div className="card controls">
       <div className="card-body">
         <div className="container">
-          <h4 className="my-3 text-capitalize primary-color fw-bold">
-            controls
-          </h4>
+          <h5 className="my-4 text-capitalize primary-color fw-bold text-center">
+            admin controls
+          </h5>
           <table className="table table-bordered text-center">
             <thead className="thead primary-bg">
               <tr>

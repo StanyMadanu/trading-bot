@@ -21,7 +21,7 @@ const Header = () => {
   const navigate = useNavigate();
   const profile = useSelector((state) => state.getProfile); // Access Redux state
 
-  const {fetchKeys} = useFetchKeys();
+  const { fetchKeys } = useFetchKeys();
 
   // Theme Toggle Handler
   const handleTheme = () => {
@@ -29,7 +29,6 @@ const Header = () => {
   };
 
   // Fetch profile and API keys
- 
 
   useEffect(() => {
     fetchKeys();
@@ -45,14 +44,17 @@ const Header = () => {
   return (
     <div className="header p-2">
       <div className="card">
-        <div className="card-body">
+        <div className="card-body py-2 px-4">
           <div className="d-flex justify-content-between align-items-center flex-wrap">
             <div className="d-flex gap-5 flex-wrap">
               <div className="d-flex gap-3 align-items-center">
                 <Link to="/">
-                  <img src={mainLogo} alt="7pools-logo" />
+                  <img src={mainLogo} alt="7pools-logo" width={150} />
                 </Link>
-                <h5 className="mb-0 text-uppercase fw-bold d-flex align-items-center">
+                <h5
+                  className="mb-0 text-uppercase fw- d-flex align-items-center"
+                  style={{ fontWeight: "900" }}
+                >
                   trading bot
                 </h5>
               </div>
@@ -87,8 +89,13 @@ const Header = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <div className="profile-wrapper">
+                <div className="profile-wrapper me-2">
                   <img src={profileImg} alt="user-profile" />
+                </div>
+                {/* <span className="fs-13 text-muted fw-bold">Pavan Rebba</span> */}
+                <div className="me-2">
+                  <p className="mb-0 fs-14 fw-semibold">Pavan Rebba</p>
+                  <p className="mb-0 fs-13 text-secondary">info@example.com</p>
                 </div>
               </div>
               <ul className="dropdown-menu border-0 shadow-lg px-3">

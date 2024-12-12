@@ -13,7 +13,7 @@
   );
 
   .logoImg {
-    mix-blend-mode: color-burn;
+    // mix-blend-mode: color-burn;
     backdrop-filter: drop-shadow(3px 4px 6px white);
     transform: translateY(2rem);
   }
@@ -44,6 +44,7 @@
       rgba(28, 82, 109, 1) 0%,
       rgba(124, 219, 249, 1) 100%
     );
+    background: rgb(var(--fx-white));
 
     padding: 5rem 2rem !important;
     border-radius: 20px !important;

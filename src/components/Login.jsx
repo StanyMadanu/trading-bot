@@ -6,6 +6,9 @@ import { backEndCallObj, setLocalToken } from "../services/mainService";
 import { toast } from "react-toastify";
 import tradingBott from "../assets/images/tradingbott.webp";
 import mainLogoLight from "../assets/images/7pools-logo.png";
+import navyBlueIcon from "../assets/images/logos/navi-blue.png";
+import navyWhiteIcon from "../assets/images/logos/navi-white.png";
+import whiteIcon from "../assets/images/logos/logo-white.png";
 import { pushRoute } from "../services/pushRoute";
 
 class Login extends Form {
@@ -92,12 +95,12 @@ class Login extends Form {
     // console.log(this.state);
     return (
       <div className="login">
-        <div className="d-flex justify-content-end pe-5 position-relative">
+        <div className="d-flex justify-content-center pe-5 position-relative">
           <img
             className="logoImg position-absolute"
-            src={mainLogoLight}
+            src={whiteIcon}
             alt="7pools-logo"
-            width={150}
+            width={200}
           />
         </div>
         <div className="row align-items-center justify-content-center">

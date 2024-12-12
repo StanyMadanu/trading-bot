@@ -3,14 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import useFetchKeys from "./CotextTest";
 
 const BitgetFutureTable = ({ data }) => {
+  const { getCoinicons, getFormattedDate } = useFetchKeys();
 
-  const { getCoinicons , getFormattedDate } = useFetchKeys();
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="table-responsive">
-      <table className="table table-bordered">
+      <table className="table table-bordered text-center">
         <thead className="thead primary-bg">
           <tr>
             <th>
@@ -20,7 +19,7 @@ const BitgetFutureTable = ({ data }) => {
               <p className="mb-0 primary-color fs-14">Price</p>
             </th>
             <th>
-              <p className="mb-0 primary-color fs-14">OrgQty</p>
+              <p className="mb-0 primary-color fs-14">Org Qty</p>
             </th>
           </tr>
         </thead>
@@ -41,9 +40,7 @@ const BitgetFutureTable = ({ data }) => {
                       <p className="mb-0 fs-13 fw-semibold">
                         {data?.symbol || "NA"}
                       </p>
-                      <p>
-                        {getFormattedDate(data.updateTime)}
-                      </p>
+                      <p>{getFormattedDate(data.updateTime)}</p>
                     </td>
                   </div>
                 </td>
@@ -69,7 +66,13 @@ const BitgetFutureTable = ({ data }) => {
 
           <tr>
             <td colSpan={3} className="text-center">
-            <div onClick={()=>{navigate('/allDataTable' , { state: { reduxName: "bitgetFuture" , type: "FUTURES" } })}}>
+              <div
+                onClick={() => {
+                  navigate("/allDataTable", {
+                    state: { reduxName: "bitgetFuture", type: "FUTURES" },
+                  });
+                }}
+              >
                 <button className="py-1">view all</button>
               </div>
             </td>

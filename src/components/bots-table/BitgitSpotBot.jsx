@@ -114,7 +114,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Enable
+          enable bot
         </button>
       );
       break;
@@ -122,12 +122,12 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
     case "ACTIVE":
       button = (
         <button
-          className="text-uppercase btn theme-btn  btn-danger"
+          className="text-uppercase theme-btn btn-danger"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Disable
+          disable bot
         </button>
       );
       break;
@@ -136,7 +136,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
       api_keys?.[formData.platform]?.api_key
         ? (button = (
             <button
-              className="theme-btn text-uppercase btn btn-success"
+              className="theme-btn text-uppercase"
               type="button"
               data-bs-toggle="modal"
               data-bs-target="#addbot"
@@ -146,7 +146,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
           ))
         : (button = (
             <button
-              className="theme-btn text-uppercase btn btn-success"
+              className="theme-btn text-uppercase"
               type="button"
               onClick={() =>
                 navigate("/api", { state: { platform: formData.platform } })

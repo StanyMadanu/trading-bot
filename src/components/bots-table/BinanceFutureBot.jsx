@@ -12,7 +12,9 @@ import { useNavigate } from "react-router-dom";
 
 // Lazy load components
 const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
-const EditInvestment = React.lazy(() => import("../models/EditInvestmentModel"));
+const EditInvestment = React.lazy(() =>
+  import("../models/EditInvestmentModel")
+);
 const AddBot = React.lazy(() => import("../models/AddBotModal"));
 
 const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
@@ -47,7 +49,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const modelRef = useRef(null);
 
   useEffect(() => {
-    if ((bots?.[formData?.platform]) && api_keys?.[formData?.platform]) {
+    if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
       fetchData();
     }
   }, [dispatch, bots]);
@@ -74,7 +76,8 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     try {
       setBtnDisable(true);
       const response = await backEndCallObj(
-        "/admin/change_bot_status", formattedData
+        "/admin/change_bot_status",
+        formattedData
       );
       toast.success(response?.success);
       fetchKeys();
@@ -91,8 +94,6 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     if (modalInstance) modalInstance.hide();
   };
 
-
-
   const theadData = ["Symbol", "Price", "Org Qty"];
 
   let button;
@@ -105,20 +106,20 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Enable
+          enable bot
         </button>
       );
       break;
 
-    case 'ACTIVE':
+    case "ACTIVE":
       button = (
         <button
-          className="text-uppercase btn theme-btn  btn-danger"
+          className="text-uppercase theme-btn"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Disable
+          disable bot
         </button>
       );
       break;
@@ -126,12 +127,11 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     default:
       button = api_keys?.[formData.platform]?.api_key ? (
         <button
-          className="theme-btn text-uppercase btn btn-success"
+          className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#addbot"
           onClick={() => {
-
             setDataModala((prev) => !prev); // Properly toggle state
           }}
         >
@@ -139,9 +139,11 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
         </button>
       ) : (
         <button
-          className="theme-btn text-uppercase btn btn-success"
+          className="theme-btn text-uppercase"
           type="button"
-          onClick={() => navigate('/api', { state: { platform: formData.platform } })}
+          onClick={() =>
+            navigate("/api", { state: { platform: formData.platform } })
+          }
         >
           Add Bot
         </button>
@@ -153,20 +155,29 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     <Suspense fallback={<div>Loading...</div>}>
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
         {/* UI Content */}
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2" data-bs-toggle="modal"
-          data-bs-target="#editInvest">
+        <div
+          className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
+          data-bs-toggle="modal"
+          data-bs-target="#editInvest"
+        >
           <h6 className="mb-0 fw-bold">0</h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">capital assigned</p>
+          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+            capital assigned
+          </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
           <h6 className="mb-0 fw-bold">
             {parseFloat(usdt_balance?.balance || "0").toFixed(2) || "0"}
           </h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">current balance</p>
+          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+            current balance
+          </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
           <h6 className="mb-0 status-percent fw-bold py-0 px-2">+ 10%</h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">% change</p>
+          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+            % change
+          </p>
         </div>
         <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
           {button}
@@ -174,18 +185,25 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       </div>
 
       {/* Lazy-loaded Modals */}
-      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
-      <EditInvestment botType={formData.bot}
+      <ConfirmPopup
+        label="Bot Status"
+        msg={`${botStatus} bot`}
+        botStatus={botStatus}
+        toggleBotStatus={toggleBotStatus}
+        modelRef={modelRef}
+        btnDisable={btnDisable}
+      />
+      <EditInvestment
+        botType={formData.bot}
         onSuccess={() => {
           console.log("Investment Updated Successfully!");
           // Optional logic: Close modal, refresh data, etc.
-        }} />
+        }}
+      />
 
-      {
-        datamodal && (
-          <AddBot platform={formData.platform} botType={formData.bot} />
-        )
-      }
+      {datamodal && (
+        <AddBot platform={formData.platform} botType={formData.bot} />
+      )}
       {/* Table Component */}
       <Table data={open_trades} thead={theadData} />
     </Suspense>

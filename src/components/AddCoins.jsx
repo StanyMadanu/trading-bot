@@ -25,15 +25,24 @@ class AddCoins extends Form {
       coin_id: "",
       platform: "",
       bot: "",
-    }
+    },
   };
 
   schema = {
     pair: Joi.string().uppercase().required().label("Pair"),
-    price_precision: Joi.number().positive().required().label("Price Precision"),
-    quantity_precision: Joi.number().positive().required().label("Quantity Precision"),
+    price_precision: Joi.number()
+      .positive()
+      .required()
+      .label("Price Precision"),
+    quantity_precision: Joi.number()
+      .positive()
+      .required()
+      .label("Quantity Precision"),
     target_percent: Joi.number().positive().required().label("Target Percent"),
-    platform: Joi.string().valid("BINANCE", "BITGET").required().label("Platform"),
+    platform: Joi.string()
+      .valid("BINANCE", "BITGET")
+      .required()
+      .label("Platform"),
     bot: Joi.string().valid("AMM", "FUTURES").required().label("Bot"),
     divisible: Joi.number().positive().optional(),
     TradeAmount: Joi.number().optional(),
@@ -66,8 +75,6 @@ class AddCoins extends Form {
     }
   };
 
-
-
   handleDeleteCoins = async () => {
     this.setState({ btnDisable: true });
     try {
@@ -87,10 +94,8 @@ class AddCoins extends Form {
       toast.error(error?.response?.data);
     } finally {
       this.setState({ btnDisable: false });
-
     }
   };
-
 
   render() {
     const { coinLists, coinDelate } = this.state;
@@ -108,7 +113,7 @@ class AddCoins extends Form {
       "bot",
       "action",
     ];
-    console.log(this.state.data)
+    console.log(this.state.data);
 
     return (
       <div className="card">
@@ -121,7 +126,7 @@ class AddCoins extends Form {
             {/* Add Coin Button */}
             <div className="text-end my-3">
               <button
-                className="py-2 rounded-pill text-capitalize secondary-bg"
+                className="py-2 rounded text-capitalize primary-bg fs-13"
                 type="button"
                 data-bs-toggle="modal"
                 data-bs-target="#addCoinModal"
@@ -144,28 +149,31 @@ class AddCoins extends Form {
                     ))}
                   </tr>
                 </thead>
-                <tbody className="tbody text-center">
+                <tbody className="tbody text-center fs-13">
                   {coinLists?.length > 0 ? (
                     coinLists.map((item, index) => (
                       <tr key={index}>
                         <td>{item.pair}</td>
-                        <td>{item.coin_id}</td>
+                        <td className="primary-color fw-semibold">
+                          {item.coin_id}
+                        </td>
                         <td
-                          className={`text-uppercase ${item.status === "ACTIVE"
-                            ? "text-success"
-                            : "text-danger"
-                            }`}
+                          className={`text-uppercase fw-semibold ${
+                            item.status === "ACTIVE"
+                              ? "text-success"
+                              : "text-danger"
+                          }`}
                         >
                           {item.status}
                         </td>
                         <td>{item.price_precision}</td>
                         <td>{item.quantity_precision}</td>
                         <td>{item.target_percent}%</td>
-                        <td>{item.platform}</td>
-                        <td>{item.bot}</td>
+                        <td className="fw-semibold">{item.platform}</td>
+                        <td className="fw-semibold">{item.bot}</td>
                         <td>
                           <span
-                            className="text-info me-3 cursor-pointer"
+                            className="primary-color me-3 cursor-pointer"
                             data-bs-toggle="modal"
                             data-bs-target="#updateCoinModal"
                           >
@@ -175,14 +183,15 @@ class AddCoins extends Form {
                             className="text-danger cursor-pointer"
                             data-bs-toggle="modal"
                             data-bs-target="#confirmDelete"
-                            onClick={() => this.setState({
-                              coinDelate: {
-                                coin_id: item.coin_id,
-                                platform: item.platform,
-                                bot: item.bot,
-                              }
-
-                            })}
+                            onClick={() =>
+                              this.setState({
+                                coinDelate: {
+                                  coin_id: item.coin_id,
+                                  platform: item.platform,
+                                  bot: item.bot,
+                                },
+                              })
+                            }
                           >
                             <MdDelete size={18} />
                           </span>
@@ -201,7 +210,10 @@ class AddCoins extends Form {
         </div>
 
         {/* Modals */}
-        <ConfirmPopup toggleBotStatus={this.handleDeleteCoins} botStatus="delete" />
+        <ConfirmPopup
+          toggleBotStatus={this.handleDeleteCoins}
+          botStatus="delete"
+        />
         <UpdateCoins />
 
         {/* Add Coin Modal */}
@@ -215,7 +227,10 @@ class AddCoins extends Form {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title primary-color" id="addCoinModalLabel">
+                <h5
+                  className="modal-title primary-color"
+                  id="addCoinModalLabel"
+                >
                   Add Coin
                 </h5>
                 <button
@@ -225,7 +240,7 @@ class AddCoins extends Form {
                   aria-label="Close"
                 ></button>
               </div>
-              <div className="modal-body">
+              <div className="modal-body px-4">
                 <form onSubmit={this.handleSubmit}>
                   <div className="row">
                     {[
@@ -236,7 +251,7 @@ class AddCoins extends Form {
                       { label: "divisible", id: "divisible" },
                       { label: "Trade Amount", id: "TradeAmount" },
                     ].map((field) => (
-                      <div key={field.id} className="col-md-6 mb-3">
+                      <div key={field.id} className="col-md-6 mb-4">
                         <label className="form-label">{field.label}</label>
                         <input
                           type="text"
@@ -255,13 +270,13 @@ class AddCoins extends Form {
                     ))}
 
                     {/* Platform Select */}
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-6 mb-4">
                       <label className="form-label">Platform</label>
                       <select
                         name="platform"
                         value={this.state.data.platform}
                         onChange={this.handleChange}
-                        className="form-control"
+                        className="form-select"
                       >
                         <option value="BINANCE">BINANCE</option>
                         <option value="BITGET">BITGET</option>
@@ -274,13 +289,13 @@ class AddCoins extends Form {
                     </div>
 
                     {/* Bot Select */}
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-6 mb-4">
                       <label className="form-label">Bot</label>
                       <select
                         name="bot"
                         value={this.state.data.bot}
                         onChange={this.handleChange}
-                        className="form-control"
+                        className="form-select"
                       >
                         <option value="AMM">AMM</option>
                         <option value="FUTURES">FUTURES</option>
@@ -292,16 +307,18 @@ class AddCoins extends Form {
                       )}
                     </div>
                   </div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={this.state.btnDisable}
-                  >
-                    {this.state.btnDisable ? "Submitting..." : "Submit"}
-                  </button>
+                  <div className="text-end my-4 ">
+                    <button
+                      type="submit"
+                      className="px-3 py-2 rounded"
+                      disabled={this.state.btnDisable}
+                    >
+                      {this.state.btnDisable ? "Submitting..." : "Submit"}
+                    </button>
+                  </div>
                 </form>
               </div>
-              <div className="modal-footer">
+              {/* <div className="modal-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"
@@ -309,7 +326,7 @@ class AddCoins extends Form {
                 >
                   Close
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

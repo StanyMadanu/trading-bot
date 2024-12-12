@@ -1,8 +1,8 @@
-import React from 'react';
-import { backEndCallObj } from '../services/mainService';
-import Form from '../basic/form'; // Import the base class
-import Joi from 'joi-browser';
-import toast from 'react-hot-toast';
+import React from "react";
+import { backEndCallObj } from "../services/mainService";
+import Form from "../basic/form"; // Import the base class
+import Joi from "joi-browser";
+import toast from "react-hot-toast";
 
 class DisableAllCoins extends Form {
   constructor(props) {
@@ -10,9 +10,9 @@ class DisableAllCoins extends Form {
     // Initialize form data and schema for this specific component
     this.state = {
       data: {
-        platform: '',
-        bot: '',
-        status:'',
+        platform: "",
+        bot: "",
+        status: "",
       },
       errors: {},
       btnDisable: false,
@@ -21,7 +21,7 @@ class DisableAllCoins extends Form {
     this.schema = {
       platform: Joi.string().valid("BINANCE", "BITGET").required(),
       bot: Joi.string().valid("AMM", "FUTURES").required(),
-      status : Joi.string().valid("ACTIVE", "INACTIVE").required(),
+      status: Joi.string().valid("ACTIVE", "INACTIVE").required(),
     };
   }
 
@@ -30,7 +30,7 @@ class DisableAllCoins extends Form {
     e.preventDefault();
     const { data } = this.state;
 
-    console.log(data)
+    console.log(data);
 
     this.setState({ btnDisable: true });
     try {
@@ -39,19 +39,17 @@ class DisableAllCoins extends Form {
         toast.success(response.success);
       }
     } catch (error) {
-      toast.error(error.message || 'Error occurred while disabling coins.');
+      toast.error(error.message || "Error occurred while disabling coins.");
     } finally {
       this.setState({ btnDisable: false });
     }
   };
 
-
-
   // Helper Functions for Rendering
   renderSelect = (label, name, options) => {
     const { data, errors } = this.state;
     return (
-      <div>
+      <div className="mb-3">
         <label className="form-label">{label}</label>
         <select
           className="form-control"
@@ -73,55 +71,47 @@ class DisableAllCoins extends Form {
   renderButton = (label, className) => {
     const { btnDisable } = this.state;
     return (
-      <button className={className} disabled={btnDisable}>
-        {label}
-      </button>
+      <div className="text-end">
+        <button className={className} disabled={btnDisable}>
+          {label}
+        </button>
+      </div>
     );
   };
 
   render() {
     const { btnDisable } = this.state;
     return (
-      <div className="card">
-        <div className="card-header text-center">
-          <p className="mb-0 fw-bold fs-20">Disable all coins</p>
+      <div className="card shadow-sm border-0">
+        <div className="card-header text-center primary-bg">
+          <p className="mb-0 fw-bold fs-15 text-capitalize">
+            Disable all coins
+          </p>
         </div>
-        <div className="card-body">
+        <div className="card-body px-4">
           <form className="form" onSubmit={this.handleSubmit}>
             <div className="text-start mb-4">
-              {this.renderSelect(
-                "Platform",
-                "platform",
-                [
-                  { id: "selectoption", value: "", label: "-- Select --" },
-                  { id: "binance", value: "BINANCE", label: "Binance" },
-                  { id: "bitget", value: "BITGET", label: "Bitget" }
-                ]
-              )}
+              {this.renderSelect("Platform", "platform", [
+                { id: "selectoption", value: "", label: "-- Select --" },
+                { id: "binance", value: "BINANCE", label: "Binance" },
+                { id: "bitget", value: "BITGET", label: "Bitget" },
+              ])}
             </div>
             <div className="text-start mb-4">
-              {this.renderSelect(
-                "Bot",
-                "bot",
-                [
-                  { id: "selectoption", value: "", label: "-- Select --" },
-                  { id: "amm", value: "AMM", label: "AMM" },
-                  { id: "futures", value: "FUTURES", label: "Futures" }
-                ]
-              )}
+              {this.renderSelect("Bot", "bot", [
+                { id: "selectoption", value: "", label: "-- Select --" },
+                { id: "amm", value: "AMM", label: "AMM" },
+                { id: "futures", value: "FUTURES", label: "Futures" },
+              ])}
             </div>
             <div className="text-start mb-4">
-              {this.renderSelect(
-                "Status",
-                "status",
-                [
-                  { id: "selectoption", value: "", label: "-- Select --" },
-                  { id: "active", value: "ACTIVE", label: "ACTIVE" },
-                  { id: "inactive", value: "INACTIVE", label: "INACTIVE" }
-                ]
-              )}
+              {this.renderSelect("Status", "status", [
+                { id: "selectoption", value: "", label: "-- Select --" },
+                { id: "active", value: "ACTIVE", label: "ACTIVE" },
+                { id: "inactive", value: "INACTIVE", label: "INACTIVE" },
+              ])}
             </div>
-            {this.renderButton("Disable", "text-uppercase btn btn-primary mt-3")}
+            {this.renderButton("Disable", "mt-3 px-3 py-2 rounded")}
           </form>
         </div>
       </div>

@@ -121,7 +121,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Enable
+          enable bot
         </button>
       );
       break;
@@ -129,12 +129,12 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     case "ACTIVE":
       button = (
         <button
-          className="text-uppercase btn theme-btn  btn-danger"
+          className="text-uppercase theme-btn"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Disable
+          disable bot
         </button>
       );
       break;
@@ -143,7 +143,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
       api_keys?.[formData.platform]?.api_key
         ? (button = (
             <button
-              className="theme-btn text-uppercase btn btn-success"
+              className="theme-btn text-uppercase"
               type="button"
               data-bs-toggle="modal"
               data-bs-target="#addbot"
@@ -153,7 +153,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
           ))
         : (button = (
             <button
-              className="theme-btn text-uppercase btn btn-success"
+              className="theme-btn text-uppercase"
               type="button"
               onClick={() =>
                 navigate("/api", { state: { platform: formData.platform } })

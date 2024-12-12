@@ -8,38 +8,49 @@ const AllDataTable = () => {
   const location = useLocation();
   const { reduxName, type } = location.state || {};
 
-  const { getCoinicons , getFormattedDate } = useFetchKeys();
+  const { getCoinicons, getFormattedDate } = useFetchKeys();
 
   // Access Redux state
   const getRedux = useSelector((state) => state?.[reduxName]);
 
- 
   return (
     <div className="card">
       <div className="card-body">
         <div className="table-responsive">
           {type === "FUTURES" ? (
             // Render Table for FUTURES Type
-            <table className="table table-bordered">
+            <table className="table table-bordered text-center">
               <thead className="thead primary-bg">
                 <tr>
                   <th>
-                    <p className="mb-0 primary-color fs-14">Symbol</p>
+                    <p className="mb-0 primary-color fs-14 text-center">
+                      Symbol
+                    </p>
                   </th>
                   <th>
-                    <p className="mb-0 primary-color fs-14">Volume</p>
+                    <p className="mb-0 primary-color fs-14 text-center">
+                      Volume
+                    </p>
                   </th>
                   <th>
-                    <p className="mb-0 primary-color fs-14">Profit</p>
+                    <p className="mb-0 primary-color fs-14 text-center">
+                      Profit
+                    </p>
                   </th>
                   <th>
-                    <p className="mb-0 primary-color fs-14">Entry Price</p>
+                    <p className="mb-0 primary-color fs-14 text-center">
+                      Entry Price
+                    </p>
                   </th>
                   <th>
-                    <p className="mb-0 primary-color fs-14">Current Price</p>
+                    <p className="mb-0 primary-color fs-14 text-center">
+                      Current Price
+                    </p>
                   </th>
                   <th>
-                    <p className="mb-0 primary-color fs-14">Target</p>
+                    <p className="mb-0 primary-color fs-14 text-center">
+                      Target
+                    </p>
                   </th>
                 </tr>
               </thead>
@@ -57,9 +68,7 @@ const AllDataTable = () => {
                         <p className="mb-0 fs-13 fw-semibold">
                           {row?.symbol || "NA"}
                         </p>
-                        <p>
-                          {getFormattedDate(row.updateTime)}
-                        </p>
+                        <p>{getFormattedDate(row.updateTime)}</p>
                       </td>
                       <td>
                         <p className="mb-0 fs-13 fw-semibold">
@@ -99,20 +108,20 @@ const AllDataTable = () => {
             </table>
           ) : type === "AMM" ? (
             // Render Table for AMM Type
-            <table className="table table-bordered">
+            <table className="table table-bordered text-center">
               <thead className="thead primary-bg">
                 <tr>
                   <th>
                     <p className="mb-0 primary-color fs-14">Symbol</p>
                   </th>
                   <th>
-                    <p className="mb-0 primary-color fs-14">OrderId</p>
+                    <p className="mb-0 primary-color fs-14">Order ID</p>
                   </th>
                   <th>
                     <p className="mb-0 primary-color fs-14">Price</p>
                   </th>
                   <th>
-                    <p className="mb-0 primary-color fs-14">OrigQty</p>
+                    <p className="mb-0 primary-color fs-14">Org Qty</p>
                   </th>
                   <th>
                     <p className="mb-0 primary-color fs-14">Side</p>
@@ -142,9 +151,7 @@ const AllDataTable = () => {
                               <p className="mb-0 fs-13 fw-semibold">
                                 {item?.symbol || "NA"}
                               </p>
-                              <p>
-                                {getFormattedDate(item.updateTime)}
-                              </p>
+                              <p>{getFormattedDate(item.updateTime)}</p>
                             </td>
                           </div>
                         </div>
@@ -164,8 +171,9 @@ const AllDataTable = () => {
                       </td>
                       <td>
                         <p
-                          className={`mb-0 fs-13 fw-semibold ${item.side === "BUY" ? "text-success" : "text-danger"
-                            }`}
+                          className={`mb-0 fs-13 fw-semibold ${
+                            item.side === "BUY" ? "text-success" : "text-danger"
+                          }`}
                         >
                           {item.side}
                         </p>

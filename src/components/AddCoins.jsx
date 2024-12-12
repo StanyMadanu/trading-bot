@@ -119,10 +119,6 @@ class AddCoins extends Form {
       <div className="card">
         <div className="card-body">
           <div className="container">
-            <h5 className="text-center my-3 fw-bold primary-color text-capitalize">
-              Add Coins Table
-            </h5>
-
             {/* Add Coin Button */}
             <div className="text-end my-3">
               <button
@@ -134,6 +130,10 @@ class AddCoins extends Form {
                 Add Coin
               </button>
             </div>
+
+            <h5 className="text-center my-3 fw-bold primary-color text-capitalize text-decoration-underline">
+              Add Coins Table
+            </h5>
 
             {/* Table */}
             <div className="table-responsive">

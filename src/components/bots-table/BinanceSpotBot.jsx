@@ -15,8 +15,6 @@ import { useNavigate } from "react-router-dom";
 import EditInvestment from "../models/EditInvestmentModel";
 import EditBinanceSpotModal from "../models/EditBinanceSpot";
 
-
-
 const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   const [formData] = useState({
     platform: "BINANCE",
@@ -26,7 +24,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   const [data, setData] = useState({
     platform: "BINANCE",
     botType: "AMM",
-    total_investment: '',
+    total_investment: "",
   });
 
   const [botStatus, setBotStatus] = useState("ADD");
@@ -62,8 +60,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   };
 
   useEffect(() => {
-
-    if ((bots?.[formData?.platform]) && api_keys?.[formData?.platform]) {
+    if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
       fetchData();
     }
   }, [dispatch, bots]);
@@ -166,34 +163,37 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     default:
       api_keys?.[formData.platform]?.api_key
         ? (button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#binanceBot"
-          >
-            Add Bot
-          </button>
-        ))
+            <button
+              className="theme-btn text-uppercase"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#binanceBot"
+            >
+              Add Bot
+            </button>
+          ))
         : (button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            onClick={() =>
-              navigate("/api", { state: { platform: formData.platform } })
-            }
-          >
-            Add Bot
-          </button>
-        ));
+            <button
+              className="theme-btn text-uppercase"
+              type="button"
+              onClick={() =>
+                navigate("/api", { state: { platform: formData.platform } })
+              }
+            >
+              Add Bot
+            </button>
+          ));
       break;
   }
 
   return (
     <>
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2" data-bs-toggle="modal"
-          data-bs-target="#editBinanceSpotModal">
+        <div
+          className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
+          data-bs-toggle="modal"
+          data-bs-target="#editBinanceSpotModal"
+        >
           <h6 className="mb-0 fw-bold">0</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             capital assigned
@@ -219,7 +219,14 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       </div>
       <BinanceSpotTable data={open_trades} tdata={theadData} />
 
-      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+      <ConfirmPopup
+        label="Bot Status"
+        msg={`${botStatus} bot`}
+        botStatus={botStatus}
+        toggleBotStatus={toggleBotStatus}
+        modelRef={modelRef}
+        btnDisable={btnDisable}
+      />
       {/* <EditInvestment botType={formData.bot}
       platform={formData.platform}
         onSuccess={() => {
@@ -227,13 +234,18 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
           // Optional logic: Close modal, refresh data, etc.
         }} /> */}
 
-        <EditBinanceSpotModal  botType={formData.bot} platform={formData.platform} />
+      <EditBinanceSpotModal
+        botType={formData.bot}
+        platform={formData.platform}
+      />
 
       <div className="modal fade" id="binanceBot">
         <div className="modal-dialog text-dark">
           <div className="modal-content">
             <div className="modal-header">
-              <h4 className="modal-title">Add Bot Configuration</h4>
+              <h5 className="modal-title primary-color text-capitalize">
+                Add Bot Configuration
+              </h5>
               <button
                 type="button"
                 className="btn-close"
@@ -241,47 +253,64 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
               ></button>
             </div>
             <div className="modal-body">
-              <form onSubmit={(e) => { submitBot(data); e.preventDefault(); }}>
-                <input
-                  type="text"
-                  id="platform"
-                  name="platform"
-                  placeholder="Platform"
-                  value={data.platform}
-                  readOnly
-                />
-                <input
-                  type="text"
-                  id="botType"
-                  name="botType"
-                  placeholder="Bot Type"
-                  value={data.botType}
-                  readOnly
-                />
-                <div className="mt-3">
+              <form
+                onSubmit={(e) => {
+                  submitBot(data);
+                  e.preventDefault();
+                }}
+              >
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="platform"
+                    name="platform"
+                    placeholder="Platform"
+                    value={data.platform}
+                    readOnly
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="botType"
+                    name="botType"
+                    placeholder="Bot Type"
+                    value={data.botType}
+                    readOnly
+                  />
+                </div>
+
+                <div className="mb-3">
                   <input
                     type="number"
+                    className="form-control"
                     id="total_investment"
                     name="total_investment"
                     placeholder="Total Investment"
                     value={data.total_investment}
-                    onChange={(e) => setData({ ...data, total_investment: e.target.value })}
+                    onChange={(e) =>
+                      setData({ ...data, total_investment: e.target.value })
+                    }
                     required
                   />
                 </div>
-                <button
-                  className="btn btn-secondary sign mt-3"
-                  type="submit"
-                  disabled={btnDisable}
-                >
-                  Submit
-                </button>
+                <div className="text-end mx-2">
+                  <button
+                    className="sign mt-3"
+                    type="submit"
+                    disabled={btnDisable}
+                  >
+                    Submit
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </div>
       </div>
-
     </>
   );
 };

@@ -57,14 +57,16 @@ const Header = () => {
                 <Link to="/dashboard">
                   <img src={mainLogo} alt="7pools-logo" width={150} />
                 </Link>
-                <h5
+                {/* <h5
                   className="mb-0 text-uppercase fw- d-flex align-items-center"
                   style={{ fontWeight: "900" }}
                 >
                   trading bot
-                </h5>
+                </h5> */}
               </div>
+            </div>
 
+            <div className="ms-auto d-flex gap-5 align-items-center">
               <div>
                 <h6 className="text-capitalize primary-color">bot status</h6>
                 <div className="d-flex align-items-center gap-2">
@@ -86,51 +88,54 @@ const Header = () => {
                   ></progress>
                 </div>
               </div>
-            </div>
 
-            <div className="dropdown ms-auto border-0">
-              <div
-                className="dropdown-toggle d-flex align-items-center justify-content-end"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <div className="profile-wrapper me-2">
-                  <img src={profileImg} alt="user-profile" />
-                </div>
-                {/* <span className="fs-13 text-muted fw-bold">Pavan Rebba</span> */}
-                <div className="me-2">
-                  <p className="mb-0 fs-14 fw-semibold">Pavan Rebba</p>
-                  <p className="mb-0 fs-13 text-secondary">info@example.com</p>
-                </div>
-              </div>
-              <ul className="dropdown-menu border-0 shadow-lg px-3">
-                <li>
-                  <div className="d-flex gap-2 px-3 border-bottom py-2">
-                    <div className="profile-wrapper">
-                      <img src={profileImg} alt="user-profile" />
-                    </div>
-                    <div>
-                      <p className="mb-0 fs-14 fw-semibold">Pavan Rebba</p>
-                      <p className="mb-0 fs-13 text-secondary">
-                        info@example.com
-                      </p>
-                    </div>
+              <div className="dropdown border-0">
+                <div
+                  className="dropdown-toggle d-flex align-items-center justify-content-end"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <div className="profile-wrapper me-2">
+                    <img src={profileImg} alt="user-profile" />
                   </div>
-                </li>
-                <li className="pt-2">
-                  <Link to="/api" className="dropdown-item text-secondary">
-                    <span className="me-2">
-                      <AiFillApi size={17} />
-                    </span>
-                    <span className="fs-14 fw-semibold">API</span>
-                  </Link>
-                </li>
-                {
-                  currentUser.user_type === 'ADMIN' ? (
+                  {/* <span className="fs-13 text-muted fw-bold">Pavan Rebba</span> */}
+                  <div className="me-2">
+                    <p className="mb-0 fs-14 fw-semibold">Pavan Rebba</p>
+                    <p className="mb-0 fs-13 text-secondary">
+                      info@example.com
+                    </p>
+                  </div>
+                </div>
+                <ul className="dropdown-menu border-0 shadow-lg px-3">
+                  <li>
+                    <div className="d-flex gap-2 px-3 border-bottom py-2">
+                      <div className="profile-wrapper">
+                        <img src={profileImg} alt="user-profile" />
+                      </div>
+                      <div>
+                        <p className="mb-0 fs-14 fw-semibold">Pavan Rebba</p>
+                        <p className="mb-0 fs-13 text-secondary">
+                          info@example.com
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="pt-2">
+                    <Link to="/api" className="dropdown-item text-secondary">
+                      <span className="me-2">
+                        <AiFillApi size={17} />
+                      </span>
+                      <span className="fs-14 fw-semibold">API</span>
+                    </Link>
+                  </li>
+                  {currentUser.user_type === "ADMIN" ? (
                     <>
                       <li>
-                        <Link to="/addcoins" className="dropdown-item text-secondary">
+                        <Link
+                          to="/addcoins"
+                          className="dropdown-item text-secondary"
+                        >
                           <span className="me-2">
                             <FaBitcoin size={17} />
                           </span>
@@ -138,45 +143,55 @@ const Header = () => {
                         </Link>
                       </li>
                       <li className="pb-2">
-                        <Link to="/controls" className="dropdown-item text-secondary">
+                        <Link
+                          to="/controls"
+                          className="dropdown-item text-secondary"
+                        >
                           <span className="me-2">
                             <AiFillControl size={17} />
                           </span>
-                          <span className="fs-14 fw-semibold">Admin Controls</span>
+                          <span className="fs-14 fw-semibold">
+                            Admin Controls
+                          </span>
                         </Link>
                       </li>
                     </>
-                  ) : ""
-                }
+                  ) : (
+                    ""
+                  )}
 
-                <li className="text-center py-2">
-                  <Link to="/makeadmin" className="dropdown-item text-secondary">
-                    <span className="me-2">
-                      <FaPowerOff size={15} />
-                    </span>
-                    <span className="fs-14 fw-semibold">Make User/Admin</span>a
-                  </Link>
-                </li>
+                  <li className="text-center py-2">
+                    <Link
+                      to="/makeadmin"
+                      className="dropdown-item text-secondary"
+                    >
+                      <span className="me-2">
+                        <FaPowerOff size={15} />
+                      </span>
+                      <span className="fs-14 fw-semibold">Make User/Admin</span>
+                      a
+                    </Link>
+                  </li>
 
-
-                <li className="border-top text-center py-2">
-                  <Link to="/" className="dropdown-item text-secondary">
-                    <span className="me-2">
-                      <FaPowerOff size={15} />
-                    </span>
-                    <span className="fs-14 fw-semibold">Logout</span>
-                  </Link>
-                </li>
-                <li>
-                  <div className="d-flex gap-1 align-items-center justify-content-center py-2">
-                    <span className="fs-13 text-muted">Theme</span>
-                    <div
-                      className="theme-toggle rounded-circle"
-                      onClick={handleTheme}
-                    ></div>
-                  </div>
-                </li>
-              </ul>
+                  <li className="border-top text-center py-2">
+                    <Link to="/" className="dropdown-item text-secondary">
+                      <span className="me-2">
+                        <FaPowerOff size={15} />
+                      </span>
+                      <span className="fs-14 fw-semibold">Logout</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <div className="d-flex gap-1 align-items-center justify-content-center py-2">
+                      <span className="fs-13 text-muted">Theme</span>
+                      <div
+                        className="theme-toggle rounded-circle"
+                        onClick={handleTheme}
+                      ></div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

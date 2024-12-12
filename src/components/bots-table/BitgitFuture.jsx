@@ -12,8 +12,9 @@ import { useNavigate } from "react-router-dom";
 import EditBitgetFuture from "../models/EditBitgetFutures";
 // Lazy load components
 const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
-const EditInvestment = React.lazy(() => import("../models/EditInvestmentModel"));
-
+const EditInvestment = React.lazy(() =>
+  import("../models/EditInvestmentModel")
+);
 
 const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   const [formData] = useState({
@@ -24,20 +25,18 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   const [data, setData] = useState({
     platform: "BITGET",
     botType: "FUTURES",
-    total_investment: '',
+    total_investment: "",
   });
 
   const [btnDisable, setBtnDisable] = useState(false);
   const [botStatus, setBotStatus] = useState("ADD");
   const [datamodal, setDataModala] = useState(false);
 
-
   const navigate = useNavigate();
 
   const { fetchKeys } = useFetchKeys();
 
   const { bots, api_keys } = getProfile?.profile || {};
-
 
   const { open_trades, usdt_balance } = bitgetFuture || {};
 
@@ -57,9 +56,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   };
 
   useEffect(() => {
-
-
-    if ((bots?.[formData?.platform]) && api_keys?.[formData?.platform]) {
+    if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
       fetchData();
     }
   }, [dispatch, bots]);
@@ -86,9 +83,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     const formattedData = {
       ...formData,
       status:
-        bots?.BITGET?.FUTURES?.status === "INACTIVE"
-          ? "ACTIVE"
-          : "INACTIVE",
+        bots?.BITGET?.FUTURES?.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
     };
 
     // console.log(formattedData)
@@ -134,7 +129,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
 
   let button;
   switch (bots?.BITGET?.FUTURES?.status) {
-    case 'INACTIVE':
+    case "INACTIVE":
       button = (
         <button
           className="theme-btn text-uppercase"
@@ -163,30 +158,29 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     default:
       api_keys?.[formData.platform]?.api_key
         ? (button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#ADDBOOT"
-            onClick={() => {
-
-              setDataModala((prev) => !prev); // Properly toggle state
-            }}
-          >
-            Add Bot
-          </button>
-        ))
+            <button
+              className="theme-btn text-uppercase"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#ADDBOOT"
+              onClick={() => {
+                setDataModala((prev) => !prev); // Properly toggle state
+              }}
+            >
+              Add Bot
+            </button>
+          ))
         : (button = (
-          <button
-            className="theme-btn text-uppercase btn btn-success"
-            type="button"
-            onClick={() =>
-              navigate("/api", { state: { platform: formData.platform } })
-            }
-          >
-            Add Bot
-          </button>
-        ));
+            <button
+              className="theme-btn text-uppercase"
+              type="button"
+              onClick={() =>
+                navigate("/api", { state: { platform: formData.platform } })
+              }
+            >
+              Add Bot
+            </button>
+          ));
       break;
   }
 
@@ -194,15 +188,20 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     <>
       <Suspense fallback={<div>Loading...</div>}>
         <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
-          <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2 " data-bs-toggle="modal"
-            data-bs-target="#editBitgetFutureModal">
+          <div
+            className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2 "
+            data-bs-toggle="modal"
+            data-bs-target="#editBitgetFutureModal"
+          >
             <h6 className="mb-0 fw-bold">0</h6>
             <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
               capital assigned
             </p>
           </div>
           <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-            <h6 className="mb-0 fw-bold">{parseFloat(usdt_balance?.balance || '0').toFixed(2)}</h6>
+            <h6 className="mb-0 fw-bold">
+              {parseFloat(usdt_balance?.balance || "0").toFixed(2)}
+            </h6>
             <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
               current balance
             </p>
@@ -218,16 +217,24 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
           </div>
         </div>
         <BitgetFutureTable data={bitgetFuture} thead={theadData} />
-        <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
-        
+        <ConfirmPopup
+          label="Bot Status"
+          msg={`${botStatus} bot`}
+          botStatus={botStatus}
+          toggleBotStatus={toggleBotStatus}
+          modelRef={modelRef}
+          btnDisable={btnDisable}
+        />
 
-      <EditBitgetFuture botType={formData.bot} platform = {formData.platform}/>
+        <EditBitgetFuture botType={formData.bot} platform={formData.platform} />
 
         <div className="modal fade" id="ADDBOOT">
           <div className="modal-dialog text-dark">
             <div className="modal-content">
               <div className="modal-header">
-                <h4 className="modal-title">Add Bot Configuration</h4>
+                <h5 className="modal-title primary-color text-capitalize">
+                  Add Bot Configuration
+                </h5>
                 <button
                   type="button"
                   className="btn-close"
@@ -235,41 +242,58 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
                 ></button>
               </div>
               <div className="modal-body">
-                <form onSubmit={(e) => { submitBot(data); e.preventDefault(); }}>
-                  <input
-                    type="text"
-                    id="platform"
-                    name="platform"
-                    placeholder="Platform"
-                    value={data.platform}
-                    readOnly
-                  />
-                  <input
-                    type="text"
-                    id="botType"
-                    name="botType"
-                    placeholder="Bot Type"
-                    value={data.botType}
-                    readOnly
-                  />
-                  <div className="mt-3">
+                <form
+                  onSubmit={(e) => {
+                    submitBot(data);
+                    e.preventDefault();
+                  }}
+                >
+                  <div className="mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="platform"
+                      name="platform"
+                      placeholder="Platform"
+                      value={data.platform}
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="botType"
+                      name="botType"
+                      placeholder="Bot Type"
+                      value={data.botType}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="mb-3">
                     <input
                       type="number"
+                      className="form-control"
                       id="total_investment"
                       name="total_investment"
                       placeholder="Total Investment"
                       value={data.total_investment}
-                      onChange={(e) => setData({ ...data, total_investment: e.target.value })}
+                      onChange={(e) =>
+                        setData({ ...data, total_investment: e.target.value })
+                      }
                       required
                     />
                   </div>
-                  <button
-                    className="btn btn-secondary sign mt-3"
-                    type="submit"
-                    disabled={btnDisable}
-                  >
-                    Submit
-                  </button>
+                  <div className="text-end px-2">
+                    <button
+                      className="sign my-2 py-2 px-3 rounded"
+                      type="submit"
+                      disabled={btnDisable}
+                    >
+                      Submit
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>

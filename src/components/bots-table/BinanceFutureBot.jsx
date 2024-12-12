@@ -12,7 +12,9 @@ import { useNavigate } from "react-router-dom";
 
 // Lazy load components
 const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
-const EditBinanceFutureModal = React.lazy(() => import("../models/EditBinanceFuture"));
+const EditBinanceFutureModal = React.lazy(() =>
+  import("../models/EditBinanceFuture")
+);
 // const AddBot = React.lazy(() => import("../models/AddBotModal"));
 
 const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
@@ -24,7 +26,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const [data, setData] = useState({
     platform: "BINANCE",
     botType: "FUTURES",
-    total_investment: '',
+    total_investment: "",
   });
 
   const [btnDisable, setBtnDisable] = useState(false);
@@ -37,9 +39,6 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
 
   const { bots, api_keys } = getProfile?.profile || {};
   const { usdt_balance, open_trades } = binanceFuture || {}; // Ensure it's not undefined
-
-
-  
 
   const fetchData = async () => {
     try {
@@ -94,7 +93,6 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       setBtnDisable(false);
     }
   };
-
 
   const submitBot = async (data) => {
     setBtnDisable(true);
@@ -176,8 +174,11 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     <Suspense fallback={<div>Loading...</div>}>
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
         {/* UI Content */}
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2" data-bs-toggle="modal"
-          data-bs-target="#editBinanceFutureModal">
+        <div
+          className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
+          data-bs-toggle="modal"
+          data-bs-target="#editBinanceFutureModal"
+        >
           <h6 className="mb-0 fw-bold">0</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             capital assigned
@@ -203,14 +204,24 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       </div>
 
       {/* Lazy-loaded Modals */}
-      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+      <ConfirmPopup
+        label="Bot Status"
+        msg={`${botStatus} bot`}
+        botStatus={botStatus}
+        toggleBotStatus={toggleBotStatus}
+        modelRef={modelRef}
+        btnDisable={btnDisable}
+      />
       {/* <EditInvestment botType={formData.bot} platform={formData.platform} 
         onSuccess={() => {
           console.log("Investment Updated Successfully!");
           // Optional logic: Close modal, refresh data, etc.
         }} /> */}
 
-<EditBinanceFutureModal botType={formData.bot} platform={formData.platform} />
+      <EditBinanceFutureModal
+        botType={formData.bot}
+        platform={formData.platform}
+      />
       {/* {
         datamodal && (
           <AddBot platform={formData.platform} botType={formData.bot} />
@@ -219,13 +230,13 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       {/* Table Component */}
       <Table data={open_trades} thead={theadData} />
 
-
-
       <div className="modal fade" id="botModal">
         <div className="modal-dialog text-dark">
           <div className="modal-content">
             <div className="modal-header">
-              <h4 className="modal-title">Add Bot Configuration</h4>
+              <h5 className="modal-title primary-color text-capitalize">
+                Add Bot Configuration
+              </h5>
               <button
                 type="button"
                 className="btn-close"
@@ -233,48 +244,64 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
               ></button>
             </div>
             <div className="modal-body">
-              <form onSubmit={(e) => { submitBot(data); e.preventDefault(); }}>
-                <input
-                  type="text"
-                  id="platform"
-                  name="platform"
-                  placeholder="Platform"
-                  value={data.platform}
-                  readOnly
-                />
-                <input
-                  type="text"
-                  id="botType"
-                  name="botType"
-                  placeholder="Bot Type"
-                  value={data.botType}
-                  readOnly
-                />
-                <div className="mt-3">
+              <form
+                onSubmit={(e) => {
+                  submitBot(data);
+                  e.preventDefault();
+                }}
+              >
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    id="platform"
+                    name="platform"
+                    className="form-control"
+                    placeholder="Platform"
+                    value={data.platform}
+                    readOnly
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    id="botType"
+                    name="botType"
+                    className="form-control"
+                    placeholder="Bot Type"
+                    value={data.botType}
+                    readOnly
+                  />
+                </div>
+
+                <div className="my-3">
                   <input
                     type="number"
+                    className="form-control"
                     id="total_investment"
                     name="total_investment"
                     placeholder="Total Investment"
                     value={data.total_investment}
-                    onChange={(e) => setData({ ...data, total_investment: e.target.value })}
+                    onChange={(e) =>
+                      setData({ ...data, total_investment: e.target.value })
+                    }
                     required
                   />
                 </div>
-                <button
-                  className="btn btn-secondary sign mt-3"
-                  type="submit"
-                  disabled={btnDisable}
-                >
-                  Submit
-                </button>
+                <div className="text-end px-2">
+                  <button
+                    className="sign my-2 py-2 px-3 rounded"
+                    type="submit"
+                    disabled={btnDisable}
+                  >
+                    Submit
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </div>
       </div>
-
-
     </Suspense>
   );
 };

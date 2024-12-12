@@ -5,20 +5,19 @@ import { backEndCallObj } from "../../services/mainService";
 import Joi from "joi-browser";
 
 class AddBot extends Form {
-    constructor(props) {
+  constructor(props) {
     // console.log(props,'props con')
-        super(props);
-        this.state = {
-            data: {
-                platform: props.platform,  // Use passed props for initial state
-                botType: props.botType,    // Added botType
-                total_investment: ''
-            },
-            errors: {},
-            btnDisable: false
-        };
-    }
-
+    super(props);
+    this.state = {
+      data: {
+        platform: props.platform, // Use passed props for initial state
+        botType: props.botType, // Added botType
+        total_investment: "",
+      },
+      errors: {},
+      btnDisable: false,
+    };
+  }
 
   // Validation schema
   schema = {
@@ -27,24 +26,24 @@ class AddBot extends Form {
     total_investment: Joi.number().required(),
   };
 
-    // Handle form submission
-    handleSubmit = async (data) => {
-        this.setState({ btnDisable: true });
-        try {
-            const formattedData = { ...data };
-            const response = await backEndCallObj("/admin/add_bot", formattedData);
-            toast.success(response?.success);
-        } catch (error) {
-            toast.error(error?.response?.data || "Error adding bot");
-        } finally {
-            this.setState({ btnDisable: false });
-        }
-    };
+  // Handle form submission
+  handleSubmit = async (data) => {
+    this.setState({ btnDisable: true });
+    try {
+      const formattedData = { ...data };
+      const response = await backEndCallObj("/admin/add_bot", formattedData);
+      toast.success(response?.success);
+    } catch (error) {
+      toast.error(error?.response?.data || "Error adding bot");
+    } finally {
+      this.setState({ btnDisable: false });
+    }
+  };
 
   render() {
     const { data, btnDisable } = this.state;
 
-        // console.log(data)
+    // console.log(data)
 
     return (
       <div className="modal fade" id="addbot">
@@ -87,7 +86,7 @@ class AddBot extends Form {
                     readOnly
                   />
                 </div>
-                <div className="mt-3">
+                <div className="my-3">
                   <input
                     className="form-control"
                     type="number"
@@ -99,9 +98,9 @@ class AddBot extends Form {
                     required
                   />
                 </div>
-                <div className="text-end px-3">
+                <div className="text-end px-2">
                   <button
-                    className="sign mt-4 px-3 py-2 rounded"
+                    className="sign my-2 py-2 px-3 rounded"
                     type="submit"
                     disabled={btnDisable}
                   >

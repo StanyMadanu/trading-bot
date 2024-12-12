@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useFetchKeys from "./CotextTest";
 
 const AllDataTable = () => {
@@ -16,6 +16,16 @@ const AllDataTable = () => {
   return (
     <div className="card">
       <div className="card-body">
+        <div className="my-4">
+          <Link to="/dashboard">
+            <button className="text-uppercase py-1 px-3">back</button>
+          </Link>
+        </div>
+
+        <h5 className="primary-color fw-bold text-capitalize text-center mb-3 text-decoration-underline">
+          {type === "FUTURES" ? "FUTURES" : "AMM"} table data
+        </h5>
+
         <div className="table-responsive">
           {type === "FUTURES" ? (
             // Render Table for FUTURES Type

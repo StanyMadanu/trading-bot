@@ -8,7 +8,7 @@ import tradingBott from "../assets/images/tradingbott.webp";
 import mainLogoLight from "../assets/images/7pools-logo.png";
 import navyBlueIcon from "../assets/images/logos/navi-blue.png";
 import navyWhiteIcon from "../assets/images/logos/navi-white.png";
-import whiteIcon from "../assets/images/logos/logo-white.png";
+import whiteIcon from "../assets/images/logos/logo-white2.png";
 import { pushRoute } from "../services/pushRoute";
 
 class Login extends Form {

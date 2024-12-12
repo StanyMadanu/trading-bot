@@ -1,9 +1,12 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import useFetchKeys from "./CotextTest";
 
 const BinanceSpotTable = ({ data }) => {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { getCoinicons , getFormattedDate } = useFetchKeys();
+
 
   return (
     <div className="table-responsive">
@@ -28,7 +31,19 @@ const BinanceSpotTable = ({ data }) => {
                 <td>
                   <div className="d-flex gap-3 align-items-center">
                     <p className="mb-0 table-dot"></p>
-                    <p className="mb-0 fs-13 fw-semibold">{data.symbol}</p>
+                      <img
+                        src={getCoinicons(data.symbol)}
+                        alt={data.name}
+                        className="cryptocurreny-icon-table crypto-icon"
+                        width={30}
+                      />
+                      <p className="mb-0 fs-13 fw-semibold">
+                        {data?.symbol || "NA"}
+                      </p>
+                      <p>
+                        {getFormattedDate(data.updateTime)}
+                      </p>
+                    
                   </div>
                 </td>
                 <td>
@@ -53,7 +68,7 @@ const BinanceSpotTable = ({ data }) => {
 
           <tr>
             <td colSpan={3} className="text-center">
-            <div onClick={()=>{navigate('/allDataTable' , { state: { reduxName: "binanceSpot" } })}}>
+            <div onClick={()=>{navigate('/allDataTable' , { state: { reduxName: "binanceSpot" , type: "AMM" } })}}>
             <button className="py-1">view all</button>
               </div>
             </td>

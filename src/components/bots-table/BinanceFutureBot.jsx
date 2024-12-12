@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 import Table from "../../common/Table";
 import {
   backEndCallObj,
@@ -8,10 +8,12 @@ import { connect } from "react-redux";
 import { binancefutureRedx } from "../reduxStore/slice/binancefutureSlice";
 import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
-import ConfirmPopup from "../models/ConfirmPopup";
-import EditInvestment from "../models/EditInvestmentModel";
-import AddBot from "../models/AddBotModal";
 import { useNavigate } from "react-router-dom";
+
+// Lazy load components
+const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
+const EditInvestment = React.lazy(() => import("../models/EditInvestmentModel"));
+const AddBot = React.lazy(() => import("../models/AddBotModal"));
 
 const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const [formData] = useState({
@@ -20,14 +22,14 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   });
 
   const [btnDisable, setBtnDisable] = useState(false);
+
   const [botStatus, setBotStatus] = useState("ADD");
+  const [datamodal, setDataModala] = useState(false);
 
   const navigate = useNavigate();
-
   const { fetchKeys } = useFetchKeys();
 
   const { bots, api_keys } = getProfile?.profile || {};
-
   const { usdt_balance, open_trades } = binanceFuture || {}; // Ensure it's not undefined
 
   const fetchData = async () => {
@@ -37,7 +39,6 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
         formData
       );
       dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
-      // console.log("Fetched Data:", response);
     } catch (error) {
       console.error("Error fetching open trades data:", error);
     }
@@ -46,7 +47,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const modelRef = useRef(null);
 
   useEffect(() => {
-    if (bots) {
+    if ((bots?.[formData?.platform]) && api_keys?.[formData?.platform]) {
       fetchData();
     }
   }, [dispatch, bots]);
@@ -64,27 +65,17 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setBtnDisable(true);
-    // const validationErrors = validate();
-    // setErrors(validationErrors || {});
-    // if (validationErrors) {
-    //   setBtnDisable(false);
-    //   return;
-    // }
     const formattedData = {
       ...formData,
       status:
         bots?.BINANCE?.FUTURES?.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
     };
 
-    // console.log(formattedData)
     try {
-      // console.log(formattedData);
       setBtnDisable(true);
       const response = await backEndCallObj(
-        "/admin/change_bot_status",
-        formattedData
+        "/admin/change_bot_status", formattedData
       );
-      // console.log(response, "aaa");
       toast.success(response?.success);
       fetchKeys();
     } catch (error) {
@@ -96,12 +87,12 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
 
   const toggleBotStatus = async (e) => {
     await handleSubmit(e);
-
     const modalInstance = window.bootstrap.Modal.getInstance(modelRef.current);
     if (modalInstance) modalInstance.hide();
   };
 
-  //table header data
+
+
   const theadData = ["Symbol", "Price", "Org Qty"];
 
   let button;
@@ -119,7 +110,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       );
       break;
 
-    case "ACTIVE":
+    case 'ACTIVE':
       button = (
         <button
           className="text-uppercase btn theme-btn  btn-danger"
@@ -133,73 +124,71 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       break;
 
     default:
-      api_keys?.[formData.platform]?.api_key
-        ? (button = (
-            <button
-              className="theme-btn text-uppercase btn btn-success"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#addbot"
-            >
-              Add Bot
-            </button>
-          ))
-        : (button = (
-            <button
-              className="theme-btn text-uppercase btn btn-success"
-              type="button"
-              onClick={() =>
-                navigate("/api", { state: { platform: formData.platform } })
-              }
-            >
-              Add Bot
-            </button>
-          ));
+      button = api_keys?.[formData.platform]?.api_key ? (
+        <button
+          className="theme-btn text-uppercase btn btn-success"
+          type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#addbot"
+          onClick={() => {
+
+            setDataModala((prev) => !prev); // Properly toggle state
+          }}
+        >
+          Add Bot
+        </button>
+      ) : (
+        <button
+          className="theme-btn text-uppercase btn btn-success"
+          type="button"
+          onClick={() => navigate('/api', { state: { platform: formData.platform } })}
+        >
+          Add Bot
+        </button>
+      );
       break;
   }
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
         {/* UI Content */}
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2" data-bs-toggle="modal"
+          data-bs-target="#editInvest">
           <h6 className="mb-0 fw-bold">0</h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            capital assigned
-          </p>
+          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">capital assigned</p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
           <h6 className="mb-0 fw-bold">
             {parseFloat(usdt_balance?.balance || "0").toFixed(2) || "0"}
           </h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            current balance
-          </p>
+          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">current balance</p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
           <h6 className="mb-0 status-percent fw-bold py-0 px-2">+ 10%</h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            % change
-          </p>
+          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">% change</p>
         </div>
         <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
           {button}
         </div>
       </div>
-      {/* Table Component */}
 
-      <ConfirmPopup
-        label="Bot Status"
-        msg={`${botStatus} bot`}
-        botStatus={botStatus}
-        toggleBotStatus={toggleBotStatus}
-        modelRef={modelRef}
-        btnDisable={btnDisable}
-      />
-      <EditInvestment />
-      <AddBot platform={formData.platform} botType={formData.bot} />
+      {/* Lazy-loaded Modals */}
+      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+      <EditInvestment botType={formData.bot}
+        onSuccess={() => {
+          console.log("Investment Updated Successfully!");
+          // Optional logic: Close modal, refresh data, etc.
+        }} />
+
+      {
+        datamodal && (
+          <AddBot platform={formData.platform} botType={formData.bot} />
+        )
+      }
+      {/* Table Component */}
       <Table data={open_trades} thead={theadData} />
-    </>
+    </Suspense>
   );
 };
 

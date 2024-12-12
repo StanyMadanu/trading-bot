@@ -47,7 +47,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   };
 
   useEffect(() => {
-    if (bots) {
+    if ((bots?.[formData?.platform]) && api_keys?.[formData?.platform]) {
       fetchData();
     }
   }, [dispatch, bots]);
@@ -189,17 +189,15 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
         <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
           {button}
         </div>
-      </div>
-      <ConfirmPopup
-        label="Bot Status"
-        msg={`${botStatus} bot`}
-        botStatus={botStatus}
-        toggleBotStatus={toggleBotStatus}
-        modelRef={modelRef}
-        btnDisable={btnDisable}
+      </div >
+      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+      <EditInvestment botType={formData.bot}
+        onSuccess={() => {
+          console.log("Investment Updated Successfully!");
+          // Optional logic: Close modal, refresh data, etc.
+        }}
       />
-      <EditInvestment />
-      <AddBot platform={formData.platform} botType={formData.bot} />
+      <AddBot />
       <BitgetSpotTable data={open_trades} thead={theadData} />
     </>
   );

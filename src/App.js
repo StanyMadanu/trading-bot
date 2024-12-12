@@ -4,10 +4,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "./common/Loader";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CronSettings from "./common/CronSettings";
+import MakeAnAdmin from "./common/MakeAnAdmin";
+
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import("./components/Dashboard"));
-const Auth = lazy(() => import("./components/auth"));
 const NotFound = lazy(() => import("./components/NotFound"));
 const Layout = lazy(() => import("./components/Layout"));
 const Login = lazy(() => import("./components/Login"));
@@ -19,15 +21,15 @@ const AddCoins = lazy(() => import("./components/AddCoins"));
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/login",
+      path: "/",
       element: <Login />,
     },
     {
       path: "/",
       element: (
-        <ProtectedRoute>
-          <Layout />
-        </ProtectedRoute>
+        <ProtectedRoute>  
+        <Layout />
+      </ProtectedRoute>
       ),
       children: [
         {
@@ -53,6 +55,14 @@ function App() {
         {
           path: "/allDataTable",
           element: <AllDataTable />,
+        },
+        {
+          path: "/cronsetting",
+          element: <CronSettings />,
+        },
+        {
+          path: "/makeadmin",
+          element: <MakeAnAdmin />,
         },
       ],
     },

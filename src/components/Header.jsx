@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { backEndCall, getJwt } from "../services/mainService";
+import { backEndCall, getCurrentUser, getJwt } from "../services/mainService";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { profileRedux } from "./reduxStore/slice/profileSlice";
 import mainLogo from "../assets/images/7pools-logo.png";
@@ -23,10 +23,16 @@ const Header = () => {
 
   const { fetchKeys } = useFetchKeys();
 
+  const currentUser = getCurrentUser();
+
+  console.log(currentUser)
+
   // Theme Toggle Handler
   const handleTheme = () => {
     document.body.classList.toggle("dark");
   };
+
+  console.log(profile);
 
   // Fetch profile and API keys
 
@@ -120,22 +126,39 @@ const Header = () => {
                     <span className="fs-14 fw-semibold">API</span>
                   </Link>
                 </li>
-                <li>
-                  <Link to="/addcoins" className="dropdown-item text-secondary">
+                {
+                  currentUser.user_type === 'ADMIN' ? (
+                    <>
+                      <li>
+                        <Link to="/addcoins" className="dropdown-item text-secondary">
+                          <span className="me-2">
+                            <FaBitcoin size={17} />
+                          </span>
+                          <span className="fs-14 fw-semibold">Add Coins</span>
+                        </Link>
+                      </li>
+                      <li className="pb-2">
+                        <Link to="/controls" className="dropdown-item text-secondary">
+                          <span className="me-2">
+                            <AiFillControl size={17} />
+                          </span>
+                          <span className="fs-14 fw-semibold">Admin Controls</span>
+                        </Link>
+                      </li>
+                    </>
+                  ) : ""
+                }
+
+                <li className="text-center py-2">
+                  <Link to="/makeadmin" className="dropdown-item text-secondary">
                     <span className="me-2">
-                      <FaBitcoin size={17} />
+                      <FaPowerOff size={15} />
                     </span>
-                    <span className="fs-14 fw-semibold">Add Coins</span>
+                    <span className="fs-14 fw-semibold">Make User/Admin</span>a
                   </Link>
                 </li>
-                <li className="pb-2">
-                  <Link to="/controls" className="dropdown-item text-secondary">
-                    <span className="me-2">
-                      <AiFillControl size={17} />
-                    </span>
-                    <span className="fs-14 fw-semibold">Admin Controls</span>
-                  </Link>
-                </li>
+
+
                 <li className="border-top text-center py-2">
                   <Link to="/" className="dropdown-item text-secondary">
                     <span className="me-2">

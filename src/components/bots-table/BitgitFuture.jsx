@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 import { bitgetFutureRdx } from "../reduxStore/slice/bitgetfutureSlice";
 import {
   backEndCallObj,
@@ -9,6 +9,12 @@ import { connect } from "react-redux";
 import useFetchKeys from "../../common/CotextTest";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+// Lazy load components
+const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
+const EditInvestment = React.lazy(() => import("../models/EditInvestmentModel"));
+const AddBot = React.lazy(() => import("../models/AddBotModal"));
+
+
 const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   const [formData] = useState({
     platform: "BITGET",
@@ -23,6 +29,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   const { fetchKeys } = useFetchKeys();
 
   const { bots, api_keys } = getProfile?.profile || {};
+
 
   const { open_trades, usdt_balance } = bitgetFuture || {};
 
@@ -42,8 +49,10 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   };
 
   useEffect(() => {
-    if (bots) {
-      // fetchData();
+
+
+    if ((bots?.[formData?.platform]) && api_keys?.[formData?.platform]) {
+      fetchData();
     }
   }, [dispatch, bots]);
 
@@ -69,7 +78,9 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     const formattedData = {
       ...formData,
       status:
-        bots?.BINANCE?.FUTURES?.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
+        bots?.BITGET?.FUTURES?.status === "INACTIVE"
+          ? "ACTIVE"
+          : "INACTIVE",
     };
 
     // console.log(formattedData)
@@ -101,8 +112,8 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   const theadData = ["Symbol", "Price", "Org Qty"];
 
   let button;
-  switch (bots?.BINANCE?.FUTURES?.status) {
-    case "INACTIVE":
+  switch (bots?.BITGET?.FUTURES?.status) {
+    case 'INACTIVE':
       button = (
         <button
           className="theme-btn text-uppercase"
@@ -156,32 +167,40 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
 
   return (
     <>
-      <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2 ">
-          <h6 className="mb-0 fw-bold">0</h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            capital assigned
-          </p>
+      <Suspense fallback={<div>Loading...</div>}>
+        <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
+          <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2 " data-bs-toggle="modal"
+            data-bs-target="#editInvest">
+            <h6 className="mb-0 fw-bold">0</h6>
+            <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+              capital assigned
+            </p>
+          </div>
+          <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+            <h6 className="mb-0 fw-bold">{parseFloat(usdt_balance?.balance || '0').toFixed(2)}</h6>
+            <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+              current balance
+            </p>
+          </div>
+          <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+            <h6 className="mb-0 status-percent fw-bold py-0 px-2">+ 10%</h6>
+            <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+              % change
+            </p>
+          </div>
+          <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
+            {button}
+          </div>
         </div>
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 fw-bold">
-            {parseFloat(usdt_balance?.balance || "0").toFixed(2)}
-          </h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            current balance
-          </p>
-        </div>
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 status-percent fw-bold py-0 px-2">+ 10%</h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            % change
-          </p>
-        </div>
-        <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
-          {button}
-        </div>
-      </div>
-      <BitgetFutureTable data={bitgetFuture} thead={theadData} />
+        <BitgetFutureTable data={bitgetFuture} thead={theadData} />
+        <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+        <EditInvestment botType={formData.bot}
+          onSuccess={() => {
+            console.log("Investment Updated Successfully!");
+            // Optional logic: Close modal, refresh data, etc.
+          }} />
+        <AddBot />
+      </Suspense>
     </>
   );
 };

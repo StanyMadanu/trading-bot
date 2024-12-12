@@ -12,6 +12,9 @@ import AddBot from "../models/AddBotModal";
 import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
 import { useNavigate } from "react-router-dom";
+import EditInvestment from "../models/EditInvestmentModel";
+
+
 
 const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   const [formData] = useState({
@@ -52,7 +55,8 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   };
 
   useEffect(() => {
-    if (bots) {
+
+    if ((bots?.[formData?.platform]) && api_keys?.[formData?.platform]) {
       fetchData();
     }
   }, [dispatch, bots]);
@@ -168,7 +172,8 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   return (
     <>
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2" data-bs-toggle="modal"
+          data-bs-target="#editInvest">
           <h6 className="mb-0 fw-bold">0</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             capital assigned
@@ -194,15 +199,13 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       </div>
       <BinanceSpotTable data={open_trades} tdata={theadData} />
 
-      <ConfirmPopup
-        label="Bot Status"
-        msg={`${botStatus} bot`}
-        botStatus={botStatus}
-        toggleBotStatus={toggleBotStatus}
-        modelRef={modelRef}
-        btnDisable={btnDisable}
-      />
-      <AddBot platform={formData.platform} botType={formData.bot} />
+      <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
+      <EditInvestment botType={formData.bot}
+        onSuccess={() => {
+          console.log("Investment Updated Successfully!");
+          // Optional logic: Close modal, refresh data, etc.
+        }}/>
+      <AddBot  />
     </>
   );
 };

@@ -1,296 +1,321 @@
 import React from "react";
 import { MdDelete } from "react-icons/md";
 import { RiEdit2Fill } from "react-icons/ri";
-import tether from "../assets/images/tether.png";
+import coinService from "../services/CoinServices";
+import ConfirmPopup from "./models/ConfirmPopup";
+import Joi from "joi-browser";
+import Form from "../basic/form";
+import { toast } from "react-toastify";
+import UpdateCoins from "./models/UpdateCoins";
 
-const AddCoins = () => {
-  const theadData = [
-    "pair",
-    "coin ID",
-    "status",
-    "price precision",
-    "quantity precision",
-    "target percent",
-    "platform",
-    "bot",
-    "action",
-  ];
-  return (
-    <div className="card">
-      <div className="card-body">
-        <div className="container">
-          <h5 className="text-center my-3 fw-bold primary-color text-capitalize">
-            add coins table
-          </h5>
+class AddCoins extends Form {
+  state = {
+    coinLists: [],
+    data: {
+      pair: "",
+      price_precision: "",
+      quantity_precision: "",
+      target_percent: "",
+      platform: "BINANCE",
+      bot: "AMM",
+    },
+    errors: {},
+    btnDisable: false,
+    coinDelate: {
+      coin_id: "",
+      platform: "",
+      bot: "",
+    }
+  };
 
-          <div className="text-end my-3">
-            <button
-              className="py-2 rounded-pill text-capitalize secondary-bg"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#addCoinModal"
-            >
-              add coin
-            </button>
-          </div>
+  schema = {
+    pair: Joi.string().uppercase().required().label("Pair"),
+    price_precision: Joi.number().positive().required().label("Price Precision"),
+    quantity_precision: Joi.number().positive().required().label("Quantity Precision"),
+    target_percent: Joi.number().positive().required().label("Target Percent"),
+    platform: Joi.string().valid("BINANCE", "BITGET").required().label("Platform"),
+    bot: Joi.string().valid("AMM", "FUTURES").required().label("Bot"),
+    divisible: Joi.number().positive().optional(),
+    TradeAmount: Joi.number().optional(),
+  };
 
-          <div className="table-responsive">
-            <table className="table table-bordered">
-              <thead className="thead primary-bg">
-                <tr>
-                  {theadData.map((data, index) => (
-                    <th key={index}>
-                      <p className="mb-0 primary-color fs-14 text-capitalize text-center">
-                        {data}
-                      </p>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="tbody text-center">
-                {theadData.map((data, index) => (
-                  <tr>
-                    <td>
-                      <div className="d-flex gap-2 align-items-center">
-                        <img src={tether} alt="tether" width={40} />
-                        <p className="mb-0 fs-13 fw-semibold text-uppercase">
-                          BRETTUSDT
-                        </p>
-                      </div>
-                    </td>
-                    <td>
-                      <p className="mb-0 fs-13 fw-semibold lh-2">CD13C06CBB5</p>
-                    </td>
-                    <td>
-                      <p className="mb-0 fs-13 fw-semibold text-uppercase lh-2 text-success">
-                        active
-                      </p>
-                    </td>
-                    <td>
-                      <p className="mb-0 fs-13 fw-semibold lh-2">4</p>
-                    </td>
-                    <td>
-                      <p className="mb-0 fs-13 fw-semibold lh-2">2</p>
-                    </td>
-                    <td>
-                      <p className="mb-0 fs-13 fw-semibold lh-2">2%</p>
-                    </td>
-                    <td>
-                      <p className="mb-0 fs-13 fw-semibold lh-2 text-uppercase">
-                        bitget
-                      </p>
-                    </td>
-                    <td>
-                      <p className="mb-0 fs-13 fw-semibold lh-2 text-uppercase">
-                        amm
-                      </p>
-                    </td>
-                    <td>
-                      <div className="fs-13 fw-semibold lh-2">
-                        <span className="text-info me-3 cursor-pointer">
-                          <RiEdit2Fill size={18} />
-                        </span>
-                        <span className="text-danger cursor-pointer">
-                          <MdDelete size={18} />
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+  componentDidMount() {
+    this.fetchCoins();
+  }
 
-      {/* popup */}
-      <div
-        className="modal fade"
-        id="addCoinModal"
-        tabIndex="-1"
-        aria-labelledby="addCoinModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1
-                className="modal-title fs-5 primary-color"
-                id="addCoinModalLabel"
+  async fetchCoins() {
+    try {
+      const res = await coinService.getCoins();
+      if (res) this.setState({ coinLists: res });
+    } catch (error) {
+      console.error("Error fetching coins:", error);
+    }
+  }
+
+  doSubmit = async () => {
+    this.setState({ btnDisable: true });
+    try {
+      const response = await coinService.addCoins(this.state.data);
+      if (!response) return;
+      toast.success("Coin added successfully!");
+      this.fetchCoins(); // Refresh coin list
+    } catch (error) {
+      toast.error(error?.response?.data || "Failed to add coin.");
+    } finally {
+      this.setState({ btnDisable: false });
+    }
+  };
+
+
+
+  handleDeleteCoins = async () => {
+    this.setState({ btnDisable: true });
+    try {
+      const payload = {
+        coin_id: this.state.coinDelate.coin_id,
+        status: "DELETE",
+        platform: this.state.coinDelate.platform,
+        bot: this.state.coinDelate.bot,
+      };
+      const response = await coinService.deleteCoins(payload);
+      toast.success(response.Success);
+
+      if (!response) return;
+    } catch (error) {
+      // console.log(error);
+
+      toast.error(error?.response?.data);
+    } finally {
+      this.setState({ btnDisable: false });
+
+    }
+  };
+
+
+  render() {
+    const { coinLists, coinDelate } = this.state;
+
+    console.log(coinDelate);
+
+    const theadData = [
+      "pair",
+      "coin ID",
+      "status",
+      "price precision",
+      "quantity precision",
+      "target percent",
+      "platform",
+      "bot",
+      "action",
+    ];
+    console.log(this.state.data)
+
+    return (
+      <div className="card">
+        <div className="card-body">
+          <div className="container">
+            <h5 className="text-center my-3 fw-bold primary-color text-capitalize">
+              Add Coins Table
+            </h5>
+
+            {/* Add Coin Button */}
+            <div className="text-end my-3">
+              <button
+                className="py-2 rounded-pill text-capitalize secondary-bg"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#addCoinModal"
               >
                 Add Coin
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+              </button>
             </div>
-            <div className="modal-body">
-              <form>
-                <div className="row">
-                  <div className="col-xl-6 col-lg-6 col-md-6 col-12">
-                    <div className="mb-4">
-                      <label
-                        htmlFor="pair"
-                        className="form-label text-capitalize fs-14"
-                      >
-                        pair
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="pair"
-                        placeholder="Enter pair coin"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-lg-6 col-md-6 col-12">
-                    <div className="mb-4">
-                      <label
-                        htmlFor="PricePrecision"
-                        className="form-label text-capitalize fs-14"
-                      >
-                        Price Precision
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="PricePrecision"
-                        placeholder="Enter Price Precision"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-lg-6 col-md-6 col-12">
-                    <div className="mb-4">
-                      <label
-                        htmlFor="QuantityPrecision"
-                        className="form-label text-capitalize fs-14"
-                      >
-                        Quantity Precision
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="QuantityPrecision"
-                        placeholder="Enter Quantity Precision"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-lg-6 col-md-6 col-12">
-                    <div className="mb-4">
-                      <label
-                        htmlFor="TargetPercent"
-                        className="form-label text-capitalize fs-14"
-                      >
-                        Target Percent
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="TargetPercent"
-                        placeholder="Enter Target Percent"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-lg-6 col-md-6 col-12">
-                    <div className="mb-4">
-                      <label
-                        htmlFor="Platform"
-                        className="form-label text-capitalize fs-14"
-                      >
-                        Platform
-                      </label>
 
-                      <select
-                        className="form-select form-select-sm"
-                        aria-label="form-select example"
-                        id="Platform"
-                      >
-                        <option hidden>--select--</option>
-                        <option value="binance">Binance</option>
-                        <option value="bitget">Bitget</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-lg-6 col-md-6 col-12">
-                    <div className="mb-4">
-                      <label
-                        htmlFor="Bot"
-                        className="form-label text-capitalize fs-14"
-                      >
-                        Bot
-                      </label>
-                      <select
-                        className="form-select form-select-sm"
-                        aria-label="form-select example"
-                        id="Bot"
-                      >
-                        <option hidden>--select--</option>
-                        <option value="amm">AMM</option>
-                        <option value="futures">FUTURES</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-lg-6 col-md-6 col-12">
-                    <div className="mb-4">
-                      <label
-                        htmlFor="divisible"
-                        className="form-label text-capitalize fs-14"
-                      >
-                        divisible
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="divisible"
-                        placeholder="Divisible"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-xl-6 col-lg-6 col-md-6 col-12">
-                    <div className="mb-4">
-                      <label
-                        htmlFor="TradeAmount"
-                        className="form-label text-capitalize fs-14"
-                      >
-                        Trade Amount
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="TradeAmount"
-                        placeholder="Trade Amount"
-                      />
-                    </div>
-                  </div>
-                </div>
+            {/* Table */}
+            <div className="table-responsive">
+              <table className="table table-bordered">
+                <thead className="thead primary-bg">
+                  <tr>
+                    {theadData.map((data, index) => (
+                      <th key={index} className="text-center">
+                        <p className="mb-0 primary-color fs-14 text-capitalize">
+                          {data}
+                        </p>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="tbody text-center">
+                  {coinLists?.length > 0 ? (
+                    coinLists.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item.pair}</td>
+                        <td>{item.coin_id}</td>
+                        <td
+                          className={`text-uppercase ${item.status === "ACTIVE"
+                            ? "text-success"
+                            : "text-danger"
+                            }`}
+                        >
+                          {item.status}
+                        </td>
+                        <td>{item.price_precision}</td>
+                        <td>{item.quantity_precision}</td>
+                        <td>{item.target_percent}%</td>
+                        <td>{item.platform}</td>
+                        <td>{item.bot}</td>
+                        <td>
+                          <span
+                            className="text-info me-3 cursor-pointer"
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateCoinModal"
+                          >
+                            <RiEdit2Fill size={18} />
+                          </span>
+                          <span
+                            className="text-danger cursor-pointer"
+                            data-bs-toggle="modal"
+                            data-bs-target="#confirmDelete"
+                            onClick={() => this.setState({
+                              coinDelate: {
+                                coin_id: item.coin_id,
+                                platform: item.platform,
+                                bot: item.bot,
+                              }
 
-                <div>
-                  <button type="submit" className="text-capitalize">
-                    submit
+                            })}
+                          >
+                            <MdDelete size={18} />
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={theadData.length}>No data found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* Modals */}
+        <ConfirmPopup toggleBotStatus={this.handleDeleteCoins} botStatus="delete" />
+        <UpdateCoins />
+
+        {/* Add Coin Modal */}
+        <div
+          className="modal fade"
+          id="addCoinModal"
+          tabIndex="-1"
+          aria-labelledby="addCoinModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title primary-color" id="addCoinModalLabel">
+                  Add Coin
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">
+                <form onSubmit={this.handleSubmit}>
+                  <div className="row">
+                    {[
+                      { label: "Pair", id: "pair" },
+                      { label: "Price Precision", id: "price_precision" },
+                      { label: "Quantity Precision", id: "quantity_precision" },
+                      { label: "Target Percent", id: "target_percent" },
+                      { label: "divisible", id: "divisible" },
+                      { label: "Trade Amount", id: "TradeAmount" },
+                    ].map((field) => (
+                      <div key={field.id} className="col-md-6 mb-3">
+                        <label className="form-label">{field.label}</label>
+                        <input
+                          type="text"
+                          name={field.id}
+                          value={this.state.data[field.id] || ""}
+                          onChange={this.handleChange}
+                          className="form-control"
+                          placeholder={`Enter ${field.label}`}
+                        />
+                        {this.state.errors[field.id] && (
+                          <div className="text-danger">
+                            {this.state.errors[field.id]}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Platform Select */}
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Platform</label>
+                      <select
+                        name="platform"
+                        value={this.state.data.platform}
+                        onChange={this.handleChange}
+                        className="form-control"
+                      >
+                        <option value="BINANCE">BINANCE</option>
+                        <option value="BITGET">BITGET</option>
+                      </select>
+                      {this.state.errors.platform && (
+                        <div className="text-danger">
+                          {this.state.errors.platform}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Bot Select */}
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Bot</label>
+                      <select
+                        name="bot"
+                        value={this.state.data.bot}
+                        onChange={this.handleChange}
+                        className="form-control"
+                      >
+                        <option value="AMM">AMM</option>
+                        <option value="FUTURES">FUTURES</option>
+                      </select>
+                      {this.state.errors.bot && (
+                        <div className="text-danger">
+                          {this.state.errors.bot}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={this.state.btnDisable}
+                  >
+                    {this.state.btnDisable ? "Submitting..." : "Submit"}
                   </button>
-                </div>
-              </form>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" className="btn btn-primary">
-                Save changes
-              </button>
+                </form>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default AddCoins;

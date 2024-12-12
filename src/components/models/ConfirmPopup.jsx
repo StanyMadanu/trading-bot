@@ -5,7 +5,6 @@ class ConfirmPopup extends Component {
 
         const { label, msg , botStatus , toggleBotStatus, modelRef , btnDisable } = this.props;
 
-        
 
         return (
 

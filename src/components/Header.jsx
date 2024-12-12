@@ -25,14 +25,14 @@ const Header = () => {
 
   const currentUser = getCurrentUser();
 
-  console.log(currentUser)
+  // console.log(currentUser)
 
   // Theme Toggle Handler
   const handleTheme = () => {
     document.body.classList.toggle("dark");
   };
 
-  console.log(profile);
+  // console.log(profile);
 
   // Fetch profile and API keys
 

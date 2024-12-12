@@ -95,7 +95,7 @@ class AddCoins extends Form {
   render() {
     const { coinLists, coinDelate } = this.state;
 
-    console.log(coinDelate);
+    // console.log(coinDelate);
 
     const theadData = [
       "pair",
@@ -108,7 +108,7 @@ class AddCoins extends Form {
       "bot",
       "action",
     ];
-    console.log(this.state.data)
+    // console.log(this.state.data)
 
     return (
       <div className="card">

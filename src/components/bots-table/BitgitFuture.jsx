@@ -9,10 +9,10 @@ import { connect } from "react-redux";
 import useFetchKeys from "../../common/CotextTest";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import EditBitgetFuture from "../models/EditBitgetFutures";
 // Lazy load components
 const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
 const EditInvestment = React.lazy(() => import("../models/EditInvestmentModel"));
-const AddBot = React.lazy(() => import("../models/AddBotModal"));
 
 
 const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
@@ -21,8 +21,16 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     bot: "FUTURES",
   });
 
+  const [data, setData] = useState({
+    platform: "BITGET",
+    botType: "FUTURES",
+    total_investment: '',
+  });
+
   const [btnDisable, setBtnDisable] = useState(false);
   const [botStatus, setBotStatus] = useState("ADD");
+  const [datamodal, setDataModala] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -101,6 +109,19 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     }
   };
 
+  const submitBot = async (data) => {
+    setBtnDisable(true);
+    // console.log(data)
+    try {
+      const response = await backEndCallObj("/admin/add_bot", data);
+      toast.success(response?.success);
+    } catch (error) {
+      toast.error(error?.response?.data || "Error adding bot");
+    } finally {
+      setBtnDisable(false);
+    }
+  };
+
   const toggleBotStatus = async (e) => {
     await handleSubmit(e);
 
@@ -142,26 +163,30 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     default:
       api_keys?.[formData.platform]?.api_key
         ? (button = (
-            <button
-              className="theme-btn text-uppercase btn btn-success"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#addbot"
-            >
-              Add Bot
-            </button>
-          ))
+          <button
+            className="theme-btn text-uppercase btn btn-success"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#ADDBOOT"
+            onClick={() => {
+
+              setDataModala((prev) => !prev); // Properly toggle state
+            }}
+          >
+            Add Bot
+          </button>
+        ))
         : (button = (
-            <button
-              className="theme-btn text-uppercase btn btn-success"
-              type="button"
-              onClick={() =>
-                navigate("/api", { state: { platform: formData.platform } })
-              }
-            >
-              Add Bot
-            </button>
-          ));
+          <button
+            className="theme-btn text-uppercase btn btn-success"
+            type="button"
+            onClick={() =>
+              navigate("/api", { state: { platform: formData.platform } })
+            }
+          >
+            Add Bot
+          </button>
+        ));
       break;
   }
 
@@ -170,7 +195,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
       <Suspense fallback={<div>Loading...</div>}>
         <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
           <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2 " data-bs-toggle="modal"
-            data-bs-target="#editInvest">
+            data-bs-target="#editBitgetFutureModal">
             <h6 className="mb-0 fw-bold">0</h6>
             <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
               capital assigned
@@ -194,12 +219,62 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
         </div>
         <BitgetFutureTable data={bitgetFuture} thead={theadData} />
         <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
-        <EditInvestment botType={formData.bot}
-          onSuccess={() => {
-            console.log("Investment Updated Successfully!");
-            // Optional logic: Close modal, refresh data, etc.
-          }} />
-        <AddBot />
+        
+
+      <EditBitgetFuture botType={formData.bot} platform = {formData.platform}/>
+
+        <div className="modal fade" id="ADDBOOT">
+          <div className="modal-dialog text-dark">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h4 className="modal-title">Add Bot Configuration</h4>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                ></button>
+              </div>
+              <div className="modal-body">
+                <form onSubmit={(e) => { submitBot(data); e.preventDefault(); }}>
+                  <input
+                    type="text"
+                    id="platform"
+                    name="platform"
+                    placeholder="Platform"
+                    value={data.platform}
+                    readOnly
+                  />
+                  <input
+                    type="text"
+                    id="botType"
+                    name="botType"
+                    placeholder="Bot Type"
+                    value={data.botType}
+                    readOnly
+                  />
+                  <div className="mt-3">
+                    <input
+                      type="number"
+                      id="total_investment"
+                      name="total_investment"
+                      placeholder="Total Investment"
+                      value={data.total_investment}
+                      onChange={(e) => setData({ ...data, total_investment: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <button
+                    className="btn btn-secondary sign mt-3"
+                    type="submit"
+                    disabled={btnDisable}
+                  >
+                    Submit
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </Suspense>
     </>
   );

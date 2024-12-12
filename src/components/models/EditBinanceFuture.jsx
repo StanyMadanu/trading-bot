@@ -4,7 +4,7 @@ import Form from "../../basic/form";
 import { backEndCallObj } from "../../services/mainService";
 import { toast } from "react-toastify";
 
-class EditInvestment extends Form {
+class EditBinanceFuture extends Form {
     // Validation Schema
     schema = {
         platform: Joi.string().valid("BINANCE", "BITGET").required(),
@@ -58,7 +58,7 @@ class EditInvestment extends Form {
         // console.log(data, errors)
 
         return (
-            <div className="modal fade" id="editInvest" tabIndex="-1" aria-hidden="true">
+            <div className="modal fade" id="editBinanceFutureModal" tabIndex="-1" aria-hidden="true">
                 <div className="modal-dialog text-dark">
                     <div className="modal-content">
                         {/* Modal Header */}
@@ -117,4 +117,4 @@ class EditInvestment extends Form {
     }
 }
 
-export default EditInvestment;
+export default EditBinanceFuture;

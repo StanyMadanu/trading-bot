@@ -30,11 +30,11 @@ class DisableAllCoins extends Form {
     e.preventDefault();
     const { data } = this.state;
 
-    console.log(data)
+    // console.log(data)
 
     this.setState({ btnDisable: true });
     try {
-      const response = await backEndCallObj("admin/disable_all_coins", data);
+      const response = await backEndCallObj("/admin/disable_all_coins", data);
       if (response?.success) {
         toast.success(response.success);
       }

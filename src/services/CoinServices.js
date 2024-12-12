@@ -8,24 +8,24 @@ const getCoins = async () => {
   return data.success;
 };
 const addCoins = async (payload) => {
-  console.log(payload, "add reponse");
+  // console.log(payload, "add reponse");
 
-  const response = await backEndCallObj("/admin/add_coin", ); //payload
+  const response = await backEndCallObj("/admin/add_coin", payload); //payload
   // console.log(response, "addcoins");
 
   if (!response) return null;
   return response;
 };
 const updateCoins = async (payload) => {
-  console.log(payload)
-  const data = await backEndCallObj("/admin/update_coin", );
+  // console.log(payload)
+  const data = await backEndCallObj("/admin/update_coin",payload );
   // console.log(data);
   if (!data) return null;
   return data;
 };
 const deleteCoins = async (payload) => {
-  console.log(payload)
-  const data = await backEndCallObj("/admin/update_coin",);
+  // console.log(payload)
+  const data = await backEndCallObj("/admin/update_coin",payload);
   if (!data) return null;
   return data;
 };

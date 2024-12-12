@@ -41,10 +41,10 @@ const CronSettings = () => {
     const newErrors = validate();
     setErrors(newErrors || {});
     if (newErrors) return;
-    console.log(data)
+    // console.log(data)
     setBtnDisable(true);
     try {
-      const response = await backEndCallObj('/admin/sell_all_coins', ); //data 
+      const response = await backEndCallObj('/admin/sell_all_coins',data ); //data 
       if (response?.success) {
         toast.success(response.success);
       }

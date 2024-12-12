@@ -35,11 +35,11 @@ class MakeAnAdmin extends Form {
     doSubmit = async () => {
        
         const { data } = this.state;
-        console.log(data);
+        // console.log(data);
 
         this.setState({ btnDisable: true });
         try {
-            const response = await backEndCallObj("admin/add_admin", data);//data
+            const response = await backEndCallObj("/admin/add_admin", data);//data
             if (response?.success) {
                 toast.success(response.success);
             }
@@ -69,7 +69,7 @@ class MakeAnAdmin extends Form {
 
     renderSelect = (label, name, options) => {
         const { data, errors } = this.state;
-        console.log(data)
+        // console.log(data)
         return (
             <div>
                 <label className="form-label">{label}</label>

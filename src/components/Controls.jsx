@@ -15,7 +15,7 @@ const Controls = () => {
       try {
         const data = await backEndCall("/admin_get/get_controls");
         if (data?.success) {
-          console.log(data);
+          // console.log(data);
           setControlsData(data.success);
         }
       } catch (error) {
@@ -32,6 +32,7 @@ const Controls = () => {
     // Early return for AMM
     if (control === "AMM") {
       console.warn("###### cannot update AMM as of now ######");
+      toast.warning("AMM cannot be updated at the moment")
       return;
     }
 
@@ -52,7 +53,7 @@ const Controls = () => {
       value: newValue,
     };
 
-    console.log("Payload sent to server:", payload);
+    // console.log("Payload sent to server:", payload);
 
     try {
       const response = await backEndCallObj("admin/update_controls", payload);

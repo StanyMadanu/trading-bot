@@ -50,7 +50,7 @@ class UpdateCoins extends Form {
 
   render() {
     const { data, errors, btnDisable } = this.state;
-    console.log(data)
+    // console.log(data)
     return (
       <div
         className="modal fade"

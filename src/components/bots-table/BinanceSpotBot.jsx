@@ -8,11 +8,12 @@ import { binancespotRedx } from "../reduxStore/slice/binancespotSlice";
 import { connect } from "react-redux";
 import BinanceSpotTable from "../../common/BinanceSpotTable";
 import ConfirmPopup from "../models/ConfirmPopup";
-import AddBot from "../models/AddBotModal";
+// import AddBot from "../models/AddBotModal";
 import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
 import { useNavigate } from "react-router-dom";
 import EditInvestment from "../models/EditInvestmentModel";
+import EditBinanceSpotModal from "../models/EditBinanceSpot";
 
 
 
@@ -20,6 +21,12 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   const [formData] = useState({
     platform: "BINANCE",
     bot: "AMM",
+  });
+
+  const [data, setData] = useState({
+    platform: "BINANCE",
+    botType: "AMM",
+    total_investment: '',
   });
 
   const [botStatus, setBotStatus] = useState("ADD");
@@ -103,6 +110,19 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     }
   };
 
+  const submitBot = async (data) => {
+    setBtnDisable(true);
+    // console.log(data)
+    try {
+      const response = await backEndCallObj("/admin/add_bot", data);
+      toast.success(response?.success);
+    } catch (error) {
+      toast.error(error?.response?.data || "Error adding bot");
+    } finally {
+      setBtnDisable(false);
+    }
+  };
+
   const toggleBotStatus = async (e) => {
     await handleSubmit(e);
     const modalInstance = window.bootstrap.Modal.getInstance(modelRef.current);
@@ -146,26 +166,26 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     default:
       api_keys?.[formData.platform]?.api_key
         ? (button = (
-            <button
-              className="theme-btn text-uppercase btn btn-success"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#addbot"
-            >
-              Add Bot
-            </button>
-          ))
+          <button
+            className="theme-btn text-uppercase btn btn-success"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#binanceBot"
+          >
+            Add Bot
+          </button>
+        ))
         : (button = (
-            <button
-              className="theme-btn text-uppercase btn btn-success"
-              type="button"
-              onClick={() =>
-                navigate("/api", { state: { platform: formData.platform } })
-              }
-            >
-              Add Bot
-            </button>
-          ));
+          <button
+            className="theme-btn text-uppercase btn btn-success"
+            type="button"
+            onClick={() =>
+              navigate("/api", { state: { platform: formData.platform } })
+            }
+          >
+            Add Bot
+          </button>
+        ));
       break;
   }
 
@@ -173,7 +193,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     <>
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2" data-bs-toggle="modal"
-          data-bs-target="#editInvest">
+          data-bs-target="#editBinanceSpotModal">
           <h6 className="mb-0 fw-bold">0</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             capital assigned
@@ -200,12 +220,68 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       <BinanceSpotTable data={open_trades} tdata={theadData} />
 
       <ConfirmPopup label="Bot Status" msg={`${botStatus} bot`} botStatus={botStatus} toggleBotStatus={toggleBotStatus} modelRef={modelRef} btnDisable={btnDisable} />
-      <EditInvestment botType={formData.bot}
+      {/* <EditInvestment botType={formData.bot}
+      platform={formData.platform}
         onSuccess={() => {
           console.log("Investment Updated Successfully!");
           // Optional logic: Close modal, refresh data, etc.
-        }}/>
-      <AddBot  />
+        }} /> */}
+
+        <EditBinanceSpotModal  botType={formData.bot} platform={formData.platform} />
+
+      <div className="modal fade" id="binanceBot">
+        <div className="modal-dialog text-dark">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h4 className="modal-title">Add Bot Configuration</h4>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form onSubmit={(e) => { submitBot(data); e.preventDefault(); }}>
+                <input
+                  type="text"
+                  id="platform"
+                  name="platform"
+                  placeholder="Platform"
+                  value={data.platform}
+                  readOnly
+                />
+                <input
+                  type="text"
+                  id="botType"
+                  name="botType"
+                  placeholder="Bot Type"
+                  value={data.botType}
+                  readOnly
+                />
+                <div className="mt-3">
+                  <input
+                    type="number"
+                    id="total_investment"
+                    name="total_investment"
+                    placeholder="Total Investment"
+                    value={data.total_investment}
+                    onChange={(e) => setData({ ...data, total_investment: e.target.value })}
+                    required
+                  />
+                </div>
+                <button
+                  className="btn btn-secondary sign mt-3"
+                  type="submit"
+                  disabled={btnDisable}
+                >
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </>
   );
 };

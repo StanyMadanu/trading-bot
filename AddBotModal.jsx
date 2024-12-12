@@ -6,7 +6,7 @@ import Joi from 'joi-browser';
 
 class AddBot extends Form {
     constructor(props) {
-    console.log(props,'props con')
+    // console.log(props,'props con')
         super(props);
         this.state = {
             data: {
@@ -32,7 +32,7 @@ class AddBot extends Form {
         this.setState({ btnDisable: true });
         try {
             const formattedData = { ...data };
-            const response = await backEndCallObj("admin/add_bot", formattedData);
+            const response = await backEndCallObj("/admin/add_bot", formattedData);
             toast.success(response?.success);
         } catch (error) {
             toast.error(error?.response?.data || "Error adding bot");
@@ -44,7 +44,7 @@ class AddBot extends Form {
     render() {
         const { data, btnDisable } = this.state;
 
-        console.log(data)
+        // console.log(data)
 
         return (
             <div className="modal fade" id="addbot">

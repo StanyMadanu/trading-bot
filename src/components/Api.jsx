@@ -128,6 +128,7 @@ const Api = ({ getProfile }) => {
   const renderForm = (apiType) => (
     <form className="my-5" onSubmit={(e) => handleSubmit(e, apiType)}>
       {/* {console.log(data)} */}
+      {console.log(data.api_key)}
       <div className="mb-4">
         <label className="form-label text-uppercase fs-15 fw-bold">api key</label>
         <input

@@ -59,7 +59,7 @@ const useFetchKeys = () => {
 
       const jwt = getJwt();
       if (jwt && Object.keys(res.profile.api_keys || {}).length > 0) {
-        setTimeout(() => navigate("/dashboard"), 200);
+        // setTimeout(() => navigate("/dashboard"), 200);
       } else {
         setTimeout(() => navigate("/api"), 200);
       }

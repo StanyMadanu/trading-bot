@@ -27,6 +27,7 @@ class EditBinanceSpot extends Form {
 
     // Handle Submit Logic
     doSubmit = async () => {
+        console.log(data)
         const { data } = this.state;
         this.setState({ btnDisable: true }); // Disable submit button during submission
 

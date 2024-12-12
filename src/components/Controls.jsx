@@ -8,7 +8,7 @@ const Controls = () => {
   const unwantedKeys = ["_id", "createdAt", "updatedAt", "__v"];
   const toggleRef = useRef(false); // Ref to prevent multiple clicks
 
-  const [Loading, setLoading] = useState(false)
+  const [Loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
     const fetchData = async () => {
@@ -74,7 +74,6 @@ const Controls = () => {
     }
   };
 
-
   return (
     <div className="card controls">
       <div className="card-body">
@@ -82,9 +81,14 @@ const Controls = () => {
           <h5 className="my-4 text-capitalize primary-color fw-bold text-center">
             admin controls
           </h5>
-          <Link to="/cronsetting">
-          <p className="text-success">cronsettings</p>
-          </Link>
+          <div className="text-end my-4 px-2">
+            <Link to="/cronsetting">
+              <p className="fs-14 fw-semibold text-capitalize primary-color text-underline-none">
+                cron settings
+              </p>
+            </Link>
+          </div>
+
           <table className="table table-bordered text-center">
             <thead className="thead primary-bg">
               <tr>
@@ -105,18 +109,18 @@ const Controls = () => {
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="fs-13">
               {Object.keys(controlsData)
                 .filter((key) => !unwantedKeys.includes(key))
                 .map((control, index) => (
                   <tr key={index}>
                     <td>
-                      <p className="mb-0 fs-13 fw-semibold text-capitalize">
+                      <p className="mb-0 fs-13 lh-2 fw-semibold text-capitalize">
                         {control}
                       </p>
                     </td>
                     <td>
-                      <p className="mb-0 fs-13 fw-semibold text-capitalize">
+                      <p className="mb-0 fs-13 lh-2 fw-semibold text-capitalize">
                         {controlsData[control] ? "Enabled" : "Disabled"}
                       </p>
                     </td>

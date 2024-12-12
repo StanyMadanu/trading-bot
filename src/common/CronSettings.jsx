@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { backEndCallObj } from '../services/mainService';
-import Joi from 'joi-browser';
-import toast from 'react-hot-toast';
-import DisableAllCoins from './DisableAllCoins';
+import React, { useEffect, useState } from "react";
+import { backEndCallObj } from "../services/mainService";
+import Joi from "joi-browser";
+import toast from "react-hot-toast";
+import DisableAllCoins from "./DisableAllCoins";
 
 const CronSettings = () => {
   const [btnDisable, setBtnDisable] = useState(false);
   const [data, setData] = useState({
-    platform: '',
-    bot: '',
+    platform: "",
+    bot: "",
   });
   const [errors, setErrors] = useState({});
 
   // Joi Schema
   const schema = {
-    platform: Joi.string().valid('BINANCE', 'BITGET').required().label('Platform'),
-    bot: Joi.string().valid('AMM', 'FUTURES').required().label('Bot'),
+    platform: Joi.string()
+      .valid("BINANCE", "BITGET")
+      .required()
+      .label("Platform"),
+    bot: Joi.string().valid("AMM", "FUTURES").required().label("Bot"),
   };
 
   // Input Change Handler
@@ -49,7 +52,7 @@ const CronSettings = () => {
         toast.success(response.success);
       }
     } catch (error) {
-      toast.error('Failed to submit.');
+      toast.error("Failed to submit.");
     } finally {
       setBtnDisable(false);
     }
@@ -57,7 +60,7 @@ const CronSettings = () => {
 
   // Helper Functions for Rendering
   const renderSelect = (label, name, options) => (
-    <div>
+    <div className="mb-3">
       <label className="form-label">{label}</label>
       <select
         className="form-control"
@@ -76,39 +79,53 @@ const CronSettings = () => {
   );
 
   const renderButton = (label, className) => (
-    <button className={className} disabled={btnDisable}>
-      {label}
-    </button>
+    <div className="text-end px-2">
+      <button className={className} disabled={btnDisable}>
+        {label}
+      </button>
+    </div>
   );
 
   return (
     <>
-      <h5>Cron Settings</h5>
-      <div className="row my-4">
-        <div className="col-lg-3">
-          <div className="card">
-            <div className="card-header text-center">
-              <p className="mb-0 fw-bold fs-20">Sell All Coins</p>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleFormSubmit}>
-                {renderSelect('Platform', 'platform', [
-                  { id: 'default', value: '', label: '-- Select --' },
-                  { id: 'binance', value: 'BINANCE', label: 'Binance' },
-                  { id: 'bitget', value: 'BITGET', label: 'Bitget' },
-                ])}
-                {renderSelect('Bot', 'bot', [
-                  { id: 'default', value: '', label: '-- Select --' },
-                  { id: 'amm', value: 'AMM', label: 'Amm' },
-                  { id: 'futures', value: 'FUTURES', label: 'Futures' },
-                ])}
-                {renderButton('Submit', 'btn btn-primary mt-3')}
-              </form>
+      <div className="card">
+        <div className="card-body px-4">
+          <div className="container">
+            <h5 className="mt-3 mb-5 text-center primary-color fw-bold">
+              Cron Settings
+            </h5>
+            <div className="row my-4 justify-content-evenly">
+              <div className="col-xl-5 col-lg-5 col-md-5 col-12">
+                <div className="card shadow-sm border-0">
+                  <div className="card-header text-center primary-bg">
+                    <p className="mb-0 fw-bold fs-15 text-capitalize">
+                      Sell All Coins
+                    </p>
+                  </div>
+                  <div className="card-body">
+                    <form onSubmit={handleFormSubmit}>
+                      {renderSelect("Platform", "platform", [
+                        { id: "default", value: "", label: "-- Select --" },
+                        { id: "binance", value: "BINANCE", label: "Binance" },
+                        { id: "bitget", value: "BITGET", label: "Bitget" },
+                      ])}
+                      {renderSelect("Bot", "bot", [
+                        { id: "default", value: "", label: "-- Select --" },
+                        { id: "amm", value: "AMM", label: "Amm" },
+                        { id: "futures", value: "FUTURES", label: "Futures" },
+                      ])}
+                      {renderButton("Submit", "mt-4 px-3 py-2 rounded")}
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-5 col-lg-5 col-md-5 col-12">
+                <DisableAllCoins />
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <DisableAllCoins />
     </>
   );
 };

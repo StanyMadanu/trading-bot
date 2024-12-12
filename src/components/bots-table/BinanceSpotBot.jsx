@@ -145,7 +145,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Enable
+          enable bot
         </button>
       );
       break;
@@ -153,12 +153,12 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     case "ACTIVE":
       button = (
         <button
-          className="btn text-uppercase btn-danger"
+          className="text-uppercase theme-btn"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Disable
+          disable bot
         </button>
       );
       break;

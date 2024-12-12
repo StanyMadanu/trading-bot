@@ -2,19 +2,14 @@ import React from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import useFetchKeys from "./CotextTest";
 
-
 const Table = ({ data, thead }) => {
-
   const navigate = useNavigate();
 
-  const { getCoinicons , getFormattedDate } = useFetchKeys();
-
-
- 
+  const { getCoinicons, getFormattedDate } = useFetchKeys();
 
   return (
     <div className="table-responsive">
-      <table className="table table-bordered">
+      <table className="table table-bordered text-center">
         <thead className="thead primary-bg">
           <tr>
             {thead.map((head) => (
@@ -41,9 +36,7 @@ const Table = ({ data, thead }) => {
                       <p className="mb-0 fs-13 fw-semibold">
                         {data?.symbol || "NA"}
                       </p>
-                      <p>
-                        {getFormattedDate(data.updateTime)}
-                      </p>
+                      <p>{getFormattedDate(data.updateTime)}</p>
                     </td>
                     {/* <p className="mb-0 fs-13 fw-semibold">{data.symbol}</p> */}
                   </div>
@@ -66,7 +59,13 @@ const Table = ({ data, thead }) => {
 
           <tr>
             <td colSpan={3} className="text-center">
-              <div onClick={() => { navigate('/allDataTable', { state: { reduxName: "binanceFuture", type: "FUTURES" } }) }}>
+              <div
+                onClick={() => {
+                  navigate("/allDataTable", {
+                    state: { reduxName: "binanceFuture", type: "FUTURES" },
+                  });
+                }}
+              >
                 <button className="py-1">view all</button>
               </div>
             </td>

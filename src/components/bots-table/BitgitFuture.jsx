@@ -142,7 +142,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Enable
+          enable bot
         </button>
       );
       break;
@@ -150,12 +150,12 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     case "ACTIVE":
       button = (
         <button
-          className="text-uppercase btn theme-btn  btn-danger"
+          className="text-uppercase theme-btn"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          bot Disable
+          disable bot
         </button>
       );
       break;

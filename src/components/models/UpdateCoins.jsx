@@ -5,22 +5,27 @@ import Joi from "joi-browser";
 import Form from "../../basic/form";
 
 class UpdateCoins extends Form {
-  state = {
-    data: {
-      coin_id: "",
-      status: "",
-      platform: "BINANCE",
-      bot: "AMM",
-      pair: "",
-      price_precision: "",
-      quantity_precision: "",
-      target_percent: "",
-      divisible: "",
-      trade_amount: "",
-    },
-    errors: {},
-    btnDisable: false,
-  };
+
+  constructor(props) {
+    super(props);
+    console.log(props.coinList , "sdhhfdfh")
+    this.state = {
+      data: {
+        coin_id: props.coinList ? props.coinList.coin_id : "",
+        status: "",
+        platform: "BINANCE",
+        bot: "AMM",
+        pair: "",
+        price_precision: "",
+        quantity_precision: "",
+        target_percent: "",
+        divisible: "",
+        trade_amount: "",
+      },
+      errors: {},
+      btnDisable: false,
+    };
+  }
 
   schema = {
     coin_id: Joi.string().required().label("Coin ID"),
@@ -97,7 +102,6 @@ class UpdateCoins extends Form {
                     >
                       <option value="ACTIVE">Active</option>
                       <option value="INACTIVE">Inactive</option>
-                      <option value="DELETE">Delete</option>
                     </select>
                     {errors.status && (
                       <div className="text-danger">{errors.status}</div>

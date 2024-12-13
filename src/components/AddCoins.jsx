@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { MdDelete } from "react-icons/md";
 import { RiEdit2Fill } from "react-icons/ri";
 import coinService from "../services/CoinServices";
@@ -7,6 +7,7 @@ import Joi from "joi-browser";
 import Form from "../basic/form";
 import { toast } from "react-toastify";
 import UpdateCoins from "./models/UpdateCoins";
+import Loader from "../common/Loader";
 
 class AddCoins extends Form {
   state = {
@@ -26,6 +27,8 @@ class AddCoins extends Form {
       platform: "",
       bot: "",
     },
+    selectedItem: {},
+    toggleCoin: false,
   };
 
   schema = {
@@ -84,7 +87,8 @@ class AddCoins extends Form {
         platform: this.state.coinDelate.platform,
         bot: this.state.coinDelate.bot,
       };
-      const response = await coinService.deleteCoins(payload);
+      console.log(payload)
+      const response = await coinService.deleteCoins();
       toast.success(response.Success);
 
       if (!response) return;
@@ -158,11 +162,10 @@ class AddCoins extends Form {
                           {item.coin_id}
                         </td>
                         <td
-                          className={`text-uppercase fw-semibold ${
-                            item.status === "ACTIVE"
-                              ? "text-success"
-                              : "text-danger"
-                          }`}
+                          className={`text-uppercase fw-semibold ${item.status === "ACTIVE"
+                            ? "text-success"
+                            : "text-danger"
+                            }`}
                         >
                           {item.status}
                         </td>
@@ -176,13 +179,12 @@ class AddCoins extends Form {
                             className="primary-color me-3 cursor-pointer"
                             data-bs-toggle="modal"
                             data-bs-target="#updateCoinModal"
-                          >
+                            onClick={() => this.setState({ selectedItem: item })
+                            }>
                             <RiEdit2Fill size={18} />
                           </span>
                           <span
                             className="text-danger cursor-pointer"
-                            data-bs-toggle="modal"
-                            data-bs-target="#confirmDelete"
                             onClick={() =>
                               this.setState({
                                 coinDelate: {
@@ -190,8 +192,12 @@ class AddCoins extends Form {
                                   platform: item.platform,
                                   bot: item.bot,
                                 },
+                                // toggleCoin: true,
                               })
                             }
+                            data-bs-toggle="modal"
+                            data-bs-target="#confirmDelete"
+                            
                           >
                             <MdDelete size={18} />
                           </span>
@@ -210,11 +216,16 @@ class AddCoins extends Form {
         </div>
 
         {/* Modals */}
-        <ConfirmPopup
-          toggleBotStatus={this.handleDeleteCoins}
-          botStatus="delete"
-        />
-        <UpdateCoins />
+        <Suspense fallback={<Loader />}>
+          <ConfirmPopup
+            toggleBotStatus={this.handleDeleteCoins}
+            botStatus="delete"
+          />
+          {console.log(this.state.toggleCoin)}
+          {/* {this.state.toggleCoin && */}
+            < UpdateCoins coinList={this.state.selectedItem} />
+          {/* } */}
+        </Suspense>
 
         {/* Add Coin Modal */}
         <div
@@ -330,6 +341,10 @@ class AddCoins extends Form {
             </div>
           </div>
         </div>
+
+
+
+
       </div>
     );
   }

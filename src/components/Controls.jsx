@@ -56,7 +56,7 @@ const Controls = () => {
     // console.log("Payload sent to server:", payload);
 
     try {
-      const response = await backEndCallObj("admin/update_controls", payload);
+      const response = await backEndCallObj("/admin/update_controls", payload);
       if (!response || !response.success) {
         throw new Error("Invalid response from server");
       }

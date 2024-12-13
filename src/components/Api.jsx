@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { backEndCall, backEndCallObj } from "../services/mainService";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
 import { useLocation } from 'react-router-dom';
+import { profileRedux } from "./reduxStore/slice/profileSlice";
 
 
 const Api = ({ getProfile }) => {
@@ -11,8 +12,11 @@ const Api = ({ getProfile }) => {
   const [error, setErrors] = useState({})
   const { api_keys } = getProfile?.profile || {};
   const [btnDisable, setBtnDisable] = useState(false)
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const location = useLocation();
+  const dispatch = useDispatch();
+
   const { platform } = location.state || {}; //
 
   const [activeApi, setActiveApi] = useState(platform || "BINANCE");
@@ -105,18 +109,18 @@ const Api = ({ getProfile }) => {
       // console.log(keysResponse);
       const keysResponse = await backEndCall("/admin_get/profile");
       const { api_keys } = keysResponse?.profile;
-
-      // console.log(api_keys, apiType)
-
-      // console.log(api_keys?.[apiType]?.api_key)
+      // Dispatch Redux action to update profile
+      dispatch(profileRedux(keysResponse?.profile));
 
 
-      setData((prevData) => ({
-        ...prevData,
-        api_key: api_keys?.[apiType]?.api_key,
-        secret_key: '',
-        passphrase: ''
-      }));
+      // Clear sensitive inputs
+      setData({
+        api_key: api_keys?.[apiType]?.api_key || "",
+        secret_key: "",
+        passphrase: "",
+      });
+     
+
     } catch (error) {
       toast.error(error?.response?.data || "Something went wrong");
     } finally {
@@ -182,7 +186,7 @@ const Api = ({ getProfile }) => {
   );
 
   return (
-    <div className="api">
+    <div className="api" key={refreshKey}>
       <div className="card">
         <div className="card-body">
           <div className="container">

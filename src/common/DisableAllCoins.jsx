@@ -26,15 +26,15 @@ class DisableAllCoins extends Form {
   }
 
   // Override handleSubmit function if you need custom logic
-  handleSubmit = async (e) => {
-    e.preventDefault();
-    const { data } = this.state;
+  doSubmit = async () => {
+    const { data ,errors } = this.state;
 
-    // console.log(data)
+    console.log(errors)
 
     this.setState({ btnDisable: true });
+    console.log(data)
     try {
-      const response = await backEndCallObj("/admin/disable_all_coins", data);
+      const response = await backEndCallObj("/admin/disable_all_coins",data );
       if (response?.success) {
         toast.success(response.success);
       }

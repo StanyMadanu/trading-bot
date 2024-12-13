@@ -5,13 +5,6 @@ import { backEndCallObj } from "../../services/mainService";
 import { toast } from "react-toastify";
 
 class EditBinanceSpot extends Form {
-    // Validation Schema
-    schema = {
-        platform: Joi.string().valid("BINANCE", "BITGET").required(),
-        botType: Joi.string().valid("AMM", "FUTURES").required(),
-        invest: Joi.number().positive().required(),
-    };
-
     constructor(props) {
         super(props);
         this.state = {
@@ -25,18 +18,30 @@ class EditBinanceSpot extends Form {
         };
     }
 
+    // Validation Schema
+    schema = {
+        platform: Joi.string().valid("BINANCE", "BITGET").required(),
+        botType: Joi.string().valid("AMM", "FUTURES").required(),
+        invest: Joi.number().positive().required(),
+    };
+
     // Handle Submit Logic
     doSubmit = async () => {
-        console.log(data)
+       
         const { data } = this.state;
+        console.log(data)
         this.setState({ btnDisable: true }); // Disable submit button during submission
 
         try {
-            const formattedData = { ...data };
+            const formattedData = { 
+                bot:data.botType,
+                platform:data.platform,
+                investment:data.invest,
+             };
             // console.log("Submitting Data: ", formattedData);
 
             // API call to submit edited investment
-            const response = await backEndCallObj("/admin/update_investment", formattedData);
+            const response = await backEndCallObj("/admin/update_investment",formattedData );
 
             // Show success toast
             toast.success(response?.success || "Investment updated successfully");
@@ -95,22 +100,23 @@ class EditBinanceSpot extends Form {
                                         <p className="fs-13 text-danger">{errors.invest}</p>
                                     )}
                                 </div>
+                                <div className="modal-footer">
+                                    <div className="d-flex justify-content-center w-100 align-items-center">
+                                        <button
+                                            type="submit"
+                                            className="btn btn-success"
+
+                                            disabled={btnDisable} // Disable button during submission
+                                        >
+                                            {btnDisable ? "Submitting..." : "Submit"}
+                                        </button>
+                                    </div>
+                                </div>
                             </form>
                         </div>
 
                         {/* Modal Footer */}
-                        <div className="modal-footer">
-                            <div className="d-flex justify-content-center w-100 align-items-center">
-                                <button
-                                    type="submit"
-                                    className="btn btn-success"
-                                    onClick={this.handleSubmit}
-                                    disabled={btnDisable} // Disable button during submission
-                                >
-                                    {btnDisable ? "Submitting..." : "Submit"}
-                                </button>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>

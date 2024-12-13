@@ -54,6 +54,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
 
   const modelRef = useRef(null);
 
+
   useEffect(() => {
     if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
       fetchData();
@@ -78,7 +79,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       status:
         bots?.BINANCE?.FUTURES?.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
     };
-
+    console.log(formattedData)
     try {
       setBtnDisable(true);
       const response = await backEndCallObj(
@@ -96,9 +97,14 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
 
   const submitBot = async (data) => {
     setBtnDisable(true);
-    // console.log(data)
+    const formattedData = {
+      platform:data.platform,
+      bot:data.botType,
+      total_investment:data.total_investment,
+    };
+    console.log(formattedData)
     try {
-      const response = await backEndCallObj("/admin/add_bot", data);
+      const response = await backEndCallObj("/admin/add_bot", formattedData);
       toast.success(response?.success);
     } catch (error) {
       toast.error(error?.response?.data || "Error adding bot");

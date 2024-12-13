@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { backEndCall, getCurrentUser, getJwt } from "../services/mainService";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { profileRedux } from "./reduxStore/slice/profileSlice";
+import {getCurrentUser } from "../services/mainService";
+import {useDispatch, useSelector } from "react-redux";
 import mainLogo from "../assets/images/7pools-logo.png";
 import profileImg from "../assets/images/profile-img.png";
-import { RiSettings3Fill } from "react-icons/ri";
 import { FaPowerOff } from "react-icons/fa";
 import { AiFillControl, AiFillApi } from "react-icons/ai";
-import { FaUser } from "react-icons/fa6";
 import { FaBitcoin } from "react-icons/fa";
 import useFetchKeys from "../common/CotextTest";
 

@@ -31,7 +31,11 @@ class EditBinanceFuture extends Form {
         this.setState({ btnDisable: true }); // Disable submit button during submission
 
         try {
-            const formattedData = { ...data };
+            const formattedData = {
+                bot: data.botType,
+                platform: data.platform,
+                investment: data.invest,
+            };
             // console.log("Submitting Data: ", formattedData);
 
             // API call to submit edited investment
@@ -94,22 +98,23 @@ class EditBinanceFuture extends Form {
                                         <p className="fs-13 text-danger">{errors.invest}</p>
                                     )}
                                 </div>
+                                <div className="modal-footer">
+                                    <div className="d-flex justify-content-center w-100 align-items-center">
+                                        <button
+                                            type="submit"
+                                            className="btn btn-success"
+                                           
+                                            disabled={btnDisable} // Disable button during submission
+                                        >
+                                            {btnDisable ? "Submitting..." : "Submit"}
+                                        </button>
+                                    </div>
+                                </div>
                             </form>
                         </div>
 
                         {/* Modal Footer */}
-                        <div className="modal-footer">
-                            <div className="d-flex justify-content-center w-100 align-items-center">
-                                <button
-                                    type="submit"
-                                    className="btn btn-success"
-                                    onClick={this.handleSubmit}
-                                    disabled={btnDisable} // Disable button during submission
-                                >
-                                    {btnDisable ? "Submitting..." : "Submit"}
-                                </button>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>

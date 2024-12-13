@@ -1,17 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import useFetchKeys from "./CotextTest";
+import { backEndCallObj, getCurrentUser } from "../services/mainService";
+import { toast } from "react-toastify";
+import ConfirmPopup from "../components/models/ConfirmPopup";
 
 const AllDataTable = () => {
   // Get reduxName and type from location state
   const location = useLocation();
+  const [btnDisabled, setBtnDisabled] = useState(false)
+  const [closeTradeBtn , setCloseTradeBtn ] = useState({
+    pair: "",
+  })
   const { reduxName, type } = location.state || {};
+
+  const user = getCurrentUser();
+
+
 
   const { getCoinicons, getFormattedDate } = useFetchKeys();
 
+
+
   // Access Redux state
   const getRedux = useSelector((state) => state?.[reduxName]);
+
+  const closeTrade = async () => {
+    setBtnDisabled(true);
+
+    const formattedData = {
+      pair : closeTradeBtn.pair,
+    }
+
+    try {
+      const response = await backEndCallObj(
+        "/admin/close_future_coin",
+        formattedData
+      );
+      // console.log(response, "aaa");
+      toast.success(response?.success);
+      getCoinicons();
+    } catch (error) {
+      toast.error(error?.response?.data);
+    }
+    finally {
+      setBtnDisabled(false);
+    }
+  }
 
   return (
     <div className="card">
@@ -62,6 +98,17 @@ const AllDataTable = () => {
                       Target
                     </p>
                   </th>
+                  {
+                    user.userType === "ADMIN" ? (
+                      <th>
+                        <p className="mb-0 primary-color fs-14 text-center">
+                          Action
+                        </p>
+                      </th>
+                    ) : (
+                      ''
+                    )
+                  }
                 </tr>
               </thead>
               <tbody className="tbody">
@@ -105,6 +152,23 @@ const AllDataTable = () => {
                           {parseFloat(row?.breakEvenPrice || "0").toFixed(2)}
                         </p>
                       </td>
+                      {
+                        user.userType === "ADMIN" && (
+                          <td>
+                            <p className="mb-0 fs-13 fw-semibold">
+                              <button className="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#confirmDelete"
+                                onClick={() =>
+                                  this.setState({
+                                    setCloseTradeBtn: {
+                                     pair: row.symbol,
+                                    },
+                                  })
+                                }>Close</button>
+                            </p>
+                          </td>
+                        )
+                      }
                     </tr>
                   ))
                 ) : (
@@ -116,6 +180,7 @@ const AllDataTable = () => {
                 )}
               </tbody>
             </table>
+            
           ) : type === "AMM" ? (
             // Render Table for AMM Type
             <table className="table table-bordered text-center">
@@ -181,9 +246,8 @@ const AllDataTable = () => {
                       </td>
                       <td>
                         <p
-                          className={`mb-0 fs-13 fw-semibold ${
-                            item.side === "BUY" ? "text-success" : "text-danger"
-                          }`}
+                          className={`mb-0 fs-13 fw-semibold ${item.side === "BUY" ? "text-success" : "text-danger"
+                            }`}
                         >
                           {item.side}
                         </p>
@@ -213,6 +277,8 @@ const AllDataTable = () => {
           )}
         </div>
       </div>
+      <ConfirmPopup toggleBotStatus={closeTrade}
+          botStatus="Close" msg='Close Trade' />
     </div>
   );
 };

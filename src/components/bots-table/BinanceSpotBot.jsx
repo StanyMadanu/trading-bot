@@ -110,8 +110,13 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   const submitBot = async (data) => {
     setBtnDisable(true);
     // console.log(data)
+    const formattedData = {
+      platform:data.platform,
+      bot:data.botType,
+      total_investment:data.total_investment,
+    };
     try {
-      const response = await backEndCallObj("/admin/add_bot", data);
+      const response = await backEndCallObj("/admin/add_bot", formattedData);
       toast.success(response?.success);
     } catch (error) {
       toast.error(error?.response?.data || "Error adding bot");

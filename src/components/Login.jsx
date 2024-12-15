@@ -120,95 +120,97 @@ class Login extends Form {
           </div>
 
           <div className="col-xl-4 col-lg-5 col-md-6 col-sm-8 col-11">
-            <div className="d-flex flex-column align-items-center justify-content-center login-credentials-wrapper rounded px-4 px-lg-5 py-5">
-              {this.state.isLogin ? (
-                <>
-                  <h4 className="mb-0 fw-bold">Welcome back</h4>
-                  <p className="mb-5 fs-13">Please enter your details</p>
-                  <div className="inputGroup field mb-4">
-                    <input
-                      className="inputField px-2"
-                      type="input"
-                      value={data.email}
-                      placeholder="Name"
-                      name="email"
-                      id="userEmail"
-                      required=""
-                      onChange={this.handleChange}
-                    />
-                    <label htmlFor="userEmail" className="inputLabel">
-                      Email
-                    </label>
-                    <span className="mb-0 fs-13 text-danger">
-                      {errors?.email}
-                    </span>
-                  </div>
+            <form>
+              <div className="d-flex flex-column align-items-center justify-content-center login-credentials-wrapper rounded px-4 px-lg-5 py-5">
+                {this.state.isLogin ? (
+                  <>
+                    <h4 className="mb-0 fw-bold">Welcome back</h4>
+                    <p className="mb-5 fs-13">Please enter your details</p>
+                    <div className="inputGroup field mb-4">
+                      <input
+                        className="inputField px-2"
+                        type="input"
+                        value={data.email}
+                        placeholder="Name"
+                        name="email"
+                        id="userEmail"
+                        required=""
+                        onChange={this.handleChange}
+                      />
+                      <label htmlFor="userEmail" className="inputLabel">
+                        Email
+                      </label>
+                      <span className="mb-0 fs-13 text-danger">
+                        {errors?.email}
+                      </span>
+                    </div>
 
-                  <div className="inputGroup field mb-4">
-                    <input
-                      className="inputField px-2"
-                      type="password"
-                      name="password"
-                      value={data.password}
-                      placeholder="Password"
-                      id="userPassword"
-                      required=""
-                      onChange={this.handleChange}
-                    />
-                    <label htmlFor="userPassword" className="inputLabel">
-                      Password
-                    </label>
-                    <span className="fs-13 text-danger">
-                      {errors?.password}
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <h4 className="mb-5 primary-color fw-bold">Enter OTP</h4>
-                  <div className="inputGroup field mb-4">
-                    <input
-                      className="inputField px-2"
-                      type="text"
-                      placeholder="OTP"
-                      id="userOtp"
-                      value={otp}
-                      maxLength={6}
-                      name="otp"
-                      required=""
-                      onChange={(e) =>
-                        this.setState({
-                          otp: e.target.value.replace(/[^\d\.]/g, ""),
-                        })
-                      }
-                    />
-                    <label htmlFor="userOtp" className="inputLabel">
-                      OTP
-                    </label>
-                  </div>
-                </>
-              )}
-              <Link to="" className="fs-13 ms-auto mb-2 primary-color">
-                Forgot password?
-              </Link>
-
-              <div className="w-100 my-3">
-                <button
-                  className="w-100"
-                  onClick={this.handleSubmit}
-                  disabled={this.state.btnDisable}
-                >
-                  {this.state.isLogin ? "Login" : "Verify OTP"}
-                </button>
-              </div>
-
-              <div className="my-3">
-                <span className="fs-13">Are you new? </span>
+                    <div className="inputGroup field mb-4">
+                      <input
+                        className="inputField px-2"
+                        type="password"
+                        name="password"
+                        value={data.password}
+                        placeholder="Password"
+                        id="userPassword"
+                        required=""
+                        onChange={this.handleChange}
+                      />
+                      <label htmlFor="userPassword" className="inputLabel">
+                        Password
+                      </label>
+                      <span className="fs-13 text-danger">
+                        {errors?.password}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h4 className="mb-5 primary-color fw-bold">Enter OTP</h4>
+                    <div className="inputGroup field mb-4">
+                      <input
+                        className="inputField px-2"
+                        type="text"
+                        placeholder="OTP"
+                        id="userOtp"
+                        value={otp}
+                        maxLength={6}
+                        name="otp"
+                        required=""
+                        onChange={(e) =>
+                          this.setState({
+                            otp: e.target.value.replace(/[^\d\.]/g, ""),
+                          })
+                        }
+                      />
+                      <label htmlFor="userOtp" className="inputLabel">
+                        OTP
+                      </label>
+                    </div>
+                  </>
+                )}
                 <Link to="" className="fs-13 ms-auto mb-2 primary-color">
-                  Create an Account
+                  Forgot password?
                 </Link>
+
+                <div className="w-100 my-3">
+                  <button
+                    className="w-100"
+                    onClick={this.handleSubmit}
+                    disabled={this.state.btnDisable}
+                  >
+                    {this.state.isLogin ? "Login" : "Verify OTP"}
+                  </button>
+                </div>
+
+                <div className="my-3">
+                  <span className="fs-13">Are you new? </span>
+                  <Link to="" className="fs-13 ms-auto mb-2 primary-color">
+                    Create an Account
+                  </Link>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

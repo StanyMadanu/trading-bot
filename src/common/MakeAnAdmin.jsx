@@ -107,9 +107,11 @@ class MakeAnAdmin extends Form {
   renderButton = (label, className) => {
     const { btnDisable } = this.state;
     return (
-      <button className={className} disabled={btnDisable}>
-        {label}
-      </button>
+      <div className="text-end">
+        <button className={className} disabled={btnDisable}>
+          {label}
+        </button>
+      </div>
     );
   };
 
@@ -152,7 +154,7 @@ class MakeAnAdmin extends Form {
             </div>
 
             {/* Submit Button */}
-            {this.renderButton("Submit", "text-uppercase btn btn-primary mt-3")}
+            {this.renderButton("Submit", "text-capitalize rounded mt-2")}
           </form>
         </div>
       </div>

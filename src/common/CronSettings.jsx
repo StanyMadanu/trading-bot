@@ -95,8 +95,8 @@ const CronSettings = () => {
             <h5 className="mt-3 mb-5 text-center primary-color fw-bold">
               Cron Settings
             </h5>
-            <div className="row my-4 justify-content-evenly">
-              <div className="col-xl-4 col-lg-4 col-md-4 col-12">
+            <div className="row my-4 justify-content-evenly row-gap-3">
+              <div className="col-xl-4 col-lg-4 col-md-6 col-12">
                 <div className="card shadow-sm border-0">
                   <div className="card-header text-center primary-bg">
                     <p className="mb-0 fw-bold fs-15 text-capitalize">
@@ -120,10 +120,10 @@ const CronSettings = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-4 col-lg-4 col-md-4 col-12">
+              <div className="col-xl-4 col-lg-4 col-md-6 col-12">
                 <DisableAllCoins />
               </div>
-              <div className="col-xl-4 col-lg-4 col-md-4 col-12">
+              <div className="col-xl-4 col-lg-4 col-md-6 col-12">
                 <MakeAnAdmin />
               </div>
             </div>

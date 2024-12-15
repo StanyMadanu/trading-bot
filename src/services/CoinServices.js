@@ -17,8 +17,7 @@ const addCoins = async (payload) => {
   return response;
 };
 const updateCoins = async (payload) => {
-  console.log(payload)
-  const data = await backEndCallObj("/admin/update_coin", );
+  const data = await backEndCallObj("/admin/update_coin",payload );
   // console.log(data);
   if (!data) return null;
   return data;

@@ -40,9 +40,17 @@ class MakeAnAdmin extends Form {
         this.setState({ btnDisable: true });
         try {
             const response = await backEndCallObj("/admin/add_admin", data);//data
-            if (response?.success) {
-                toast.success(response.success);
+            if (response) {
+                toast.success(response.data);
             }
+            // now clear the form inputs 
+            this.setState({ data: {
+                email:'',
+                user_name:'',
+                password:'',
+                user_type:'',
+                access_type:'',
+            } });
         } catch (error) {
             toast.error(error.message || 'Error occurred while adding admin.');
         } finally {

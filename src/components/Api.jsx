@@ -11,8 +11,9 @@ const Api = ({ getProfile }) => {
   const [data, setData] = useState({});
   const [error, setErrors] = useState({})
   const { api_keys } = getProfile?.profile || {};
-  const [btnDisable, setBtnDisable] = useState(false)
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [btnDisable, setBtnDisable] = useState(false);
+
+  console.log(getProfile, "getProfile")
 
   const location = useLocation();
   const dispatch = useDispatch();
@@ -36,15 +37,20 @@ const Api = ({ getProfile }) => {
 
 
   useEffect(() => {
-    // console.log(activeApi)
-    if (api_keys) {
-      // console.log(activeApi)
+    if (!api_keys?.[activeApi.toUpperCase()]) {
       setData({
-        api_key: api_keys?.[activeApi.toUpperCase()]?.api_key || "",
-        secret_key: "", // Reset secret_key as it should not be pre-filled
+        api_key: "",
+        secret_key: "",
       });
     }
-  }, [activeApi, getProfile]); // Run when `getProfile` or `activeApi` changes
+    else {
+      setData({
+        api_key: api_keys?.[activeApi.toUpperCase()]?.api_key || "",
+        secret_key: "",
+       
+      })
+    }
+  }, [api_keys, activeApi, getProfile]); // Depend on api_keys and activeApi
 
   const validate = (data) => {
     const result = Joi.validate(data, schema, { abortEarly: false });
@@ -94,38 +100,39 @@ const Api = ({ getProfile }) => {
       api_key: data.api_key,
       secret_key: data.secret_key,
       passphrase: data?.passphrase,
-      keys: apiType, // "BINANCE" or "BITGET"
+      keys: apiType,
       type: api_keys?.[apiType]?.api_key ? "UPDATE" : "ADD",
     };
-
-    // console.log(formattedData)
 
     try {
       const response = await backEndCallObj("/admin/add_update_keys", formattedData);
       if (!response) return;
       toast.success(response?.success);
 
-
-      // console.log(keysResponse);
       const keysResponse = await backEndCall("/admin_get/profile");
-      const { api_keys } = keysResponse?.profile;
-      // Dispatch Redux action to update profile
-      dispatch(profileRedux(keysResponse?.profile));
+      const updatedProfile = { ...keysResponse };
 
+      console.log(updatedProfile)
 
-      // Clear sensitive inputs
+      await dispatch(profileRedux(updatedProfile));
+
       setData({
-        api_key: api_keys?.[apiType]?.api_key || "",
+        api_key: updatedProfile?.profile?.api_keys?.[apiType]?.api_key || "",
         secret_key: "",
         passphrase: "",
       });
-     
 
     } catch (error) {
       toast.error(error?.response?.data || "Something went wrong");
     } finally {
       setBtnDisable(false);
     }
+  };
+
+  const getButtonLabel = (apiType) => {
+    if (btnDisable) return "Please Wait...";
+    console.log(apiType, api_keys)
+    return api_keys?.[apiType]?.api_key ? "Update" : "Add";
   };
 
   // Updated renderForm function
@@ -176,17 +183,15 @@ const Api = ({ getProfile }) => {
       }
 
       <div className="text-end">
-        <button className="text-capitalize" disabled={btnDisable}>
-          {/* {console.log(apiType)} */}
-          {/* {console.log(api_keys?.[apiType]?.api_key)} */}
-          {btnDisable ? "Wait..." : api_keys?.[apiType]?.api_key ? "Update" : "Add"}
+        <button className="btn btn-primary text-capitalize" disabled={btnDisable}>
+          {getButtonLabel(apiType)}
         </button>
       </div>
     </form>
   );
 
   return (
-    <div className="api" key={refreshKey}>
+    <div className="api" >
       <div className="card">
         <div className="card-body">
           <div className="container">

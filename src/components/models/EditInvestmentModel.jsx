@@ -114,19 +114,7 @@ class EditInvestment extends Form {
                             </form>
                         </div>
 
-                        {/* Modal Footer */}
-                        <div className="modal-footer">
-                            <div className="d-flex justify-content-center w-100 align-items-center">
-                                <button
-                                    type="submit"
-                                    className="btn btn-success"
-                                    onClick={this.handleSubmit}
-                                    disabled={btnDisable} // Disable button during submission
-                                >
-                                    {btnDisable ? "Submitting..." : "Submit"}
-                                </button>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

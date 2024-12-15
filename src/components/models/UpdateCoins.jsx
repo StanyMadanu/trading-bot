@@ -8,19 +8,18 @@ class UpdateCoins extends Form {
 
   constructor(props) {
     super(props);
-    console.log(props.coinList , "sdhhfdfh")
     this.state = {
       data: {
-        coin_id: props.coinList ? props.coinList.coin_id : "",
-        status: "",
-        platform: "BINANCE",
-        bot: "AMM",
-        pair: "",
-        price_precision: "",
-        quantity_precision: "",
-        target_percent: "",
-        divisible: "",
-        trade_amount: "",
+        coin_id: props.coinList ? props?.coinList?.item?.coin_id : "",
+        status: props.coinList ? props?.coinList?.item?.status : "",
+        platform: props.coinList ? props?.coinList?.item?.platform :"BINANCE",
+        bot: props.coinList ? props?.coinList?.item?.bot :"AMM",
+        pair: props.coinList ? props?.coinList?.item?.pair :"",
+        price_precision:props.coinList ? props?.coinList?.item?.price_precision :"",
+        quantity_precision:props.coinList ? props?.coinList?.item?.quantity_precision :"",
+        target_percent:props.coinList ? props?.coinList?.item?.target_percent :"",
+        divisible:props.coinList ? props?.coinList?.item?.divisible :"",
+        trade_amount: props.coinList ? props?.coinList?.item?.trade_amount :"",
       },
       errors: {},
       btnDisable: false,
@@ -65,9 +64,31 @@ class UpdateCoins extends Form {
     }
   };
 
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.coinList !== this.props.coinList) {
+      const coin = this.props.coinList?.item || {};
+      this.setState({
+        data: {
+          coin_id: coin.coin_id || "",
+          status: coin.status || "",
+          platform: coin.platform || "BINANCE",
+          bot: coin.bot || "AMM",
+          pair: coin.pair || "",
+          price_precision: coin.price_precision || "",
+          quantity_precision: coin.quantity_precision || "",
+          target_percent: coin.target_percent || "",
+          divisible: coin.divisible || "",
+          trade_amount: coin.trade_amount || "",
+        },
+      });
+    }
+  }
+
   render() {
     const { data, errors, btnDisable } = this.state;
-    // console.log(data)
+
+        // console.log(data)
     return (
       <div
         className="modal fade"

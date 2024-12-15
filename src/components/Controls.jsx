@@ -7,6 +7,7 @@ const Controls = () => {
   const [controlsData, setControlsData] = useState({});
   const unwantedKeys = ["_id", "createdAt", "updatedAt", "__v"];
   const toggleRef = useRef(false); // Ref to prevent multiple clicks
+  const [checkToggle, setCheckToggle] = useState(false);
 
   const [Loading, setLoading] = useState(false);
 
@@ -14,9 +15,25 @@ const Controls = () => {
     const fetchData = async () => {
       try {
         const data = await backEndCall("/admin_get/get_controls");
+        console.log(data.success)
+
+
         if (data?.success) {
           // console.log(data);
           setControlsData(data.success);
+
+
+          const controlWithTrue = data.success.find((control) => control.name === "control_name" && control.value === true);
+
+          if (controlWithTrue) {
+            setCheckToggle(true); // Set toggleState to true
+          } else {
+            setCheckToggle(false); // Fallback to false if no control found
+          }
+
+
+
+
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -133,6 +150,7 @@ const Controls = () => {
                           className="toggle-input"
                           id={`toggle-${index}`}
                           type="checkbox"
+                          checked={checkToggle}
                         />
                         <label
                           className="toggle-label"

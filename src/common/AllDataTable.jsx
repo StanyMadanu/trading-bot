@@ -10,14 +10,14 @@ const AllDataTable = () => {
   // Get reduxName and type from location state
   const location = useLocation();
   const [btnDisabled, setBtnDisabled] = useState(false)
-  const [closeTradeBtn , setCloseTradeBtn ] = useState({
+  const [closeTradeBtn, setCloseTradeBtn] = useState({
     pair: "",
   })
   const { reduxName, type } = location.state || {};
 
   const user = getCurrentUser();
 
-
+  console.log(user)
 
   const { getCoinicons, getFormattedDate } = useFetchKeys();
 
@@ -30,13 +30,14 @@ const AllDataTable = () => {
     setBtnDisabled(true);
 
     const formattedData = {
-      pair : closeTradeBtn.pair,
+      pair: closeTradeBtn.pair,
     }
+
+    console.log(formattedData)
 
     try {
       const response = await backEndCallObj(
-        "/admin/close_future_coin",
-        formattedData
+        "/admin/close_future_coin", formattedData
       );
       // console.log(response, "aaa");
       toast.success(response?.success);
@@ -47,6 +48,13 @@ const AllDataTable = () => {
     finally {
       setBtnDisabled(false);
     }
+  }
+
+
+  const handleCloseClick = (row) => {
+    setCloseTradeBtn({
+      pair: row.symbol,  // Set the pair as the clicked row's symbol
+    });
   }
 
   return (
@@ -99,7 +107,7 @@ const AllDataTable = () => {
                     </p>
                   </th>
                   {
-                    user.userType === "ADMIN" ? (
+                    user.user_type === "ADMIN" ? (
                       <th>
                         <p className="mb-0 primary-color fs-14 text-center">
                           Action
@@ -153,18 +161,13 @@ const AllDataTable = () => {
                         </p>
                       </td>
                       {
-                        user.userType === "ADMIN" && (
+                        user.user_type === "ADMIN" && (
                           <td>
                             <p className="mb-0 fs-13 fw-semibold">
                               <button className="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#confirmDelete"
-                                onClick={() =>
-                                  this.setState({
-                                    setCloseTradeBtn: {
-                                     pair: row.symbol,
-                                    },
-                                  })
-                                }>Close</button>
+                                onClick={() => handleCloseClick(row)}
+                              >Close</button>
                             </p>
                           </td>
                         )
@@ -180,7 +183,7 @@ const AllDataTable = () => {
                 )}
               </tbody>
             </table>
-            
+
           ) : type === "AMM" ? (
             // Render Table for AMM Type
             <table className="table table-bordered text-center">
@@ -277,9 +280,9 @@ const AllDataTable = () => {
           )}
         </div>
       </div>
-      <ConfirmPopup toggleBotStatus={closeTrade}
-          botStatus="Close" msg='Close Trade' />
-    </div>
+      <ConfirmPopup label="Close Trade" toggleBotStatus={closeTrade}
+        botStatus="Close" msg='Close Trade' />
+    </div >
   );
 };
 

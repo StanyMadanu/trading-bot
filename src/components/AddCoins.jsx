@@ -6,8 +6,11 @@ import ConfirmPopup from "./models/ConfirmPopup";
 import Joi from "joi-browser";
 import Form from "../basic/form";
 import { toast } from "react-toastify";
-import UpdateCoins from "./models/UpdateCoins";
+// import UpdateCoins from "./models/UpdateCoins";
 import Loader from "../common/Loader";
+
+const UpdateCoins = lazy(() => import("./models/UpdateCoins"));
+
 
 class AddCoins extends Form {
   state = {
@@ -27,8 +30,8 @@ class AddCoins extends Form {
       platform: "",
       bot: "",
     },
-    selectedItem: {},
-    toggleCoin: false,
+    modalData: {},
+    modalShow: false,
   };
 
   schema = {
@@ -64,6 +67,23 @@ class AddCoins extends Form {
     }
   }
 
+  // Method to update modal data and show the modal
+  handleShowModal = (item) => {
+    this.setState({
+      modalData: item,
+      modalShow: true, // Show the modal
+    });
+
+    const modalElement = document.getElementById("updateCoinModal");
+    // if (modalElement) {
+      const modal = new window.bootstrap.Modal(modalElement);
+      modal.show();
+    // } else {
+    //   console.error("Modal element not found!");
+    // }
+  };
+
+
   doSubmit = async () => {
     this.setState({ btnDisable: true });
     try {
@@ -77,6 +97,9 @@ class AddCoins extends Form {
       this.setState({ btnDisable: false });
     }
   };
+
+
+
 
   handleDeleteCoins = async () => {
     this.setState({ btnDisable: true });
@@ -177,9 +200,7 @@ class AddCoins extends Form {
                         <td>
                           <span
                             className="primary-color me-3 cursor-pointer"
-                            data-bs-toggle="modal"
-                            data-bs-target="#updateCoinModal"
-                            onClick={() => this.setState({ selectedItem: item })
+                            onClick={() => this.handleShowModal({ item })
                             }>
                             <RiEdit2Fill size={18} />
                           </span>
@@ -197,7 +218,7 @@ class AddCoins extends Form {
                             }
                             data-bs-toggle="modal"
                             data-bs-target="#confirmDelete"
-                            
+
                           >
                             <MdDelete size={18} />
                           </span>
@@ -216,15 +237,15 @@ class AddCoins extends Form {
         </div>
 
         {/* Modals */}
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={"loading...!"}>
           <ConfirmPopup
             toggleBotStatus={this.handleDeleteCoins}
             botStatus="delete"
           />
-          {console.log(this.state.toggleCoin)}
-          {/* {this.state.toggleCoin && */}
-            < UpdateCoins coinList={this.state.selectedItem} />
-          {/* } */}
+
+          {/* {this.state.modalShow && ( */}
+            <UpdateCoins coinList={this.state.modalData} />
+          {/* )} */}
         </Suspense>
 
         {/* Add Coin Modal */}

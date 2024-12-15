@@ -9,19 +9,17 @@ import ConfirmPopup from "../components/models/ConfirmPopup";
 const AllDataTable = () => {
   // Get reduxName and type from location state
   const location = useLocation();
-  const [btnDisabled, setBtnDisabled] = useState(false)
+  const [btnDisabled, setBtnDisabled] = useState(false);
   const [closeTradeBtn, setCloseTradeBtn] = useState({
     pair: "",
-  })
+  });
   const { reduxName, type } = location.state || {};
 
   const user = getCurrentUser();
 
-  console.log(user)
+  console.log(user);
 
   const { getCoinicons, getFormattedDate } = useFetchKeys();
-
-
 
   // Access Redux state
   const getRedux = useSelector((state) => state?.[reduxName]);
@@ -31,31 +29,30 @@ const AllDataTable = () => {
 
     const formattedData = {
       pair: closeTradeBtn.pair,
-    }
+    };
 
-    console.log(formattedData)
+    console.log(formattedData);
 
     try {
       const response = await backEndCallObj(
-        "/admin/close_future_coin", formattedData
+        "/admin/close_future_coin",
+        formattedData
       );
       // console.log(response, "aaa");
       toast.success(response?.success);
       getCoinicons();
     } catch (error) {
       toast.error(error?.response?.data);
-    }
-    finally {
+    } finally {
       setBtnDisabled(false);
     }
-  }
-
+  };
 
   const handleCloseClick = (row) => {
     setCloseTradeBtn({
-      pair: row.symbol,  // Set the pair as the clicked row's symbol
+      pair: row.symbol, // Set the pair as the clicked row's symbol
     });
-  }
+  };
 
   return (
     <div className="card">
@@ -66,7 +63,7 @@ const AllDataTable = () => {
           </Link>
         </div>
 
-        <h5 className="primary-color fw-bold text-capitalize text-center mb-3 text-decoration-underline">
+        <h5 className="primary-color fw-bold text-capitalize text-center mb-3">
           {type === "FUTURES" ? "FUTURES" : "AMM"} table data
         </h5>
 
@@ -106,17 +103,15 @@ const AllDataTable = () => {
                       Target
                     </p>
                   </th>
-                  {
-                    user.user_type === "ADMIN" ? (
-                      <th>
-                        <p className="mb-0 primary-color fs-14 text-center">
-                          Action
-                        </p>
-                      </th>
-                    ) : (
-                      ''
-                    )
-                  }
+                  {user.user_type === "ADMIN" ? (
+                    <th>
+                      <p className="mb-0 primary-color fs-14 text-center">
+                        Action
+                      </p>
+                    </th>
+                  ) : (
+                    ""
+                  )}
                 </tr>
               </thead>
               <tbody className="tbody">
@@ -160,18 +155,20 @@ const AllDataTable = () => {
                           {parseFloat(row?.breakEvenPrice || "0").toFixed(2)}
                         </p>
                       </td>
-                      {
-                        user.user_type === "ADMIN" && (
-                          <td>
-                            <p className="mb-0 fs-13 fw-semibold">
-                              <button className="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#confirmDelete"
-                                onClick={() => handleCloseClick(row)}
-                              >Close</button>
-                            </p>
-                          </td>
-                        )
-                      }
+                      {user.user_type === "ADMIN" && (
+                        <td>
+                          <p className="mb-0 fs-13 fw-semibold">
+                            <button
+                              className="btn btn-primary btn-sm"
+                              data-bs-toggle="modal"
+                              data-bs-target="#confirmDelete"
+                              onClick={() => handleCloseClick(row)}
+                            >
+                              Close
+                            </button>
+                          </p>
+                        </td>
+                      )}
                     </tr>
                   ))
                 ) : (
@@ -183,7 +180,6 @@ const AllDataTable = () => {
                 )}
               </tbody>
             </table>
-
           ) : type === "AMM" ? (
             // Render Table for AMM Type
             <table className="table table-bordered text-center">
@@ -249,8 +245,9 @@ const AllDataTable = () => {
                       </td>
                       <td>
                         <p
-                          className={`mb-0 fs-13 fw-semibold ${item.side === "BUY" ? "text-success" : "text-danger"
-                            }`}
+                          className={`mb-0 fs-13 fw-semibold ${
+                            item.side === "BUY" ? "text-success" : "text-danger"
+                          }`}
                         >
                           {item.side}
                         </p>
@@ -280,9 +277,13 @@ const AllDataTable = () => {
           )}
         </div>
       </div>
-      <ConfirmPopup label="Close Trade" toggleBotStatus={closeTrade}
-        botStatus="Close" msg='Close Trade' />
-    </div >
+      <ConfirmPopup
+        label="Close Trade"
+        toggleBotStatus={closeTrade}
+        botStatus="Close"
+        msg="Close Trade"
+      />
+    </div>
   );
 };
 

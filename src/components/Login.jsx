@@ -100,7 +100,7 @@ class Login extends Form {
             className="logoImg position-absolute"
             src={whiteIcon}
             alt="7pools-logo"
-            width={200}
+            width={170}
           />
         </div>
         <div className="row align-items-center justify-content-center">

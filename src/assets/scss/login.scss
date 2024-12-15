@@ -15,7 +15,7 @@
   .logoImg {
     // mix-blend-mode: color-burn;
     backdrop-filter: drop-shadow(3px 4px 6px white);
-    transform: translateY(2rem);
+    transform: translate(-2.5rem, 2rem);
   }
 
   .trading-bot-img {
@@ -119,5 +119,11 @@
   .inputField:required,
   .inputField:invalid {
     box-shadow: none;
+  }
+}
+
+@media (max-width: 991.9px) {
+  .logoImg {
+    transform: translate(2rem, 2rem) !important;
   }
 }

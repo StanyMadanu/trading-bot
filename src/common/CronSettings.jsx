@@ -3,6 +3,7 @@ import { backEndCallObj } from "../services/mainService";
 import Joi from "joi-browser";
 import toast from "react-hot-toast";
 import DisableAllCoins from "./DisableAllCoins";
+import MakeAnAdmin from "./MakeAnAdmin";
 
 const CronSettings = () => {
   const [btnDisable, setBtnDisable] = useState(false);
@@ -47,7 +48,7 @@ const CronSettings = () => {
     // console.log(data)
     setBtnDisable(true);
     try {
-      const response = await backEndCallObj('/admin/sell_all_coins',data ); //data 
+      const response = await backEndCallObj("/admin/sell_all_coins", data); //data
       if (response?.success) {
         toast.success(response.success);
       }
@@ -95,7 +96,7 @@ const CronSettings = () => {
               Cron Settings
             </h5>
             <div className="row my-4 justify-content-evenly">
-              <div className="col-xl-5 col-lg-5 col-md-5 col-12">
+              <div className="col-xl-4 col-lg-4 col-md-4 col-12">
                 <div className="card shadow-sm border-0">
                   <div className="card-header text-center primary-bg">
                     <p className="mb-0 fw-bold fs-15 text-capitalize">
@@ -119,8 +120,11 @@ const CronSettings = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-5 col-lg-5 col-md-5 col-12">
+              <div className="col-xl-4 col-lg-4 col-md-4 col-12">
                 <DisableAllCoins />
+              </div>
+              <div className="col-xl-4 col-lg-4 col-md-4 col-12">
+                <MakeAnAdmin />
               </div>
             </div>
           </div>

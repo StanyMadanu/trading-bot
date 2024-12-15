@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {getCurrentUser } from "../services/mainService";
-import {useDispatch, useSelector } from "react-redux";
+import { getCurrentUser } from "../services/mainService";
+import { useDispatch, useSelector } from "react-redux";
 import mainLogo from "../assets/images/7pools-logo.png";
 import profileImg from "../assets/images/profile-img.png";
 import { FaPowerOff } from "react-icons/fa";
@@ -157,7 +157,7 @@ const Header = () => {
                     ""
                   )}
 
-                  <li className="text-center py-2">
+                  {/* <li className="text-center py-2">
                     <Link
                       to="/makeadmin"
                       className="dropdown-item text-secondary"
@@ -168,7 +168,7 @@ const Header = () => {
                       <span className="fs-14 fw-semibold">Make User/Admin</span>
                       a
                     </Link>
-                  </li>
+                  </li> */}
 
                   <li className="border-top text-center py-2">
                     <Link to="/" className="dropdown-item text-secondary">

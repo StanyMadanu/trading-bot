@@ -11,7 +11,6 @@ import Loader from "../common/Loader";
 
 const UpdateCoins = lazy(() => import("./models/UpdateCoins"));
 
-
 class AddCoins extends Form {
   state = {
     coinLists: [],
@@ -76,13 +75,12 @@ class AddCoins extends Form {
 
     const modalElement = document.getElementById("updateCoinModal");
     // if (modalElement) {
-      const modal = new window.bootstrap.Modal(modalElement);
-      modal.show();
+    const modal = new window.bootstrap.Modal(modalElement);
+    modal.show();
     // } else {
     //   console.error("Modal element not found!");
     // }
   };
-
 
   doSubmit = async () => {
     this.setState({ btnDisable: true });
@@ -98,9 +96,6 @@ class AddCoins extends Form {
     }
   };
 
-
-
-
   handleDeleteCoins = async () => {
     this.setState({ btnDisable: true });
     try {
@@ -110,7 +105,7 @@ class AddCoins extends Form {
         platform: this.state.coinDelate.platform,
         bot: this.state.coinDelate.bot,
       };
-      console.log(payload)
+      console.log(payload);
       const response = await coinService.deleteCoins();
       toast.success(response.Success);
 
@@ -145,7 +140,7 @@ class AddCoins extends Form {
     return (
       <div className="card">
         <div className="card-body">
-          <div className="container">
+          <div className="container-lg">
             {/* Add Coin Button */}
             <div className="text-end my-3">
               <button
@@ -158,7 +153,7 @@ class AddCoins extends Form {
               </button>
             </div>
 
-            <h5 className="text-center my-3 fw-bold primary-color text-capitalize text-decoration-underline">
+            <h5 className="text-center my-3 fw-bold primary-color text-capitalize">
               Add Coins Table
             </h5>
 
@@ -185,10 +180,11 @@ class AddCoins extends Form {
                           {item.coin_id}
                         </td>
                         <td
-                          className={`text-uppercase fw-semibold ${item.status === "ACTIVE"
-                            ? "text-success"
-                            : "text-danger"
-                            }`}
+                          className={`text-uppercase fw-semibold ${
+                            item.status === "ACTIVE"
+                              ? "text-success"
+                              : "text-danger"
+                          }`}
                         >
                           {item.status}
                         </td>
@@ -197,11 +193,11 @@ class AddCoins extends Form {
                         <td>{item.target_percent}%</td>
                         <td className="fw-semibold">{item.platform}</td>
                         <td className="fw-semibold">{item.bot}</td>
-                        <td>
+                        <td className="text-nowrap">
                           <span
                             className="primary-color me-3 cursor-pointer"
-                            onClick={() => this.handleShowModal({ item })
-                            }>
+                            onClick={() => this.handleShowModal({ item })}
+                          >
                             <RiEdit2Fill size={18} />
                           </span>
                           <span
@@ -218,7 +214,6 @@ class AddCoins extends Form {
                             }
                             data-bs-toggle="modal"
                             data-bs-target="#confirmDelete"
-
                           >
                             <MdDelete size={18} />
                           </span>
@@ -244,7 +239,7 @@ class AddCoins extends Form {
           />
 
           {/* {this.state.modalShow && ( */}
-            <UpdateCoins coinList={this.state.modalData} />
+          <UpdateCoins coinList={this.state.modalData} />
           {/* )} */}
         </Suspense>
 
@@ -362,10 +357,6 @@ class AddCoins extends Form {
             </div>
           </div>
         </div>
-
-
-
-
       </div>
     );
   }

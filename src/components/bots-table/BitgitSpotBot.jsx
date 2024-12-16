@@ -30,7 +30,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   const { bots, api_keys } = getProfile?.profile || {};
   const modelRef = useRef(null);
 
-  const { open_trades, totalBalance } = bitgetSpot || {};
+  const { open_trades, totalBalance, total_investment } = bitgetSpot || {};
 
   const fetchData = async () => {
     try {
@@ -63,9 +63,9 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   const submitBot = async (data) => {
     setBtnDisable(true);
     const formattedData = {
-      platform:data.platform,
-      bot:data.botType,
-      total_investment:data.total_investment,
+      platform: data.platform,
+      bot: data.botType,
+      total_investment: data.total_investment,
     };
     try {
       const response = await backEndCallObj("/admin/add_bot", formattedData);
@@ -149,6 +149,9 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
     );
   };
 
+
+  const capital_investment = parseFloat(totalBalance / total_investment || 0).toFixed(2);
+
   return (
     <>
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
@@ -157,7 +160,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
           data-bs-toggle="modal"
           data-bs-target="#editInvest"
         >
-          <h6 className="mb-0 fw-bold">0</h6>
+          <h6 className="mb-0 fw-bold">{parseFloat(total_investment || 0).toFixed(2)}</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             Capital Assigned
           </p>
@@ -171,7 +174,12 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 status-percent fw-bold px-2 py-0">+ 10%</h6>
+          <h6 className="mb-0 status-percent fw-bold px-2 py-0">
+            {capital_investment > 0
+              ? `+${capital_investment}`
+              : `${capital_investment}`}
+            %
+          </h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             % Change
           </p>

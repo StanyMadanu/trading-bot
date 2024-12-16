@@ -18,11 +18,11 @@ const Header = () => {
   const navigate = useNavigate();
   const profile = useSelector((state) => state.getProfile); // Access Redux state
 
+
   const { fetchKeys } = useFetchKeys();
 
   const currentUser = getCurrentUser();
 
-  // console.log(currentUser)
 
   // Theme Toggle Handler
   const handleTheme = () => {

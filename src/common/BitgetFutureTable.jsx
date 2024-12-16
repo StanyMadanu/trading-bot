@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useFetchKeys from "./CotextTest";
+import BuysellFutureModal from "../components/models/BuysellFutureModal";
 
 const BitgetFutureTable = ({ data }) => {
   const { getCoinicons, getFormattedDate } = useFetchKeys();
@@ -65,7 +66,7 @@ const BitgetFutureTable = ({ data }) => {
           )}
 
           <tr>
-            <td colSpan={3} className="text-center">
+            <td colSpan={5} className="d-flex w-100 justify-content-between">
               <div
                 onClick={() => {
                   navigate("/allDataTable", {
@@ -75,10 +76,19 @@ const BitgetFutureTable = ({ data }) => {
               >
                 <button className="py-1">view all</button>
               </div>
+              <div
+                data-bs-toggle="modal"
+                data-bs-target="#buysellfuturemodal"
+              >
+                <button className="py-1">Buy / sell</button>
+              </div>
             </td>
+
+
           </tr>
         </tbody>
       </table>
+      <BuysellFutureModal/>
     </div>
   );
 };

@@ -40,10 +40,10 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   // const { usdt_balance, open_trades } = binanceSpot || {}; // Ensure it's not undefined
   // console.log(usdt_balance, open_trades)
 
-  const { open_trades, totalBalance } = binanceSpot || {};
+  const { open_trades, totalBalance, total_investment } = binanceSpot || {};
   const { bots, api_keys } = getProfile?.profile || {};
 
-  // console.log(getProfile, binanceSpot)
+  console.log(getProfile, binanceSpot)
 
   // console.log(open_trades);
 
@@ -111,9 +111,9 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     setBtnDisable(true);
     // console.log(data)
     const formattedData = {
-      platform:data.platform,
-      bot:data.botType,
-      total_investment:data.total_investment,
+      platform: data.platform,
+      bot: data.botType,
+      total_investment: data.total_investment,
     };
     try {
       const response = await backEndCallObj("/admin/add_bot", formattedData);
@@ -168,28 +168,32 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     default:
       api_keys?.[formData.platform]?.api_key
         ? (button = (
-            <button
-              className="theme-btn text-uppercase"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#binanceBot"
-            >
-              Add Bot
-            </button>
-          ))
+          <button
+            className="theme-btn text-uppercase"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#binanceBot"
+          >
+            Add Bot
+          </button>
+        ))
         : (button = (
-            <button
-              className="theme-btn text-uppercase"
-              type="button"
-              onClick={() =>
-                navigate("/api", { state: { platform: formData.platform } })
-              }
-            >
-              Add Bot
-            </button>
-          ));
+          <button
+            className="theme-btn text-uppercase"
+            type="button"
+            onClick={() =>
+              navigate("/api", { state: { platform: formData.platform } })
+            }
+          >
+            Add Bot
+          </button>
+        ));
       break;
   }
+
+  const capital_investment = parseFloat(totalBalance / total_investment || 0).toFixed(2);
+
+
 
   return (
     <>
@@ -199,7 +203,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
           data-bs-toggle="modal"
           data-bs-target="#editBinanceSpotModal"
         >
-          <h6 className="mb-0 fw-bold">0</h6>
+          <h6 className="mb-0 fw-bold">{parseFloat(total_investment || 0).toFixed(2)}</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             capital assigned
           </p>
@@ -213,7 +217,12 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 status-percent fw-bold px-2 py-0">+ 10%</h6>
+          <h6 className="mb-0 status-percent fw-bold px-2 py-0">
+            {capital_investment > 0
+              ? `+${capital_investment}`
+              : `${capital_investment}`}
+            %
+          </h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             % change
           </p>

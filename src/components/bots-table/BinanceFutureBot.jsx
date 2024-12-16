@@ -39,6 +39,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
 
   const { bots, api_keys } = getProfile?.profile || {};
   const { usdt_balance, open_trades } = binanceFuture || {}; // Ensure it's not undefined
+  console.log(binanceFuture)
 
   const fetchData = async () => {
     try {

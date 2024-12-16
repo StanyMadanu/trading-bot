@@ -171,12 +171,12 @@ const Header = () => {
                   </li> */}
 
                   <li className="border-top text-center py-2">
-                    <Link to="/" className="dropdown-item text-secondary">
+                    <div onClick={LogoutHandler} className="dropdown-item text-secondary">
                       <span className="me-2">
                         <FaPowerOff size={15} />
                       </span>
                       <span className="fs-14 fw-semibold">Logout</span>
-                    </Link>
+                    </div>
                   </li>
                   <li>
                     <div className="d-flex gap-1 align-items-center justify-content-center py-2">

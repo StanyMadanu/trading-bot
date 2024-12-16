@@ -76,6 +76,7 @@ class MakeAnAdmin extends Form {
           value={data[name]}
           onChange={this.handleChange}
           placeholder={placeholder}
+          autoComplete={name === "password" ? "new-password" : "off"}  // Workaround for password and other fields
         />
         {errors[name] && (
           <div className="text-danger fs-12">{errors[name]}</div>
@@ -136,12 +137,12 @@ class MakeAnAdmin extends Form {
 
             {/* User Name Input */}
             <div className="text-start mb-4">
-              {this.renderInput("user_name", "User Name")}
+              {this.renderInput("user_name", "User Name" , "text" , "User Name")}
             </div>
 
             {/* Password Input */}
             <div className="text-start mb-4">
-              {this.renderInput("password", "Password", "password")}
+              {this.renderInput("password", "Password", "password" , "Password")}
             </div>
 
             {/* User Type Select */}

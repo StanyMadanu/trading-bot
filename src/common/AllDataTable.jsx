@@ -15,6 +15,11 @@ const AllDataTable = () => {
   });
   const { reduxName, type } = location.state || {};
 
+  const [data, setData] = useState({
+
+
+  })
+
   const user = getCurrentUser();
 
   console.log(user);
@@ -174,6 +179,7 @@ const AllDataTable = () => {
                             className="primary-color text-decoration-none fw-semibold cursor-pointer fs-14"
                             data-bs-toggle="modal"
                             data-bs-target="#viewModal"
+                            onClick={() => setData(row)}
                           >
                             view
                           </a>
@@ -183,7 +189,7 @@ const AllDataTable = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6}>
+                    <td colSpan={10}>
                       <p className="text-center mb-0">No Data Found</p>
                     </td>
                   </tr>
@@ -255,9 +261,8 @@ const AllDataTable = () => {
                       </td>
                       <td>
                         <p
-                          className={`mb-0 fs-13 fw-semibold ${
-                            item.side === "BUY" ? "text-success" : "text-danger"
-                          }`}
+                          className={`mb-0 fs-13 fw-semibold ${item.side === "BUY" ? "text-success" : "text-danger"
+                            }`}
                         >
                           {item.side}
                         </p>
@@ -274,7 +279,7 @@ const AllDataTable = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7}>
+                    <td colSpan={10}>
                       <p className="text-center mb-0">No Data Found</p>
                     </td>
                   </tr>
@@ -316,19 +321,31 @@ const AllDataTable = () => {
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body">...</div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="button" class="btn btn-primary">
-                  Save changes
-                </button>
+              <div className="modal-body">
+                {/* Dynamically Render Key-Value Pairs */}
+                <div className="row">
+                  {Object.entries(data).map(([key, value]) => {
+                    // Check if the key is "updatedTime" and apply the date formatting
+                    const displayValue = key === "updateTime" ? getFormattedDate(value) : value;
+
+                    return (
+                      <div key={key} className="col-md-6 mb-4">
+                        <label className="form-label text-capitalize">
+                          {key.replace("_", " ")} {/* Format the key */}
+                        </label>
+                        <input
+                          type="text"
+                          value={displayValue || ""}
+                          readOnly
+                          className="form-control"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
+
+
             </div>
           </div>
         </div>

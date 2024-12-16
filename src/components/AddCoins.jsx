@@ -275,7 +275,7 @@ class AddCoins extends Form {
                       { label: "Price Precision", id: "price_precision" },
                       { label: "Quantity Precision", id: "quantity_precision" },
                       { label: "Target Percent", id: "target_percent" },
-                      { label: "divisible", id: "divisible" },
+                      { label: "Divisible", id: "divisible" },
                       { label: "Trade Amount", id: "TradeAmount" },
                     ].map((field) => (
                       <div key={field.id} className="col-md-6 mb-4">

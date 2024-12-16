@@ -24,28 +24,28 @@ const Table = ({ data, thead }) => {
             data?.map((data, index) => (
               <tr key={index}>
                 <td>
-                  <div className="d-flex gap-3 align-items-center">
-                    {/* <p className="mb-0 table-dot"></p> */}
-                    <td>
-                      <img
-                        src={getCoinicons(data.symbol)}
-                        alt={data.name}
-                        className="cryptocurreny-icon-table crypto-icon"
-                        width={30}
-                      />
-                      <p className="mb-0 fs-13 fw-semibold">
-                        {data?.symbol || "NA"}
-                      </p>
-                      <p>{getFormattedDate(data.updateTime)}</p>
-                    </td>
-                    {/* <p className="mb-0 fs-13 fw-semibold">{data.symbol}</p> */}
+                  <div className="d-flex gap-2 align-items-center justify-content-center">
+                    <img
+                      src={getCoinicons(data.symbol)}
+                      alt={data.name}
+                      className="cryptocurreny-icon-table crypto-icon"
+                      width={30}
+                    />
+                    <p className="mb-0 fs-13 fw-semibold">
+                      {data?.symbol || "NA"}
+                    </p>
+                    {/* <p>{getFormattedDate(data.updateTime)}</p> */}
                   </div>
                 </td>
                 <td>
-                  <p className="mb-0 fs-13 fw-semibold">{parseFloat(data.entryPrice || 0).toFixed(2)}</p>
+                  <p className="mb-0 fs-13 fw-semibold lh-2">
+                    {parseFloat(data.entryPrice || 0).toFixed(2)}
+                  </p>
                 </td>
                 <td>
-                  <p className="mb-0 fs-13 fw-semibold">{data.adlQuantile}</p>
+                  <p className="mb-0 fs-13 fw-semibold lh-2">
+                    {data.adlQuantile}
+                  </p>
                 </td>
               </tr>
             ))

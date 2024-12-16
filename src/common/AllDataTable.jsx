@@ -64,7 +64,7 @@ const AllDataTable = () => {
         </div>
 
         <h5 className="primary-color fw-bold text-capitalize text-center mb-3">
-          {type === "FUTURES" ? "FUTURES" : "AMM"} table data
+          {type === "FUTURES" ? "FUTURES" : "AMM"} data
         </h5>
 
         <div className="table-responsive">
@@ -119,56 +119,66 @@ const AllDataTable = () => {
                   getRedux?.value?.open_trades?.map((row, index) => (
                     <tr key={index}>
                       <td>
-                        <img
-                          src={getCoinicons(row.symbol)}
-                          alt={row.name}
-                          className="cryptocurreny-icon-table crypto-icon"
-                          width={30}
-                        />
-                        <p className="mb-0 fs-13 fw-semibold">
-                          {row?.symbol || "NA"}
-                        </p>
-                        <p>{getFormattedDate(row.updateTime)}</p>
+                        <div className="d-flex gap-2 align-items-center justify-content-center">
+                          <img
+                            src={getCoinicons(row.symbol)}
+                            alt={row.name}
+                            className="cryptocurreny-icon-table crypto-icon"
+                            width={30}
+                          />
+                          <p className="mb-0 fs-13 fw-semibold lh-2">
+                            {row?.symbol || "NA"}
+                          </p>
+                          {/* <p>{getFormattedDate(row.updateTime)}</p> */}
+                        </div>
                       </td>
                       <td>
-                        <p className="mb-0 fs-13 fw-semibold">
+                        <p className="mb-0 fs-13 fw-semibold lh-2">
                           {parseFloat(row?.positionAmt || "0").toFixed(2)}
                         </p>
                       </td>
                       <td>
-                        <p className="mb-0 fs-13 fw-semibold">
+                        <p className="mb-0 fs-13 fw-semibold lh-2">
                           {parseFloat(row?.unRealizedProfit || "0").toFixed(2)}
                         </p>
                       </td>
                       <td>
-                        <p className="mb-0 fs-13 fw-semibold">
+                        <p className="mb-0 fs-13 fw-semibold lh-2">
                           {parseFloat(row?.entryPrice || "0").toFixed(2)}
                         </p>
                       </td>
                       <td>
-                        <p className="mb-0 fs-13 fw-semibold">
+                        <p className="mb-0 fs-13 fw-semibold lh-2">
                           {parseFloat(row?.markPrice || "0").toFixed(2)}
                         </p>
                       </td>
                       <td>
-                        <p className="mb-0 fs-13 fw-semibold">
+                        <p className="mb-0 fs-13 fw-semibold lh-2">
                           {parseFloat(row?.breakEvenPrice || "0").toFixed(2)}
                         </p>
                       </td>
-                      {user.user_type === "ADMIN" && (
-                        <td>
-                          <p className="mb-0 fs-13 fw-semibold">
+
+                      <td>
+                        <div className="d-flex align-items-center justify-content-center gap-3">
+                          {user.user_type === "ADMIN" && (
                             <button
-                              className="btn btn-primary btn-sm"
+                              className="px-2 py-1 fs-13 rounded"
                               data-bs-toggle="modal"
                               data-bs-target="#confirmDelete"
                               onClick={() => handleCloseClick(row)}
                             >
                               Close
                             </button>
-                          </p>
-                        </td>
-                      )}
+                          )}
+                          <a
+                            className="primary-color text-decoration-none fw-semibold cursor-pointer fs-14"
+                            data-bs-toggle="modal"
+                            data-bs-target="#viewModal"
+                          >
+                            view
+                          </a>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 ) : (
@@ -283,6 +293,46 @@ const AllDataTable = () => {
         botStatus="Close"
         msg="Close Trade"
       />
+
+      {/* view modal */}
+      <>
+        <div
+          class="modal fade"
+          id="viewModal"
+          tabindex="-1"
+          aria-labelledby="viewModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title primary-color" id="viewModalLabel">
+                  View Data
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">...</div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="button" class="btn btn-primary">
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
     </div>
   );
 };

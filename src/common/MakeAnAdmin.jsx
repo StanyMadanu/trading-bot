@@ -64,7 +64,7 @@ class MakeAnAdmin extends Form {
     }
   };
 
-  renderInput = (name, label, type = "text") => {
+  renderInput = (name, label, type = "text", placeholder) => {
     const { data, errors } = this.state;
     return (
       <div>
@@ -75,8 +75,11 @@ class MakeAnAdmin extends Form {
           name={name}
           value={data[name]}
           onChange={this.handleChange}
+          placeholder={placeholder}
         />
-        {errors[name] && <div className="text-danger">{errors[name]}</div>}
+        {errors[name] && (
+          <div className="text-danger fs-12">{errors[name]}</div>
+        )}
       </div>
     );
   };
@@ -99,7 +102,9 @@ class MakeAnAdmin extends Form {
             </option>
           ))}
         </select>
-        {errors[name] && <div className="text-danger">{errors[name]}</div>}
+        {errors[name] && (
+          <div className="text-danger fs-12">{errors[name]}</div>
+        )}
       </div>
     );
   };
@@ -126,7 +131,7 @@ class MakeAnAdmin extends Form {
           <form className="form" onSubmit={this.handleSubmit}>
             {/* Email Input */}
             <div className="text-start mb-4">
-              {this.renderInput("email", "Email", "email")}
+              {this.renderInput("email", "Email", "email", "Email")}
             </div>
 
             {/* User Name Input */}
@@ -150,7 +155,12 @@ class MakeAnAdmin extends Form {
 
             {/* Access Type Input */}
             <div className="text-start mb-4">
-              {this.renderInput("access_type", "Access Type", "number")}
+              {this.renderInput(
+                "access_type",
+                "Access Type",
+                "number",
+                "Access Type"
+              )}
             </div>
 
             {/* Submit Button */}

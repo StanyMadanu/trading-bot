@@ -42,7 +42,7 @@ const Table = ({ data, thead }) => {
                   </div>
                 </td>
                 <td>
-                  <p className="mb-0 fs-13 fw-semibold">{data.entryPrice}</p>
+                  <p className="mb-0 fs-13 fw-semibold">{parseFloat(data.entryPrice || 0).toFixed(2)}</p>
                 </td>
                 <td>
                   <p className="mb-0 fs-13 fw-semibold">{data.adlQuantile}</p>

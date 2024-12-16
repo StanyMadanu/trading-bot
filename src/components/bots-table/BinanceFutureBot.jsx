@@ -38,7 +38,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const { fetchKeys } = useFetchKeys();
 
   const { bots, api_keys } = getProfile?.profile || {};
-  const { usdt_balance, open_trades } = binanceFuture || {}; // Ensure it's not undefined
+  const { usdt_balance, open_trades, total_investment } = binanceFuture || {}; // Ensure it's not undefined
   console.log(binanceFuture)
 
   const fetchData = async () => {
@@ -99,9 +99,9 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const submitBot = async (data) => {
     setBtnDisable(true);
     const formattedData = {
-      platform:data.platform,
-      bot:data.botType,
-      total_investment:data.total_investment,
+      platform: data.platform,
+      bot: data.botType,
+      total_investment: data.total_investment,
     };
     console.log(formattedData)
     try {
@@ -177,6 +177,9 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       break;
   }
 
+  const capital_investment = parseFloat(usdt_balance?.availableBalance / total_investment || 0).toFixed(2);
+
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
@@ -186,21 +189,26 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
           data-bs-toggle="modal"
           data-bs-target="#editBinanceFutureModal"
         >
-          <h6 className="mb-0 fw-bold">0</h6>
+          <h6 className="mb-0 fw-bold">{parseFloat(total_investment || 0).toFixed(2)}</h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             capital assigned
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
           <h6 className="mb-0 fw-bold">
-            {parseFloat(usdt_balance?.balance || "0").toFixed(2) || "0"}
+            {parseFloat(usdt_balance?.availableBalance || "0").toFixed(2) || "0"}
           </h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             current balance
           </p>
         </div>
         <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 status-percent fw-bold py-0 px-2">+ 10%</h6>
+          <h6 className="mb-0 status-percent fw-bold px-2 py-0">
+            {capital_investment > 0
+              ? `+${capital_investment}`
+              : `${capital_investment}`}
+            %
+          </h6>
           <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
             % change
           </p>

@@ -30,7 +30,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   });
 
   const [btnDisable, setBtnDisable] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const [botStatus, setBotStatus] = useState("ADD");
   const [datamodal, setDataModala] = useState(false);
@@ -40,10 +40,10 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
 
   const { bots, api_keys } = getProfile?.profile || {};
   const { usdt_balance, open_trades, total_investment } = binanceFuture || {}; // Ensure it's not undefined
-  console.log(binanceFuture)
+  console.log(binanceFuture);
 
   const fetchData = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await backEndCallObjNoDcyt(
         "/trades/get_open_trades_data",
@@ -52,14 +52,12 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
     } catch (error) {
       console.error("Error fetching open trades data:", error);
-    }
-    finally {
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
   const modelRef = useRef(null);
-
 
   useEffect(() => {
     if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
@@ -85,7 +83,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       status:
         bots?.BINANCE?.FUTURES?.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
     };
-    console.log(formattedData)
+    console.log(formattedData);
     try {
       setBtnDisable(true);
       const response = await backEndCallObj(
@@ -108,7 +106,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       bot: data.botType,
       total_investment: data.total_investment,
     };
-    console.log(formattedData)
+    console.log(formattedData);
     try {
       const response = await backEndCallObj("/admin/add_bot", formattedData);
       toast.success(response?.success);
@@ -184,79 +182,80 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
 
   // const capital_investment = parseFloat(usdt_balance?.availableBalance / total_investment || 0).toFixed(2);
   const difference = usdt_balance?.availableBalance - total_investment;
-let capital_investment = ((difference / total_investment) * 100).toFixed(2);
+  let capital_investment = ((difference / total_investment) * 100).toFixed(2);
 
-if (isNaN(capital_investment)) {
-  capital_investment = "0.00";
-}
+  if (isNaN(capital_investment)) {
+    capital_investment = "0.00";
+  }
 
   return (
     <Suspense fallback={<div>Loading...!</div>}>
-      {
-        loading ? (
-          <div className="loader">Loading...!</div>
-        ) : (
-          <>
+      {loading ? (
+        <div className="loader">Loading...!</div>
+      ) : (
+        <>
           <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
-        {/* UI Content */}
-        <div
-          className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
-          data-bs-toggle="modal"
-          data-bs-target="#editBinanceFutureModal"
-        >
-          <h6 className="mb-0 fw-bold">{parseFloat(total_investment || 0).toFixed(2)}</h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            capital assigned
-          </p>
-        </div>
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 fw-bold">
-            {parseFloat(usdt_balance?.availableBalance || "0").toFixed(2) || "0"}
-          </h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            current balance
-          </p>
-        </div>
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 status-percent fw-bold px-2 py-0">
-            {capital_investment > 0
-              ? `+${capital_investment}`
-              : `${capital_investment}`}
-            %
-          </h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            % change
-          </p>
-        </div>
-        <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
-          {button}
-        </div>
-      </div>
+            {/* UI Content */}
+            <div
+              className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
+              data-bs-toggle="modal"
+              data-bs-target="#editBinanceFutureModal"
+            >
+              <h6 className="mb-0 fw-bold">
+                {parseFloat(total_investment || 0).toFixed(2)}
+              </h6>
+              <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+                capital assigned
+              </p>
+            </div>
+            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+              <h6 className="mb-0 fw-bold">
+                {parseFloat(usdt_balance?.availableBalance || "0").toFixed(2) ||
+                  "0"}
+              </h6>
+              <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+                current balance
+              </p>
+            </div>
+            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+              <h6 className="mb-0 status-percent fw-bold px-2 py-0">
+                {capital_investment > 0
+                  ? `+${capital_investment}`
+                  : `${capital_investment}`}
+                %
+              </h6>
+              <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+                % change
+              </p>
+            </div>
+            <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
+              {button}
+            </div>
+          </div>
 
-      {/* Lazy-loaded Modals */}
-      <ConfirmPopup
-        label="Bot Status"
-        msg={`${botStatus} bot`}
-        botStatus={botStatus}
-        toggleBotStatus={toggleBotStatus}
-        modelRef={modelRef}
-        btnDisable={btnDisable}
-      />
-      {/* <EditInvestment botType={formData.bot} platform={formData.platform} 
+          {/* Lazy-loaded Modals */}
+          <ConfirmPopup
+            label="Bot Status"
+            msg={`${botStatus} bot`}
+            botStatus={botStatus}
+            toggleBotStatus={toggleBotStatus}
+            modelRef={modelRef}
+            btnDisable={btnDisable}
+          />
+          {/* <EditInvestment botType={formData.bot} platform={formData.platform} 
         onSuccess={() => {
           console.log("Investment Updated Successfully!");
           // Optional logic: Close modal, refresh data, etc.
         }} /> */}
 
-      <EditBinanceFutureModal
-        botType={formData.bot}
-        platform={formData.platform}
-      />
-    
-      <Table data={open_trades} thead={theadData} />
-      </>
-        )
-      }
+          <EditBinanceFutureModal
+            botType={formData.bot}
+            platform={formData.platform}
+          />
+
+          <Table data={open_trades} thead={theadData} />
+        </>
+      )}
 
       <div className="modal fade" id="botModal">
         <div className="modal-dialog text-dark">

@@ -15,25 +15,22 @@ const Controls = () => {
     const fetchData = async () => {
       try {
         const data = await backEndCall("/admin_get/get_controls");
-        console.log(data.success)
-
+        console.log(data.success);
 
         if (data?.success) {
           // console.log(data);
           setControlsData(data.success);
 
-
-          const controlWithTrue = data.success.find((control) => control.name === "control_name" && control.value === true);
+          const controlWithTrue = data.success.find(
+            (control) =>
+              control.name === "control_name" && control.value === true
+          );
 
           if (controlWithTrue) {
             setCheckToggle(true); // Set toggleState to true
           } else {
             setCheckToggle(false); // Fallback to false if no control found
           }
-
-
-
-
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -49,7 +46,7 @@ const Controls = () => {
     // Early return for AMM
     if (control === "AMM") {
       console.warn("###### cannot update AMM as of now ######");
-      toast.warning("AMM cannot be updated at the moment")
+      toast.warning("AMM cannot be updated at the moment");
       return;
     }
 
@@ -95,16 +92,23 @@ const Controls = () => {
     <div className="card controls">
       <div className="card-body">
         <div className="container">
+          <div className="my-4 d-flex justify-content-between align-items-center">
+            <Link to="/dashboard">
+              <button className="text-uppercase py-1 px-3">back</button>
+            </Link>
+
+            <div className="text-end px-2">
+              <Link to="/cronsetting">
+                <p className="fs-14 fw-semibold text-capitalize primary-color text-underline-none">
+                  cron settings
+                </p>
+              </Link>
+            </div>
+          </div>
+
           <h5 className="my-4 text-capitalize primary-color fw-bold text-center">
             admin controls
           </h5>
-          <div className="text-end my-4 px-2">
-            <Link to="/cronsetting">
-              <p className="fs-14 fw-semibold text-capitalize primary-color text-underline-none">
-                cron settings
-              </p>
-            </Link>
-          </div>
 
           <table className="table table-bordered text-center">
             <thead className="thead primary-bg">

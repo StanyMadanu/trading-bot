@@ -3,17 +3,16 @@ import { connect, useDispatch } from "react-redux";
 import { backEndCall, backEndCallObj } from "../services/mainService";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from "react-router-dom";
 import { profileRedux } from "./reduxStore/slice/profileSlice";
-
 
 const Api = ({ getProfile }) => {
   const [data, setData] = useState({});
-  const [error, setErrors] = useState({})
+  const [error, setErrors] = useState({});
   const { api_keys } = getProfile?.profile || {};
   const [btnDisable, setBtnDisable] = useState(false);
 
-  console.log(getProfile, "getProfile")
+  console.log(getProfile, "getProfile");
 
   const location = useLocation();
   const dispatch = useDispatch();
@@ -21,7 +20,6 @@ const Api = ({ getProfile }) => {
   const { platform } = location.state || {}; //
 
   const [activeApi, setActiveApi] = useState(platform || "BINANCE");
-
 
   // console.log(platform)
 
@@ -32,9 +30,8 @@ const Api = ({ getProfile }) => {
       is: "BITGET",
       then: Joi.required(),
       otherwise: Joi.optional(),
-    })
+    }),
   };
-
 
   useEffect(() => {
     if (!api_keys?.[activeApi.toUpperCase()]) {
@@ -42,13 +39,11 @@ const Api = ({ getProfile }) => {
         api_key: "",
         secret_key: "",
       });
-    }
-    else {
+    } else {
       setData({
         api_key: api_keys?.[activeApi.toUpperCase()]?.api_key || "",
         secret_key: "",
-       
-      })
+      });
     }
   }, [api_keys, activeApi, getProfile]); // Depend on api_keys and activeApi
 
@@ -105,14 +100,17 @@ const Api = ({ getProfile }) => {
     };
 
     try {
-      const response = await backEndCallObj("/admin/add_update_keys", formattedData);
+      const response = await backEndCallObj(
+        "/admin/add_update_keys",
+        formattedData
+      );
       if (!response) return;
       toast.success(response?.success);
 
       const keysResponse = await backEndCall("/admin_get/profile");
       const updatedProfile = { ...keysResponse };
 
-      console.log(updatedProfile)
+      console.log(updatedProfile);
 
       await dispatch(profileRedux(updatedProfile));
 
@@ -121,7 +119,6 @@ const Api = ({ getProfile }) => {
         secret_key: "",
         passphrase: "",
       });
-
     } catch (error) {
       toast.error(error?.response?.data || "Something went wrong");
     } finally {
@@ -131,7 +128,7 @@ const Api = ({ getProfile }) => {
 
   const getButtonLabel = (apiType) => {
     if (btnDisable) return "Please Wait...";
-    console.log(apiType, api_keys)
+    console.log(apiType, api_keys);
     return api_keys?.[apiType]?.api_key ? "Update" : "Add";
   };
 
@@ -141,7 +138,9 @@ const Api = ({ getProfile }) => {
       {/* {console.log(data)} */}
       {console.log(data.api_key)}
       <div className="mb-4">
-        <label className="form-label text-uppercase fs-15 fw-bold">api key</label>
+        <label className="form-label text-uppercase fs-15 fw-bold">
+          api key
+        </label>
         <input
           type="text"
           className="form-control"
@@ -150,10 +149,14 @@ const Api = ({ getProfile }) => {
           value={data.api_key || ""}
           onChange={handleChange}
         />
-        {error.api_key && <small className="text-danger">{error.api_key}</small>}
+        {error.api_key && (
+          <small className="text-danger">{error.api_key}</small>
+        )}
       </div>
       <div className="mb-4">
-        <label className="form-label text-uppercase fs-15 fw-bold">secret key</label>
+        <label className="form-label text-uppercase fs-15 fw-bold">
+          secret key
+        </label>
         <input
           type="password"
           className="form-control"
@@ -162,13 +165,16 @@ const Api = ({ getProfile }) => {
           value={data.secret_key || ""}
           onChange={handleChange}
         />
-        {error.secret_key && <small className="text-danger">{error.secret_key}</small>}
+        {error.secret_key && (
+          <small className="text-danger">{error.secret_key}</small>
+        )}
       </div>
 
-      {
-        apiType === "BITGET" &&
+      {apiType === "BITGET" && (
         <div className="mb-5">
-          <label className="form-label text-uppercase fs-15 fw-bold">Passphrase</label>
+          <label className="form-label text-uppercase fs-15 fw-bold">
+            Passphrase
+          </label>
           <input
             type="text"
             className="form-control"
@@ -177,13 +183,17 @@ const Api = ({ getProfile }) => {
             value={data.passphrase || ""}
             onChange={handleChange}
           />
-          {error.secret_key && <small className="text-danger">{error.passphrase}</small>}
+          {error.secret_key && (
+            <small className="text-danger">{error.passphrase}</small>
+          )}
         </div>
-
-      }
+      )}
 
       <div className="text-end">
-        <button className="btn btn-primary text-capitalize" disabled={btnDisable}>
+        <button
+          className="btn btn-primary text-capitalize"
+          disabled={btnDisable}
+        >
           {getButtonLabel(apiType)}
         </button>
       </div>
@@ -191,10 +201,15 @@ const Api = ({ getProfile }) => {
   );
 
   return (
-    <div className="api" >
+    <div className="api">
       <div className="card">
         <div className="card-body">
           <div className="container">
+            <div className="my-4">
+              <Link to="/dashboard">
+                <button className="text-uppercase py-1 px-3">back</button>
+              </Link>
+            </div>
             <h5 className="text-center text-uppercase fw-bold mb-5 mt-3 primary-color">
               api settings
             </h5>
@@ -202,15 +217,18 @@ const Api = ({ getProfile }) => {
               {["BINANCE", "BITGET"].map((api) => (
                 <div
                   key={api}
-                  className={`binance-api flex-fill d-flex justify-content-center align-items-center py-2 ${activeApi === api ? "active" : ""
-                    }`}
+                  className={`binance-api flex-fill d-flex justify-content-center align-items-center py-2 ${
+                    activeApi === api ? "active" : ""
+                  }`}
                   onClick={() => setActiveApi(api)}
                 >
                   <p className="text-capitalize mb-0 fw-semibold">{api} API</p>
                 </div>
               ))}
             </div>
-            {activeApi === "BINANCE" ? renderForm("BINANCE") : renderForm("BITGET")}
+            {activeApi === "BINANCE"
+              ? renderForm("BINANCE")
+              : renderForm("BITGET")}
           </div>
         </div>
       </div>
@@ -224,13 +242,3 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Api);
-
-
-
-
-
-
-
-
-
-

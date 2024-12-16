@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import useFetchKeys from "./CotextTest";
+import Buysellfuturemodal from "../components/models/BuysellFutureModal";
 
 const Table = ({ data, thead }) => {
   const navigate = useNavigate();
@@ -72,6 +73,16 @@ const Table = ({ data, thead }) => {
           </tr>
         </tbody>
       </table>
+      <div className="text-center">
+        <button
+          className="py-1"
+          data-bs-toggle="modal"
+          data-bs-target="#buysellfuturemodal"
+        >
+          Buy / Sell
+        </button>
+      </div>
+      <Buysellfuturemodal />
     </div>
   );
 };

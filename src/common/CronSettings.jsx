@@ -4,6 +4,7 @@ import Joi from "joi-browser";
 import toast from "react-hot-toast";
 import DisableAllCoins from "./DisableAllCoins";
 import MakeAnAdmin from "./MakeAnAdmin";
+import { Link } from "react-router-dom";
 
 const CronSettings = () => {
   const [btnDisable, setBtnDisable] = useState(false);
@@ -92,6 +93,12 @@ const CronSettings = () => {
       <div className="card">
         <div className="card-body px-4">
           <div className="container">
+            <div className="my-3">
+              <Link to="/controls">
+                <button className="text-uppercase py-1 px-3">back</button>
+              </Link>
+            </div>
+
             <h5 className="mt-3 mb-5 text-center primary-color fw-bold">
               Cron Settings
             </h5>

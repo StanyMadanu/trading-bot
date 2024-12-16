@@ -66,7 +66,7 @@ const BitgetFutureTable = ({ data }) => {
           )}
 
           <tr>
-            <td colSpan={5} className="d-flex w-100 justify-content-between">
+            <td colSpan={5} className="text-center">
               <div
                 onClick={() => {
                   navigate("/allDataTable", {
@@ -76,19 +76,20 @@ const BitgetFutureTable = ({ data }) => {
               >
                 <button className="py-1">view all</button>
               </div>
-              <div
-                data-bs-toggle="modal"
-                data-bs-target="#buysellfuturemodal"
-              >
-                <button className="py-1">Buy / sell</button>
-              </div>
             </td>
-
-
           </tr>
         </tbody>
       </table>
-      <BuysellFutureModal/>
+      <div className="text-center">
+        <button
+          className="py-1"
+          data-bs-toggle="modal"
+          data-bs-target="#buysellfuturemodal"
+        >
+          Buy / Sell
+        </button>
+      </div>
+      <BuysellFutureModal />
     </div>
   );
 };

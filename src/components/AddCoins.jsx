@@ -8,6 +8,7 @@ import Form from "../basic/form";
 import { toast } from "react-toastify";
 // import UpdateCoins from "./models/UpdateCoins";
 import Loader from "../common/Loader";
+import { Link } from "react-router-dom";
 
 const UpdateCoins = lazy(() => import("./models/UpdateCoins"));
 
@@ -141,6 +142,11 @@ class AddCoins extends Form {
       <div className="card">
         <div className="card-body">
           <div className="container-lg">
+            <div className="my-4">
+              <Link to="/dashboard">
+                <button className="text-uppercase py-1 px-3">back</button>
+              </Link>
+            </div>
             {/* Add Coin Button */}
             <div className="text-end my-3">
               <button

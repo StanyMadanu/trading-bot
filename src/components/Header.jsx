@@ -16,12 +16,14 @@ const Header = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const profile = useSelector((state) => state.getProfile); // Access Redux state
+  const profile = useSelector((state) => state.getProfile?.value?.profile); // Access Redux state
 
 
   const { fetchKeys } = useFetchKeys();
 
   const currentUser = getCurrentUser();
+
+  console.log(profile , currentUser)
 
 
   // Theme Toggle Handler
@@ -100,7 +102,7 @@ const Header = () => {
                   <div className="me-2">
                     <p className="mb-0 fs-14 fw-semibold">Pavan Rebba</p>
                     <p className="mb-0 fs-13 text-secondary">
-                      info@example.com
+                      {profile?.user_email}
                     </p>
                   </div>
                 </div>
@@ -113,7 +115,7 @@ const Header = () => {
                       <div>
                         <p className="mb-0 fs-14 fw-semibold">Pavan Rebba</p>
                         <p className="mb-0 fs-13 text-secondary">
-                          info@example.com
+                          {profile?.user_email}
                         </p>
                       </div>
                     </div>

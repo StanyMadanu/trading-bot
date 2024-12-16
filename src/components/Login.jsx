@@ -136,6 +136,7 @@ class Login extends Form {
                         id="userEmail"
                         required=""
                         onChange={this.handleChange}
+                        autoComplete="off"  // Workaround for password and other fields
                       />
                       <label htmlFor="userEmail" className="inputLabel">
                         Email
@@ -155,6 +156,7 @@ class Login extends Form {
                         id="userPassword"
                         required=""
                         onChange={this.handleChange}
+                        autoComplete= "new-password"   // Workaround for password and other fields
                       />
                       <label htmlFor="userPassword" className="inputLabel">
                         Password

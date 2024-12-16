@@ -8,7 +8,6 @@ import { binancespotRedx } from "../reduxStore/slice/binancespotSlice";
 import { connect } from "react-redux";
 import BinanceSpotTable from "../../common/BinanceSpotTable";
 import ConfirmPopup from "../models/ConfirmPopup";
-// import AddBot from "../models/AddBotModal";
 import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
 import { useNavigate } from "react-router-dom";

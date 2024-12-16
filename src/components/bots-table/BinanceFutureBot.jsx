@@ -16,7 +16,6 @@ const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
 const EditBinanceFutureModal = React.lazy(() =>
   import("../models/EditBinanceFuture")
 );
-// const AddBot = React.lazy(() => import("../models/AddBotModal"));
 
 const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const [formData] = useState({
@@ -253,12 +252,7 @@ if (isNaN(capital_investment)) {
         botType={formData.bot}
         platform={formData.platform}
       />
-      {/* {
-        datamodal && (
-          <AddBot platform={formData.platform} botType={formData.bot} />
-        )
-      } */}
-      {/* Table Component */}
+    
       <Table data={open_trades} thead={theadData} />
       </>
         )

@@ -24,6 +24,8 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   });
   const [btnDisable, setBtnDisable] = useState(false);
   const [botStatus, setBotStatus] = useState("ADD");
+  const [loading, setLoading] = useState(false)
+
 
   const navigate = useNavigate();
   const { fetchKeys } = useFetchKeys();
@@ -33,6 +35,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   const { open_trades, totalBalance, total_investment } = bitgetSpot || {};
 
   const fetchData = async () => {
+    setLoading(true)
     try {
       const response = await backEndCallObjNoDcyt(
         "/trades/get_open_trades_data",
@@ -41,6 +44,9 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
       dispatch(bitgetSpotRedx(response)); // Dispatch the action to Redux
     } catch (error) {
       console.error("Error fetching open trades data:", error);
+    }
+    finally {
+      setLoading(false)
     }
   };
 
@@ -150,135 +156,151 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   };
 
 
-  const capital_investment = parseFloat(totalBalance / total_investment || 0).toFixed(2);
+  // const capital_investment = parseFloat(totalBalance / total_investment || 0).toFixed(2);
+
+  const difference = totalBalance  - total_investment;
+  let capital_investment = ((difference / total_investment) * 100).toFixed(2);
+
+  // Handle NaN case explicitly
+if (isNaN(capital_investment)) {
+  capital_investment = "0.00";
+}
 
   return (
     <>
-      <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
-        <div
-          className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
-          data-bs-toggle="modal"
-          data-bs-target="#editInvest"
-        >
-          <h6 className="mb-0 fw-bold">{parseFloat(total_investment || 0).toFixed(2)}</h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            Capital Assigned
-          </p>
-        </div>
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 fw-bold">
-            {parseFloat(totalBalance || "0").toFixed(2)}
-          </h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            Current Balance
-          </p>
-        </div>
-        <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-          <h6 className="mb-0 status-percent fw-bold px-2 py-0">
-            {capital_investment > 0
-              ? `+${capital_investment}`
-              : `${capital_investment}`}
-            %
-          </h6>
-          <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-            % Change
-          </p>
-        </div>
-        <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
-          {handleButtonClick()}
-        </div>
-      </div>
-      <ConfirmPopup
-        label="Bot Status"
-        msg={`${botStatus} bot`}
-        botStatus={botStatus}
-        toggleBotStatus={toggleBotStatus}
-        modelRef={modelRef}
-        btnDisable={btnDisable}
-      />
-      <EditInvestment
-        botType={formData.bot}
-        platform={formData.platform}
-        onSuccess={() => {
-          // console.log("Investment Updated Successfully!");
-        }}
-      />
-      <BitgetSpotTable
-        data={open_trades}
-        thead={["Symbol", "Price", "Org Qty"]}
-      />
-      <div className="modal fade" id="bitgetModal">
-        <div className="modal-dialog text-dark">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title primary-color text-capitalize">
-                Add Bot Configuration
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form
-                onSubmit={(e) => {
-                  submitBot(data);
-                  e.preventDefault();
-                }}
+      {
+        loading ? (
+          <div className="loader">Loading...!</div>
+        ) : (
+          <>
+            <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
+              <div
+                className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
+                data-bs-toggle="modal"
+                data-bs-target="#editInvest"
               >
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="platform"
-                    name="platform"
-                    placeholder="Platform"
-                    value={data.platform}
-                    readOnly
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="botType"
-                    name="botType"
-                    placeholder="Bot Type"
-                    value={data.botType}
-                    readOnly
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="total_investment"
-                    name="total_investment"
-                    placeholder="Total Investment"
-                    value={data.total_investment}
-                    onChange={(e) =>
-                      setData({ ...data, total_investment: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="text-end mx-2">
-                  <button
-                    className="sign mt-3"
-                    type="submit"
-                    disabled={btnDisable}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
+                <h6 className="mb-0 fw-bold">{parseFloat(total_investment || 0).toFixed(2)}</h6>
+                <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+                  Capital Assigned
+                </p>
+              </div>
+              <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+                <h6 className="mb-0 fw-bold">
+                  {parseFloat(totalBalance || "0").toFixed(2)}
+                </h6>
+                <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+                  Current Balance
+                </p>
+              </div>
+              <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+                <h6 className="mb-0 status-percent fw-bold px-2 py-0">
+                  {capital_investment > 0
+                    ? `+${capital_investment}`
+                    : `${capital_investment}`}
+                  %
+                </h6>
+                <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+                  % Change
+                </p>
+              </div>
+              <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
+                {handleButtonClick()}
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+            <ConfirmPopup
+              label="Bot Status"
+              msg={`${botStatus} bot`}
+              botStatus={botStatus}
+              toggleBotStatus={toggleBotStatus}
+              modelRef={modelRef}
+              btnDisable={btnDisable}
+            />
+            <EditInvestment
+              botType={formData.bot}
+              platform={formData.platform}
+              onSuccess={() => {
+                // console.log("Investment Updated Successfully!");
+              }}
+            />
+            <BitgetSpotTable
+              data={open_trades}
+              thead={["Symbol", "Price", "Org Qty"]}
+            />
+            <div className="modal fade" id="bitgetModal">
+              <div className="modal-dialog text-dark">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title primary-color text-capitalize">
+                      Add Bot Configuration
+                    </h5>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <form
+                      onSubmit={(e) => {
+                        submitBot(data);
+                        e.preventDefault();
+                      }}
+                    >
+                      <div className="mb-4">
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="platform"
+                          name="platform"
+                          placeholder="Platform"
+                          value={data.platform}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="mb-4">
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="botType"
+                          name="botType"
+                          placeholder="Bot Type"
+                          value={data.botType}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="mb-4">
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="total_investment"
+                          name="total_investment"
+                          placeholder="Total Investment"
+                          value={data.total_investment}
+                          onChange={(e) =>
+                            setData({ ...data, total_investment: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+                      <div className="text-end mx-2">
+                        <button
+                          className="sign mt-3"
+                          type="submit"
+                          disabled={btnDisable}
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )
+      }
     </>
   );
 };

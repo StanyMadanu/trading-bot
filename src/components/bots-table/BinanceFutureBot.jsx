@@ -9,6 +9,7 @@ import { binancefutureRedx } from "../reduxStore/slice/binancefutureSlice";
 import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
 import { useNavigate } from "react-router-dom";
+import { FALSE } from "sass";
 
 // Lazy load components
 const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
@@ -30,6 +31,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   });
 
   const [btnDisable, setBtnDisable] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const [botStatus, setBotStatus] = useState("ADD");
   const [datamodal, setDataModala] = useState(false);
@@ -42,6 +44,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   console.log(binanceFuture)
 
   const fetchData = async () => {
+    setLoading(true)
     try {
       const response = await backEndCallObjNoDcyt(
         "/trades/get_open_trades_data",
@@ -50,6 +53,9 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
     } catch (error) {
       console.error("Error fetching open trades data:", error);
+    }
+    finally {
+      setLoading(false)
     }
   };
 
@@ -177,12 +183,22 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       break;
   }
 
-  const capital_investment = parseFloat(usdt_balance?.availableBalance / total_investment || 0).toFixed(2);
+  // const capital_investment = parseFloat(usdt_balance?.availableBalance / total_investment || 0).toFixed(2);
+  const difference = usdt_balance?.availableBalance - total_investment;
+let capital_investment = ((difference / total_investment) * 100).toFixed(2);
 
+if (isNaN(capital_investment)) {
+  capital_investment = "0.00";
+}
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
+    <Suspense fallback={<div>Loading...!</div>}>
+      {
+        loading ? (
+          <div className="loader">Loading...!</div>
+        ) : (
+          <>
+          <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
         {/* UI Content */}
         <div
           className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
@@ -244,6 +260,9 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       } */}
       {/* Table Component */}
       <Table data={open_trades} thead={theadData} />
+      </>
+        )
+      }
 
       <div className="modal fade" id="botModal">
         <div className="modal-dialog text-dark">

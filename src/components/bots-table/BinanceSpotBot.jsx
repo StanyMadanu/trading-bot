@@ -31,6 +31,9 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
 
   const [btnDisable, setBtnDisable] = useState(false);
 
+  const [loading, setLoading] = useState(false)
+
+
   const modelRef = useRef(null);
 
   const { fetchKeys } = useFetchKeys();
@@ -48,6 +51,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   // console.log(open_trades);
 
   const fetchData = async () => {
+    setLoading(true)
     try {
       const response = await backEndCallObjNoDcyt(
         "/trades/get_open_trades_data",
@@ -56,6 +60,9 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       dispatch(binancespotRedx(response)); // Dispatch the action to Redux
     } catch (error) {
       console.error("Error fetching open trades data:", error);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -191,13 +198,24 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
       break;
   }
 
-  const capital_investment = parseFloat(totalBalance / total_investment || 0).toFixed(2);
+  // const capital_investment = parseFloat(totalBalance / total_investment || 0).toFixed(2);
 
 
+  const difference = totalBalance - total_investment;
+  let capital_investment = ((difference / total_investment) * 100).toFixed(2);
+
+  if (isNaN(capital_investment)) {
+    capital_investment = "0.00";
+  }
 
   return (
     <>
-      <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
+   {
+    loading ? (
+      <div className="loader">Loading...!</div>
+    ) : (
+      <>
+         <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
         <div
           className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
           data-bs-toggle="modal"
@@ -325,6 +343,9 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
           </div>
         </div>
       </div>
+      </>
+    )
+   }
     </>
   );
 };

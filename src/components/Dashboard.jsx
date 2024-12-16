@@ -15,6 +15,14 @@ const Dashboard = () => {
   const [activeFutureBot, setActiveFutureBot] = useState("bitget"); // FUTURES bot
 
   const profile = useSelector((state) => state.getProfile.value);
+  const binanceFuture = useSelector((state) => state.binanceFuture.value);
+  const binanceSpot = useSelector((state) => state.binanceSpot.value);
+  const BitgetFuture = useSelector((state) => state.bitgetFuture.value);
+  const BitgetSpot = useSelector((state) => state.bitgetSpot.value);
+
+
+  console.log(binanceFuture , binanceSpot, BitgetFuture , BitgetSpot)
+
 
   return (
     <>
@@ -25,8 +33,8 @@ const Dashboard = () => {
               <div className="card-body text-center">
                 <SpeedOMeter
                   title="binance SPOT balance"
-                  balance={2000}
-                  target={5000}
+                  balance={binanceSpot?.total_investment || 0}
+                  target={10000}
                 />
               </div>
             </div>
@@ -37,8 +45,8 @@ const Dashboard = () => {
               <div className="card-body text-center">
                 <SpeedOMeter
                   title="binance FUTURE balance"
-                  balance={6000}
-                  target={5000}
+                  balance={binanceFuture?.total_investment || 0}
+                  target={10000}
                 />
               </div>
             </div>
@@ -49,7 +57,7 @@ const Dashboard = () => {
               <div className="card-body text-center">
                 <SpeedOMeter
                   title="bitget SPOT balance"
-                  balance={8000}
+                  balance={BitgetSpot?.total_investment || 0}
                   target={5000}
                 />
               </div>
@@ -61,7 +69,7 @@ const Dashboard = () => {
               <div className="card-body text-center">
                 <SpeedOMeter
                   title="bitget FUTURE balance"
-                  balance={3000}
+                  balance={BitgetFuture?.total_investment || 0}
                   target={5000}
                 />
               </div>

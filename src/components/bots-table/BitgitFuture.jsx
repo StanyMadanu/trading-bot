@@ -10,6 +10,7 @@ import useFetchKeys from "../../common/CotextTest";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import EditBitgetFuture from "../models/EditBitgetFutures";
+import MiniLoader from "../../common/MiniLoader";
 // Lazy load components
 const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
 const EditInvestment = React.lazy(() =>
@@ -31,8 +32,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   const [btnDisable, setBtnDisable] = useState(false);
   const [botStatus, setBotStatus] = useState("ADD");
   const [datamodal, setDataModala] = useState(false);
-  const [loading, setLoading] = useState(false)
-
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -46,7 +46,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   const modelRef = useRef(null);
 
   const fetchData = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await backEndCallObjNoDcyt(
         "/trades/get_open_trades_data",
@@ -55,9 +55,8 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
       dispatch(bitgetFutureRdx(response)); // Dispatch the action to Redux
     } catch (error) {
       console.error("Error fetching open trades data:", error);
-    }
-    finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -171,171 +170,192 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     default:
       api_keys?.[formData.platform]?.api_key
         ? (button = (
-          <button
-            className="theme-btn text-uppercase"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#ADDBOOT"
-            onClick={() => {
-              setDataModala((prev) => !prev); // Properly toggle state
-            }}
-          >
-            Add Bot
-          </button>
-        ))
+            <button
+              className="theme-btn text-uppercase"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#ADDBOOT"
+              onClick={() => {
+                setDataModala((prev) => !prev); // Properly toggle state
+              }}
+            >
+              Add Bot
+            </button>
+          ))
         : (button = (
-          <button
-            className="theme-btn text-uppercase"
-            type="button"
-            onClick={() =>
-              navigate("/api", { state: { platform: formData.platform } })
-            }
-          >
-            Add Bot
-          </button>
-        ));
+            <button
+              className="theme-btn text-uppercase"
+              type="button"
+              onClick={() =>
+                navigate("/api", { state: { platform: formData.platform } })
+              }
+            >
+              Add Bot
+            </button>
+          ));
       break;
   }
 
   // const capital_investment = parseFloat(usdt_balance?.availableBalance / total_investment || 0).toFixed(2);
 
-  const difference = usdt_balance?.availableBalance  - total_investment;
+  const difference = usdt_balance?.availableBalance - total_investment;
   let capital_investment = ((difference / total_investment) * 100).toFixed(2);
 
   // Handle NaN case explicitly
-if (isNaN(capital_investment)) {
-  capital_investment = "0.00";
-}
+  if (isNaN(capital_investment)) {
+    capital_investment = "0.00";
+  }
 
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        {
-          loading ? (
-            <div className="loader">Loading...!</div>
-          ) : (
-            <>
-              <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
-                <div
-                  className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2 "
-                  data-bs-toggle="modal"
-                  data-bs-target="#editBitgetFutureModal"
-                >
-                  <h6 className="mb-0 fw-bold">{parseFloat(total_investment || 0).toFixed(2)}</h6>
-                  <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-                    capital assigned
-                  </p>
-                </div>
-                <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-                  <h6 className="mb-0 fw-bold">
-                    {parseFloat(usdt_balance?.balance || "0").toFixed(2)}
-                  </h6>
-                  <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-                    current balance
-                  </p>
-                </div>
-                <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-                  <h6 className="mb-0 status-percent fw-bold px-2 py-0">
-                    {capital_investment > 0
-                      ? `+${capital_investment}`
-                      : `${capital_investment}`}
-                    %
-                  </h6>
-                  <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
-                    % change
-                  </p>
-                </div>
-                <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
-                  {button}
-                </div>
+      <Suspense
+        fallback={
+          <div>
+            <MiniLoader />
+          </div>
+        }
+      >
+        {loading ? (
+          <div className="loader">
+            <MiniLoader />
+          </div>
+        ) : (
+          <>
+            <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
+              <div
+                className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2 "
+                data-bs-toggle="modal"
+                data-bs-target="#editBitgetFutureModal"
+              >
+                <h6 className="mb-0 fw-bold">
+                  {parseFloat(total_investment || 0).toFixed(2)}
+                </h6>
+                <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+                  capital assigned
+                </p>
               </div>
-              <BitgetFutureTable data={open_trades} thead={theadData} />
-              <ConfirmPopup
-                label="Bot Status"
-                msg={`${botStatus} bot`}
-                botStatus={botStatus}
-                toggleBotStatus={toggleBotStatus}
-                modelRef={modelRef}
-                btnDisable={btnDisable}
-              />
+              <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+                <h6 className="mb-0 fw-bold">
+                  {parseFloat(usdt_balance?.balance || "0").toFixed(2)}
+                </h6>
+                <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+                  current balance
+                </p>
+              </div>
+              <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+                <h6
+                  className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${
+                    capital_investment < 0 ? "bg-danger" : "bg-success"
+                  }`}
+                >
+                  {capital_investment > 0
+                    ? `+${capital_investment}`
+                    : `${capital_investment}`}
+                  %
+                </h6>
+                <p
+                  className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${
+                    capital_investment < 0 ? "text-danger" : "text-success"
+                  }`}
+                >
+                  % change
+                </p>
+              </div>
+              <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
+                {button}
+              </div>
+            </div>
+            <BitgetFutureTable data={open_trades} thead={theadData} />
+            <ConfirmPopup
+              label="Bot Status"
+              msg={`${botStatus} bot`}
+              botStatus={botStatus}
+              toggleBotStatus={toggleBotStatus}
+              modelRef={modelRef}
+              btnDisable={btnDisable}
+            />
 
-              <EditBitgetFuture botType={formData.bot} platform={formData.platform} />
+            <EditBitgetFuture
+              botType={formData.bot}
+              platform={formData.platform}
+            />
 
-              <div className="modal fade" id="ADDBOOT">
-                <div className="modal-dialog text-dark">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title primary-color text-capitalize">
-                        Add Bot Configuration
-                      </h5>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                      ></button>
-                    </div>
-                    <div className="modal-body">
-                      <form
-                        onSubmit={(e) => {
-                          submitBot(data);
-                          e.preventDefault();
-                        }}
-                      >
-                        <div className="mb-3">
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="platform"
-                            name="platform"
-                            placeholder="Platform"
-                            value={data.platform}
-                            readOnly
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="botType"
-                            name="botType"
-                            placeholder="Bot Type"
-                            value={data.botType}
-                            readOnly
-                          />
-                        </div>
+            <div className="modal fade" id="ADDBOOT">
+              <div className="modal-dialog text-dark">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title primary-color text-capitalize">
+                      Add Bot Configuration
+                    </h5>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <form
+                      onSubmit={(e) => {
+                        submitBot(data);
+                        e.preventDefault();
+                      }}
+                    >
+                      <div className="mb-3">
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="platform"
+                          name="platform"
+                          placeholder="Platform"
+                          value={data.platform}
+                          readOnly
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="botType"
+                          name="botType"
+                          placeholder="Bot Type"
+                          value={data.botType}
+                          readOnly
+                        />
+                      </div>
 
-                        <div className="mb-3">
-                          <input
-                            type="number"
-                            className="form-control"
-                            id="total_investment"
-                            name="total_investment"
-                            placeholder="Total Investment"
-                            value={data.total_investment}
-                            onChange={(e) =>
-                              setData({ ...data, total_investment: e.target.value })
-                            }
-                            required
-                          />
-                        </div>
-                        <div className="text-end px-2">
-                          <button
-                            className="sign my-2 py-2 px-3 rounded"
-                            type="submit"
-                            disabled={btnDisable}
-                          >
-                            Submit
-                          </button>
-                        </div>
-                      </form>
-                    </div>
+                      <div className="mb-3">
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="total_investment"
+                          name="total_investment"
+                          placeholder="Total Investment"
+                          value={data.total_investment}
+                          onChange={(e) =>
+                            setData({
+                              ...data,
+                              total_investment: e.target.value,
+                            })
+                          }
+                          required
+                        />
+                      </div>
+                      <div className="text-end px-2">
+                        <button
+                          className="sign my-2 py-2 px-3 rounded"
+                          type="submit"
+                          disabled={btnDisable}
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
-            </>
-          )
-        }
-
+            </div>
+          </>
+        )}
       </Suspense>
     </>
   );

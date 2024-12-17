@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 // import UpdateCoins from "./models/UpdateCoins";
 import Loader from "../common/Loader";
 import { Link } from "react-router-dom";
+import MiniLoader from "../common/MiniLoader";
 
 const UpdateCoins = lazy(() => import("./models/UpdateCoins"));
 
@@ -238,7 +239,7 @@ class AddCoins extends Form {
         </div>
 
         {/* Modals */}
-        <Suspense fallback={"loading...!"}>
+        <Suspense fallback={<MiniLoader />}>
           <ConfirmPopup
             toggleBotStatus={this.handleDeleteCoins}
             botStatus="delete"

@@ -73,7 +73,7 @@ const Table = ({ data, thead }) => {
           </tr>
         </tbody>
       </table>
-      <div className="text-center">
+      <div className="text-end">
         <button
           className="py-1"
           data-bs-toggle="modal"

@@ -2,6 +2,7 @@ import React, { useState, Suspense } from "react";
 import { useSelector } from "react-redux";
 import mainLogo from "../assets/images/7pools-logo.png";
 import SpeedOMeter from "../common/SpeedOMeter";
+import MiniLoader from "../common/MiniLoader";
 import { useLocation } from "react-router-dom";
 
 const BinanceSpotBot = React.lazy(() => import("./bots-table/BinanceSpotBot"));
@@ -16,10 +17,14 @@ const Dashboard = () => {
 
   const { type, platform } = location.state || {};
 
-  const [activeFutureBot, setActiveFutureBot] = useState(type === "FUTURES" ? platform : "BITGET");
-  const [activeSpotBot, setActiveSpotBot] = useState(type == "AMM" ? platform : "BITGET");
+  const [activeFutureBot, setActiveFutureBot] = useState(
+    type === "FUTURES" ? platform : "BITGET"
+  );
+  const [activeSpotBot, setActiveSpotBot] = useState(
+    type == "AMM" ? platform : "BITGET"
+  );
 
-  console.log(activeFutureBot, activeSpotBot)
+  console.log(activeFutureBot, activeSpotBot);
 
   const profile = useSelector((state) => state.getProfile.value);
   const binanceFuture = useSelector((state) => state.binanceFuture.value);
@@ -27,8 +32,14 @@ const Dashboard = () => {
   const BitgetFuture = useSelector((state) => state.bitgetFuture.value);
   const BitgetSpot = useSelector((state) => state.bitgetSpot.value);
 
-
-  console.log(binanceFuture, binanceSpot, BitgetFuture, BitgetSpot, type, platform)
+  console.log(
+    binanceFuture,
+    binanceSpot,
+    BitgetFuture,
+    BitgetSpot,
+    type,
+    platform
+  );
 
   return (
     <>
@@ -90,8 +101,9 @@ const Dashboard = () => {
               <div className="card-body">
                 <div className="the-bots d-flex gap-2 pb-3">
                   <div
-                    className={`binance-spot-bot flex-fill text-center p-2 ${activeSpotBot === "BINANCE" ? "active" : ""
-                      }`}
+                    className={`binance-spot-bot flex-fill text-center p-2 ${
+                      activeSpotBot === "BINANCE" ? "active" : ""
+                    }`}
                     onClick={() => setActiveSpotBot("BINANCE")}
                   >
                     <p className="mb-0 text-capitalize fs-14 fw-semibold">
@@ -99,8 +111,9 @@ const Dashboard = () => {
                     </p>
                   </div>
                   <div
-                    className={`binance-spot-bot flex-fill text-center p-2 ${activeSpotBot === "BITGET" ? "active" : ""
-                      }`}
+                    className={`binance-spot-bot flex-fill text-center p-2 ${
+                      activeSpotBot === "BITGET" ? "active" : ""
+                    }`}
                     onClick={() => setActiveSpotBot("BITGET")}
                   >
                     <p className="mb-0 text-capitalize fs-14 fw-semibold">
@@ -108,8 +121,14 @@ const Dashboard = () => {
                     </p>
                   </div>
                 </div>
-                <Suspense fallback={<div>Loading...</div>}>
-                  {activeSpotBot === "BINANCE" ? (
+                <Suspense
+                  fallback={
+                    <div>
+                      <MiniLoader />
+                    </div>
+                  }
+                >
+                  {activeSpotBot === "binance" ? (
                     <BinanceSpotBot />
                   ) : (
                     <BitgitSpotBot />
@@ -125,8 +144,9 @@ const Dashboard = () => {
               <div className="card-body">
                 <div className="the-bots d-flex gap-2 pb-3">
                   <div
-                    className={`binance-spot-bot flex-fill text-center p-2 ${activeFutureBot === "BINANCE" ? "active" : ""
-                      }`}
+                    className={`binance-spot-bot flex-fill text-center p-2 ${
+                      activeFutureBot === "BINANCE" ? "active" : ""
+                    }`}
                     onClick={() => setActiveFutureBot("BINANCE")}
                   >
                     <p className="mb-0 text-capitalize fs-14 fw-semibold">
@@ -134,8 +154,9 @@ const Dashboard = () => {
                     </p>
                   </div>
                   <div
-                    className={`binance-spot-bot flex-fill text-center p-2 ${activeFutureBot === "BITGET" ? "active" : ""
-                      }`}
+                    className={`binance-spot-bot flex-fill text-center p-2 ${
+                      activeFutureBot === "BITGET" ? "active" : ""
+                    }`}
                     onClick={() => setActiveFutureBot("BITGET")}
                   >
                     <p className="mb-0 text-capitalize fs-14 fw-semibold">
@@ -143,8 +164,14 @@ const Dashboard = () => {
                     </p>
                   </div>
                 </div>
-                <Suspense fallback={<div>Loading...</div>}>
-                  {activeFutureBot === "BINANCE" ? (
+                <Suspense
+                  fallback={
+                    <div>
+                      <MiniLoader />
+                    </div>
+                  }
+                >
+                  {activeFutureBot === "binance" ? (
                     <BinanceFutureBot />
                   ) : (
                     <BitgitFutureBot />

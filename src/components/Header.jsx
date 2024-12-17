@@ -18,13 +18,11 @@ const Header = () => {
   const navigate = useNavigate();
   const profile = useSelector((state) => state.getProfile?.value?.profile); // Access Redux state
 
-
   const { fetchKeys } = useFetchKeys();
 
   const currentUser = getCurrentUser();
 
-  console.log(profile, currentUser)
-
+  console.log(profile, currentUser);
 
   // Theme Toggle Handler
   const handleTheme = () => {
@@ -49,7 +47,7 @@ const Header = () => {
   return (
     <div className="header p-2">
       <div className="card">
-        <div className="card-body py-2 px-4">
+        <div className="card-body py-2 px-2 px-md-4">
           <div className="d-flex justify-content-between align-items-center flex-wrap">
             <div className="d-flex gap-5 flex-wrap">
               <div className="d-flex gap-3 align-items-center">
@@ -65,8 +63,8 @@ const Header = () => {
               </div>
             </div>
 
-            <div className="ms-auto d-flex gap-5 align-items-center">
-              <div>
+            <div className="ms-auto d-flex column-gap-2 align-items-center">
+              <div className="d-none d-md-block">
                 <h6 className="text-capitalize primary-color">bot status</h6>
                 <div className="d-flex align-items-center gap-2">
                   <p className="mb-0 flex-fill text-capitalize fs-13">
@@ -96,15 +94,22 @@ const Header = () => {
                   aria-expanded="false"
                 >
                   <div className="profile-wrapper me-2">
-                    <img src={profile?.img_url || profileImg} alt="user-profile" onError={(e) => {
-                      e.target.onerror = null; // Prevents infinite loop in case fallback image also fails
-                      e.target.src = "../assets/images/149071.png"; // Fallback image
-                    }} />
+                    <img
+                      src={profile?.img_url || profileImg}
+                      alt="user-profile"
+                      onError={(e) => {
+                        e.target.onerror = null; // Prevents infinite loop in case fallback image also fails
+                        e.target.src = "../assets/images/149071.png"; // Fallback image
+                      }}
+                    />
                   </div>
-                  
+
                   {/* <span className="fs-13 text-muted fw-bold">Pavan Rebba</span> */}
                   <div className="me-2">
-                    <p className="mb-0 fs-14 fw-semibold"> {profile?.user_name}</p>
+                    <p className="mb-0 fs-14 fw-semibold">
+                      {" "}
+                      {profile?.user_name}
+                    </p>
                     <p className="mb-0 fs-13 text-secondary">
                       {profile?.user_email}
                     </p>
@@ -117,7 +122,9 @@ const Header = () => {
                         <img src={profileImg} alt="user-profile" />
                       </div>
                       <div>
-                        <p className="mb-0 fs-14 fw-semibold">{profile?.user_name}</p>
+                        <p className="mb-0 fs-14 fw-semibold">
+                          {profile?.user_name}
+                        </p>
                         <p className="mb-0 fs-13 text-secondary">
                           {profile?.user_email}
                         </p>
@@ -177,7 +184,10 @@ const Header = () => {
                   </li> */}
 
                   <li className="border-top text-center py-2">
-                    <div onClick={LogoutHandler} className="dropdown-item text-secondary">
+                    <div
+                      onClick={LogoutHandler}
+                      className="dropdown-item text-secondary"
+                    >
                       <span className="me-2">
                         <FaPowerOff size={15} />
                       </span>

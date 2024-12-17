@@ -116,6 +116,11 @@ button {
   font-size: 20px;
 }
 
+// speedometer styles
+.speedometer {
+  height: 160px !important;
+}
+
 // bootstrap classes
 .row > * {
   padding-right: calc(var(--bs-gutter-x) * 0.4) !important;
@@ -129,7 +134,9 @@ button {
 .row-gap-3 {
   row-gap: 2rem;
 }
-
+.column-gap-2 {
+  column-gap: 2rem;
+}
 .card {
   background-color: rgb(var(--theme-primary));
   width: 100%;
@@ -190,4 +197,20 @@ button {
   background-size: contain;
   opacity: 0.05;
   z-index: 0;
+}
+
+.bg-success {
+  background-color: #008c4b !important;
+}
+
+.text-success {
+  color: #008c4b !important;
+}
+
+.bg-danger {
+  background-color: #db0000 !important;
+}
+
+.text-danger {
+  color: #db0000 !important;
 }

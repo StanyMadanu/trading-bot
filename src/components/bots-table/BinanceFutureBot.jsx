@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
 import { useNavigate } from "react-router-dom";
 import { FALSE } from "sass";
+import MiniLoader from "../../common/MiniLoader";
 
 // Lazy load components
 const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
@@ -191,9 +192,11 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   }
 
   return (
-    <Suspense fallback={<div>Loading...!</div>}>
+    <Suspense fallback={<MiniLoader />}>
       {loading ? (
-        <div className="loader">Loading...!</div>
+        <div className="loader">
+          <MiniLoader />
+        </div>
       ) : (
         <>
           <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
@@ -220,13 +223,21 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
               </p>
             </div>
             <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-              <h6 className="mb-0 status-percent fw-bold px-2 py-0">
+              <h6
+                className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${
+                  capital_investment < 0 ? "bg-danger" : "bg-success"
+                }`}
+              >
                 {capital_investment > 0
                   ? `+${capital_investment}`
                   : `${capital_investment}`}
                 %
               </h6>
-              <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
+              <p
+                className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${
+                  capital_investment < 0 ? "text-danger" : "text-success"
+                }`}
+              >
                 % change
               </p>
             </div>

@@ -61,7 +61,9 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
 
   useEffect(() => {
     if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
-      fetchData();
+      if(!binanceFuture){
+        fetchData();
+      }
     }
   }, [dispatch, bots]);
 
@@ -123,7 +125,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
     if (modalInstance) modalInstance.hide();
   };
 
-  const theadData = ["Symbol", "Price", "Org Qty"];
+  const theadData = ["Symbol", "Profit", "PositionAmt"];
 
   let button;
   switch (bots?.BINANCE?.FUTURES?.status) {

@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 import { connect, useDispatch } from "react-redux";
 import { backEndCall, backEndCallObj } from "../services/mainService";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
 import { Link, useLocation } from "react-router-dom";
 import { profileRedux } from "./reduxStore/slice/profileSlice";
+const ConfirmPopup = React.lazy(() => import("./models/ConfirmPopup"));
 
 const Api = ({ getProfile }) => {
   const [data, setData] = useState({});
   const [error, setErrors] = useState({});
   const { api_keys } = getProfile?.profile || {};
   const [btnDisable, setBtnDisable] = useState(false);
+
+  const [apiKeyName, setApiKeyName] = useState("");
 
   console.log(getProfile, "getProfile");
 
@@ -20,6 +23,9 @@ const Api = ({ getProfile }) => {
   const { platform } = location.state || {}; //
 
   const [activeApi, setActiveApi] = useState(platform || "BINANCE");
+
+  const modelRef = useRef(null);
+
 
   // console.log(platform)
 
@@ -82,21 +88,37 @@ const Api = ({ getProfile }) => {
 
   const handleSubmit = async (e, apiType) => {
     e.preventDefault();
-    setBtnDisable(true);
+
+    console.log("testing", apiType)
+
+    setApiKeyName(apiType);
 
     const validationErrors = validate(data);
     setErrors(validationErrors || {});
+    console.log(validationErrors)
     if (validationErrors) {
       setBtnDisable(false);
       return;
     }
 
+    console.log("testing2")
+
+
+    const modalElement = document.getElementById("confirmDelete");
+    // if (modalElement) {
+    const modal = new window.bootstrap.Modal(modalElement);
+    modal.show();
+  };
+
+
+  const handleConfirm = async () => {
+    setBtnDisable(true);
     const formattedData = {
       api_key: data.api_key,
       secret_key: data.secret_key,
       passphrase: data?.passphrase,
-      keys: apiType,
-      type: api_keys?.[apiType]?.api_key ? "UPDATE" : "ADD",
+      keys: apiKeyName,
+      type: api_keys?.[apiKeyName]?.api_key ? "UPDATE" : "ADD",
     };
 
     try {
@@ -114,17 +136,33 @@ const Api = ({ getProfile }) => {
 
       await dispatch(profileRedux(updatedProfile));
 
-      setData({
-        api_key: updatedProfile?.profile?.api_keys?.[apiType]?.api_key || "",
-        secret_key: "",
-        passphrase: "",
-      });
+      apiKeyName === "BINANCE" ? (
+        setData({
+          api_key: updatedProfile?.profile?.api_keys?.[apiKeyName]?.api_key || "",
+          secret_key: "",
+        })
+      ) : (
+        setData({
+          api_key: updatedProfile?.profile?.api_keys?.[apiKeyName]?.api_key || "",
+          secret_key: "",
+          passphrase: "",
+        })
+      )
+
+
+
+      const modalInstance = window.bootstrap.Modal.getInstance(modelRef.current);
+      if (modalInstance) modalInstance.hide();
+
     } catch (error) {
       toast.error(error?.response?.data || "Something went wrong");
     } finally {
       setBtnDisable(false);
     }
-  };
+
+  }
+
+
 
   const getButtonLabel = (apiType) => {
     if (btnDisable) return "Please Wait...";
@@ -192,11 +230,24 @@ const Api = ({ getProfile }) => {
       <div className="text-end">
         <button
           className="btn btn-primary text-capitalize"
-          disabled={btnDisable}
         >
           {getButtonLabel(apiType)}
         </button>
       </div>
+
+      <Suspense fallback={<div>Loading...</div>}>
+
+        {/* <ConfirmPopup toggleBotStatus={handleConfirm}
+          botStatus="Confirm" msg={`Change Api Keys in this account ${getProfile?.profile?.user_name}`}
+          modelRef={modelRef} /> */}
+        <ConfirmPopup
+          label="Change Api Keys"
+          msg={`Change Api Keys in this account ${getProfile?.profile?.user_name}`}
+          botStatus="Confirm"
+          toggleBotStatus={handleConfirm}
+          modelRef={modelRef}
+          btnDisable={btnDisable} />
+      </Suspense>
     </form>
   );
 
@@ -217,9 +268,8 @@ const Api = ({ getProfile }) => {
               {["BINANCE", "BITGET"].map((api) => (
                 <div
                   key={api}
-                  className={`binance-api flex-fill d-flex justify-content-center align-items-center py-2 ${
-                    activeApi === api ? "active" : ""
-                  }`}
+                  className={`binance-api flex-fill d-flex justify-content-center align-items-center py-2 ${activeApi === api ? "active" : ""
+                    }`}
                   onClick={() => setActiveApi(api)}
                 >
                   <p className="text-capitalize mb-0 fw-semibold">{api} API</p>

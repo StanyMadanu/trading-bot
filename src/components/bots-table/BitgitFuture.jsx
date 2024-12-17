@@ -63,7 +63,9 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
 
   useEffect(() => {
     if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
-      fetchData();
+      if(!bitgetFuture){
+        fetchData();
+      }
     }
   }, [dispatch, bots]);
 

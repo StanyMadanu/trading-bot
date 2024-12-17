@@ -66,7 +66,7 @@ const BinanceSpotTable = ({ data }) => {
               <div
                 onClick={() => {
                   navigate("/allDataTable", {
-                    state: { reduxName: "binanceSpot", type: "AMM" },
+                    state: { reduxName: "binanceSpot", type: "AMM" , platform: "BINANCE" },
                   });
                 }}
               >

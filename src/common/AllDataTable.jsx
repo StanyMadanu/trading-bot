@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import useFetchKeys from "./CotextTest";
 import { backEndCallObj, getCurrentUser } from "../services/mainService";
 import { toast } from "react-toastify";
@@ -9,25 +9,30 @@ import ConfirmPopup from "../components/models/ConfirmPopup";
 const AllDataTable = () => {
   // Get reduxName and type from location state
   const location = useLocation();
+  const navigate = useNavigate();
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [closeTradeBtn, setCloseTradeBtn] = useState({
     pair: "",
   });
-  const { reduxName, type } = location.state || {};
+  const [sortAscending, setSortAscending] = useState(true); // State for sorting direction
+
+
+  const { reduxName, type, platform } = location.state || {};
 
   const [data, setData] = useState({
-
-
   })
 
   const user = getCurrentUser();
 
-  console.log(user);
 
   const { getCoinicons, getFormattedDate } = useFetchKeys();
 
   // Access Redux state
-  const getRedux = useSelector((state) => state?.[reduxName]);
+  const getRedux = useSelector((state) => state?.[reduxName]?.value);
+
+  const { usdt_balance } = getRedux || {};
+
+  console.log(usdt_balance);
 
   const closeTrade = async () => {
     setBtnDisabled(true);
@@ -36,14 +41,12 @@ const AllDataTable = () => {
       pair: closeTradeBtn.pair,
     };
 
-    console.log(formattedData);
 
     try {
       const response = await backEndCallObj(
         "/admin/close_future_coin",
         formattedData
       );
-      // console.log(response, "aaa");
       toast.success(response?.success);
       getCoinicons();
     } catch (error) {
@@ -59,18 +62,146 @@ const AllDataTable = () => {
     });
   };
 
+  // const testing = [
+  //   {
+  //     adlQuantile: 1,
+  //     breakEvenPrice: "102415.4605306",
+  //     entryPrice: "102466.6938776",
+  //     isAutoAddMargin: "false",
+  //     isolated: false,
+  //     isolatedMargin: "0.00000000",
+  //     isolatedWallet: "0",
+  //     leverage: "50",
+  //     liquidationPrice: "132997.73880747",
+  //     marginType: "cross",
+  //     markPrice: "106824.26514894",
+  //     maxNotionalValue: "12000000",
+  //     notional: "-10468.77798459",
+  //     positionAmt: "-0.098",
+  //     positionSide: "BOTH",
+  //     symbol: "BTCUSDT",
+  //     unRealizedProfit: "427.04198459",
+  //     updateTime: 1734315439913
+  //   },
+  //   {
+  //     adlQuantile: 2,
+  //     breakEvenPrice: "102500.4505306",
+  //     entryPrice: "102550.6938776",
+  //     isAutoAddMargin: "true",
+  //     isolated: true,
+  //     isolatedMargin: "0.10000000",
+  //     isolatedWallet: "0.001",
+  //     leverage: "20",
+  //     liquidationPrice: "132000.73880747",
+  //     marginType: "isolated",
+  //     markPrice: "106900.26514894",
+  //     maxNotionalValue: "5000000",
+  //     notional: "-5000.77798459",
+  //     positionAmt: "-0.050",
+  //     positionSide: "LONG",
+  //     symbol: "ETHUSDT",
+  //     unRealizedProfit: "-250.04198459",
+  //     updateTime: 1734315439914
+  //   },
+  //   {
+  //     adlQuantile: 3,
+  //     breakEvenPrice: "104000.4505306",
+  //     entryPrice: "104050.6938776",
+  //     isAutoAddMargin: "false",
+  //     isolated: false,
+  //     isolatedMargin: "0.00000000",
+  //     isolatedWallet: "0",
+  //     leverage: "30",
+  //     liquidationPrice: "135000.73880747",
+  //     marginType: "cross",
+  //     markPrice: "107500.26514894",
+  //     maxNotionalValue: "8000000",
+  //     notional: "-8000.77798459",
+  //     positionAmt: "-0.075",
+  //     positionSide: "SHORT",
+  //     symbol: "XRPUSDT",
+  //     unRealizedProfit: "-350.04198459",
+  //     updateTime: 1734315439915
+  //   },
+  //   {
+  //     adlQuantile: 4,
+  //     breakEvenPrice: "105000.4505306",
+  //     entryPrice: "105100.6938776",
+  //     isAutoAddMargin: "true",
+  //     isolated: true,
+  //     isolatedMargin: "0.20000000",
+  //     isolatedWallet: "0.002",
+  //     leverage: "10",
+  //     liquidationPrice: "137000.73880747",
+  //     marginType: "isolated",
+  //     markPrice: "108000.26514894",
+  //     maxNotionalValue: "6000000",
+  //     notional: "-6000.77798459",
+  //     positionAmt: "-0.060",
+  //     positionSide: "BOTH",
+  //     symbol: "SOLUSDT",
+  //     unRealizedProfit: "300.04198459",
+  //     updateTime: 1734315439916
+  //   }
+  // ];
+
+  // Sorting Logic for Profit
+
+  const sortProfit = () => {
+    setSortAscending(!sortAscending); // Toggle sorting direction
+  };
+
+  // Sort data based on profit
+  const sortedData = [...(getRedux?.open_trades || [])].sort((a, b) => {
+    const profitA = parseFloat(a.unRealizedProfit || 0);
+    const profitB = parseFloat(b.unRealizedProfit || 0);
+    return sortAscending ? profitA - profitB : profitB - profitA;
+  });
+  // const sortedData = [...(testing || [])].sort((a, b) => {
+  //   const profitA = parseFloat(a.unRealizedProfit || 0);
+  //   const profitB = parseFloat(b.unRealizedProfit || 0);
+  //   return sortAscending ? profitA - profitB : profitB - profitA;
+  // });
+
+
   return (
     <div className="card">
       <div className="card-body">
         <div className="my-4">
-          <Link to="/dashboard">
-            <button className="text-uppercase py-1 px-3">back</button>
-          </Link>
+          <div onClick={() => navigate("/dashboard", { state: { type, platform } })}>
+            <button className="text-uppercase py-1 px-3">Back</button>
+          </div>
         </div>
 
-        <h5 className="primary-color fw-bold text-capitalize text-center mb-3">
-          {type === "FUTURES" ? "FUTURES" : "AMM"} data
-        </h5>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+
+          <h6 className="primary-color fw-bold text-capitalize">
+            {type === "FUTURES" && <>
+              <span>Balance :</span>
+              <span> {parseFloat(usdt_balance?.balance).toFixed(2)}</span>
+            </>
+            }
+
+          </h6>
+
+
+          <h5 className="primary-color fw-bold text-capitalize">
+            {type === "FUTURES" ? "FUTURES" : "AMM"} DATA
+          </h5>
+
+
+          <h6 className="primary-color fw-bold text-capitalize">
+            {type === "FUTURES" && <>
+              <span>Current Balance :</span>
+              <span> {parseFloat(usdt_balance?.availableBalance).toFixed(2)}</span>
+            </>
+            }
+
+          </h6>
+
+        </div>
+
+
 
         <div className="table-responsive">
           {type === "FUTURES" ? (
@@ -85,12 +216,12 @@ const AllDataTable = () => {
                   </th>
                   <th>
                     <p className="mb-0 primary-color fs-14 text-center">
-                      Volume
+                      PositionAmt
                     </p>
                   </th>
-                  <th>
+                  <th onClick={sortProfit} className="cursor-pointer">
                     <p className="mb-0 primary-color fs-14 text-center">
-                      Profit
+                      Profit {sortAscending ? "↑" : "↓"}
                     </p>
                   </th>
                   <th>
@@ -108,6 +239,11 @@ const AllDataTable = () => {
                       Target
                     </p>
                   </th>
+                  <th>
+                    <p className="mb-0 primary-color fs-14 text-center">
+                      PositionSide
+                    </p>
+                  </th>
                   {user.user_type === "ADMIN" ? (
                     <th>
                       <p className="mb-0 primary-color fs-14 text-center">
@@ -120,8 +256,8 @@ const AllDataTable = () => {
                 </tr>
               </thead>
               <tbody className="tbody">
-                {getRedux?.value?.open_trades?.length > 0 ? (
-                  getRedux?.value?.open_trades?.map((row, index) => (
+                {sortedData.length > 0 ? (
+                  sortedData.map((row, index) => (
                     <tr key={index}>
                       <td>
                         <div className="d-flex gap-2 align-items-center justify-content-center">
@@ -138,12 +274,12 @@ const AllDataTable = () => {
                         </div>
                       </td>
                       <td>
-                        <p className="mb-0 fs-13 fw-semibold lh-2">
+                        <p className={`mb-0 fs-13 fw-semibold lh-2`}>
                           {parseFloat(row?.positionAmt || "0").toFixed(2)}
                         </p>
                       </td>
                       <td>
-                        <p className="mb-0 fs-13 fw-semibold lh-2">
+                        <p className={`mb-0 fs-13 fw-semibold lh-2 ${row.unRealizedProfit < 0 ? "text-danger" : "text-success"}`}>
                           {parseFloat(row?.unRealizedProfit || "0").toFixed(2)}
                         </p>
                       </td>
@@ -162,7 +298,11 @@ const AllDataTable = () => {
                           {parseFloat(row?.breakEvenPrice || "0").toFixed(2)}
                         </p>
                       </td>
-
+                      <td>
+                        <p className="mb-0 fs-13 fw-semibold lh-2">
+                          {row?.positionSide}
+                        </p>
+                      </td>
                       <td>
                         <div className="d-flex align-items-center justify-content-center gap-3">
                           {user.user_type === "ADMIN" && (
@@ -225,8 +365,8 @@ const AllDataTable = () => {
                 </tr>
               </thead>
               <tbody className="tbody">
-                {getRedux?.value?.open_trades?.length > 0 ? (
-                  getRedux?.value?.open_trades?.map((item, index) => (
+                {getRedux?.open_trades?.length > 0 ? (
+                  getRedux?.open_trades?.map((item, index) => (
                     <tr key={index}>
                       <td>
                         <div className="d-flex align-items-center">

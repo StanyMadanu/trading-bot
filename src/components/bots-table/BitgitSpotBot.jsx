@@ -52,7 +52,9 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
 
   useEffect(() => {
     if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
-      fetchData();
+      if(!bitgetSpot){
+        fetchData();
+      }
     }
   }, [dispatch, bots]);
 

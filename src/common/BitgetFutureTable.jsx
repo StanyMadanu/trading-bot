@@ -70,7 +70,7 @@ const BitgetFutureTable = ({ data }) => {
               <div
                 onClick={() => {
                   navigate("/allDataTable", {
-                    state: { reduxName: "bitgetFuture", type: "FUTURES" },
+                    state: { reduxName: "bitgetFuture", type: "FUTURES" , platform: "BITGET" },
                   });
                 }}
               >

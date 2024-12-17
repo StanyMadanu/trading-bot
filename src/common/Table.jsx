@@ -39,13 +39,13 @@ const Table = ({ data, thead }) => {
                   </div>
                 </td>
                 <td>
-                  <p className="mb-0 fs-13 fw-semibold lh-2">
-                    {parseFloat(data.entryPrice || 0).toFixed(2)}
+                  <p className={`mb-0 fs-13 fw-semibold lh-2${data.positionAmt > 0 ? " text-success" : " text-danger"}`}>
+                    {parseFloat(data.unRealizedProfit || 0).toFixed(2)}
                   </p>
                 </td>
                 <td>
-                  <p className="mb-0 fs-13 fw-semibold lh-2">
-                    {data.adlQuantile}
+                  <p className={`mb-0 fs-13 fw-semibold lh-2 `} >
+                    {parseFloat(data.positionAmt || 0).toFixed(2)}
                   </p>
                 </td>
               </tr>
@@ -63,7 +63,7 @@ const Table = ({ data, thead }) => {
               <div
                 onClick={() => {
                   navigate("/allDataTable", {
-                    state: { reduxName: "binanceFuture", type: "FUTURES" },
+                    state: { reduxName: "binanceFuture", type: "FUTURES" , platform: "BINANCE" },
                   });
                 }}
               >

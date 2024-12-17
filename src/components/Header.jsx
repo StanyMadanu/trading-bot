@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../services/mainService";
 import { useDispatch, useSelector } from "react-redux";
 import mainLogo from "../assets/images/7pools-logo.png";
-import profileImg from "../assets/images/profile-img.png";
+import profileImg from "../assets/images/149071.png";
 import { FaPowerOff } from "react-icons/fa";
 import { AiFillControl, AiFillApi } from "react-icons/ai";
 import { FaBitcoin } from "react-icons/fa";
@@ -23,7 +23,7 @@ const Header = () => {
 
   const currentUser = getCurrentUser();
 
-  console.log(profile , currentUser)
+  console.log(profile, currentUser)
 
 
   // Theme Toggle Handler
@@ -43,7 +43,7 @@ const Header = () => {
   const LogoutHandler = () => {
     localStorage.clear();
     localStorage.removeItem("k-token");
-    navigate("/"); // Redirect to home or login page
+    window.location.href = "/";
   };
 
   return (
@@ -96,11 +96,15 @@ const Header = () => {
                   aria-expanded="false"
                 >
                   <div className="profile-wrapper me-2">
-                    <img src={profileImg} alt="user-profile" />
+                    <img src={profile?.img_url || profileImg} alt="user-profile" onError={(e) => {
+                      e.target.onerror = null; // Prevents infinite loop in case fallback image also fails
+                      e.target.src = "../assets/images/149071.png"; // Fallback image
+                    }} />
                   </div>
+                  
                   {/* <span className="fs-13 text-muted fw-bold">Pavan Rebba</span> */}
                   <div className="me-2">
-                    <p className="mb-0 fs-14 fw-semibold">Pavan Rebba</p>
+                    <p className="mb-0 fs-14 fw-semibold"> {profile?.user_name}</p>
                     <p className="mb-0 fs-13 text-secondary">
                       {profile?.user_email}
                     </p>
@@ -113,7 +117,7 @@ const Header = () => {
                         <img src={profileImg} alt="user-profile" />
                       </div>
                       <div>
-                        <p className="mb-0 fs-14 fw-semibold">Pavan Rebba</p>
+                        <p className="mb-0 fs-14 fw-semibold">{profile?.user_name}</p>
                         <p className="mb-0 fs-13 text-secondary">
                           {profile?.user_email}
                         </p>

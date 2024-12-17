@@ -17,6 +17,7 @@ class Buysellfuturemodal extends Form {
       errors: {},
       btnDisable: false,
       side: "",
+      coinLists: [],
     };
   }
 
@@ -25,8 +26,76 @@ class Buysellfuturemodal extends Form {
     pair: Joi.string().uppercase().required(),
     amount_in_usdt: Joi.number().positive().required(),
   };
+  setErrors = (field, message) => {
+    this.setState(
+      (prevState) => ({
+        errors: {
+          ...prevState.errors,
+          [field]: message,
+        },
+      }),
+      () => {
+        // This callback runs after state is updated
+        console.log("Updated errors state:", this.state.errors);
+      }
+    );
+  };
 
-  doSubmit = async () => {
+  validate = () => {
+    const options = { abortEarly: false };
+    const { error } = Joi.validate(this.state.data, this.schema, options);
+    const errors = {};
+
+    // Add Joi validation errors
+    if (error) {
+      for (let item of error.details) errors[item.path[0]] = item.message;
+    }
+
+    // Preserve any existing custom errors (like pair validation)
+    if (this.state.errors.pair) {
+      errors.pair = this.state.errors.pair;
+    }
+
+    return Object.keys(errors).length === 0 ? null : errors;
+  };
+
+  handleChange = ({ currentTarget: input }) => {
+    const data = { ...this.state.data };
+    data[input.name] = input.value;
+
+    // Custom pair validation
+    if (input.name === "pair") {
+      const { coinLists } = this.state;
+      const pairExists = coinLists.some(
+        (item) => item.pair === input.value.toUpperCase()
+      );
+
+      if (!pairExists) {
+        this.setErrors("pair", "Invalid pair. Please select a valid coin pair.");
+      } else {
+        this.setErrors("pair", ""); // Clear custom pair error if valid
+      }
+    }
+
+    this.setState({ data });
+  };
+
+  setErrors = (field, message) => {
+    this.setState((prevState) => ({
+      errors: {
+        ...prevState.errors,
+        [field]: message,
+      },
+    }));
+  };
+
+  ModalSubmit = async (e) => {
+    if (e) e.preventDefault();
+
+    const errors = this.validate(); // Run validation
+    this.setState({ errors: errors || {} });
+    if (errors) return; // Stop submission if errors exist
+
     this.setState({ btnDisable: true });
     try {
       const formattedData = {
@@ -35,17 +104,19 @@ class Buysellfuturemodal extends Form {
         amount_in_usdt: this.state.data.amount_in_usdt,
         side: this.state.side,
       };
-      console.log(formattedData);
-      const response = await backEndCallObj("admin/buy_sell_future_coin");
 
-      console.log(response);
+      console.log(formattedData);
+      const response = await backEndCallObj("dmin/buy_sell_future_coin", formattedData);
 
       // Show success toast
       toast.success(response?.success || "buy/sell successfully");
 
-      // Reset modal or perform callback if necessary
-      this.setState({ data: { pair: "", amount_in_usdt: "", side: "" } }); // Clear form fields;
-      if (!response) return;
+      // Reset modal or form fields
+      this.setState({
+        data: { platform: "BINANCE", pair: "", amount_in_usdt: "" },
+        errors: {},
+        side: "",
+      });
     } catch (error) {
       toast.error(error?.response?.data || "Failed to update coin.");
     } finally {
@@ -53,8 +124,25 @@ class Buysellfuturemodal extends Form {
     }
   };
 
+
+  componentDidMount() {
+    this.fetchCoins();
+  }
+
+  async fetchCoins() {
+    try {
+      const res = await coinService.getCoins();
+      if (res) this.setState({ coinLists: res });
+    } catch (error) {
+      console.error("Error fetching coins:", error);
+    }
+  }
+
   render() {
-    const { data, errors, btnDisable } = this.state;
+    const { data, errors, btnDisable, coinLists } = this.state;
+
+    console.log(errors)
+
     return (
       <div
         className="modal fade"
@@ -77,10 +165,34 @@ class Buysellfuturemodal extends Form {
               ></button>
             </div>
             <div className="modal-body">
-              <form onSubmit={this.handleSubmit}>
+              <form onSubmit={this.ModalSubmit}>
                 <div className="row">
+
+                  <div className="col-md-6 mb-4">
+                    <label className="form-label">Pair</label>
+                    <input
+                      type="text"
+                      name="pair"
+                      value={data.pair}
+                      onChange={this.handleChange}
+                      className="form-control"
+                      placeholder="Enter pair"
+                      list='list-timezone'
+                      id='input-datalist'
+                      autoComplete="off"
+                    />
+                    {errors.pair && (
+                      <div className="text-danger">{errors.pair}</div>
+                    )}
+
+                    <datalist id='list-timezone'>
+                      {coinLists?.map((item) => {
+                        return <option>{item.pair}</option>;
+                      })}
+                    </datalist>
+                  </div>
+
                   {[
-                    { label: "Pair", id: "pair" },
                     { label: "Amount in USDT", id: "amount_in_usdt" },
                   ].map((field) => (
                     <div key={field.id} className="col-md-6 mb-4">

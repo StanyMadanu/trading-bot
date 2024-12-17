@@ -69,7 +69,7 @@ const BitgetSpotTable = ({ data }) => {
               <div
                 onClick={() => {
                   navigate("/allDataTable", {
-                    state: { reduxName: "bitgetSpot", type: "AMM" },
+                    state: { reduxName: "bitgetSpot", type: "AMM" ,platform: "BITGET"},
                   });
                 }}
               >

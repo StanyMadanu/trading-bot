@@ -174,9 +174,13 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const difference = usdt_balance?.availableBalance - total_investment;
   let capital_investment = ((difference / total_investment) * 100).toFixed(2);
 
-  if (isNaN(capital_investment)) {
+  console.log(usdt_balance?.availableBalance , total_investment ,difference ,  capital_investment)
+
+
+  if (!isFinite(capital_investment)) {
     capital_investment = "0.00";
   }
+
 
   return (
     <Suspense fallback={<MiniLoader />}>

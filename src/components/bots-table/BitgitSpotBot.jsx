@@ -153,7 +153,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   let capital_investment = ((difference / total_investment) * 100).toFixed(2);
 
   // Handle NaN case explicitly
-  if (isNaN(capital_investment)) {
+  if (!isFinite(capital_investment)) {
     capital_investment = "0.00";
   }
 

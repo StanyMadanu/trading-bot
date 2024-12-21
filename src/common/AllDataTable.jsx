@@ -294,7 +294,7 @@ const AllDataTable = () => {
           </h6>
 
           <button
-            className="py-0"
+            className="py-0 custom-font-size px-2"
             data-bs-toggle="modal"
             data-bs-target="#buysellfuturemodal"
           >
@@ -434,7 +434,7 @@ const AllDataTable = () => {
                             src={getCoinicons(row?.symbol)}
                             alt={row?.name}
                             className="cryptocurreny-icon-table crypto-icon"
-                            width={30}
+                            width={25}
                           />
                           <p className="mb-0 fs-12 fw-semibold lh-2">
                             {row?.symbol || "NA"}
@@ -556,7 +556,7 @@ const AllDataTable = () => {
                             src={getCoinicons(item?.symbol)}
                             alt={item?.name}
                             className="cryptocurreny-icon-table crypto-icon"
-                            width={20}
+                            width={25}
                           />
                           <p className="mb-0 fs-12 fw-semibold">{item?.symbol || "NA"}</p>
                         </div>

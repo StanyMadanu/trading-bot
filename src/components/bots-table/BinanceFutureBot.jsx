@@ -151,7 +151,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
           className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
-          data-bs-target="#bitgetModal"
+          data-bs-target="#botModal"
         >
           Add Bot
         </button>

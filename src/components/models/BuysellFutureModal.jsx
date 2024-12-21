@@ -102,9 +102,8 @@ class Buysellfuturemodal extends Form {
         side: this.state.side,
       };
 
-      toast.success(formattedData)
-
-      const response = await backEndCallObj("admin/buy_sell_future_coin");
+      // console.log(formattedData)
+      const response = await backEndCallObj("/admin/buy_sell_future_coin", formattedData);
 
       // Show success toast
       toast.success(response?.success || "buy/sell successfully");

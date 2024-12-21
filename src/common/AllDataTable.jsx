@@ -14,6 +14,7 @@ import binanceIcon from "../assets/images/binance-icon-2048x2048-eh77cmwj.png";
 import bitgetIcon from "../assets/images/11092.png";
 import EditInvestmentModel from "../components/models/EditInvestmentModel";
 import { AiOutlineRollback } from "react-icons/ai";
+import Buysellfuturemodal from "../components/models/BuysellFutureModal";
 const AllDataTable = () => {
 
   const location = useLocation();
@@ -238,7 +239,7 @@ const AllDataTable = () => {
       <div className="card-body">
         <div>
           <div className="d-flex align-items-center justify-content-between flex-wrap gap-1 my-1">
-            <button className="text-uppercase py-1 px-3" onClick={() => navigate("/dashboard", { state: { type, platform } })}><AiOutlineRollback className="fs-20"/></button>
+            <button className="text-uppercase py-1 px-3" onClick={() => navigate("/dashboard", { state: { type, platform } })}><AiOutlineRollback className="fs-20" /></button>
 
             <div className="mx-auto d-flex justify-content-center align-items-center flex-wrap overflow-auto gap-2 gap-md-5">
 
@@ -280,51 +281,39 @@ const AllDataTable = () => {
 
 
         <div className="d-flex justify-content-between align-items-center">
-          {type === "FUTURES" ? (<>
-            <h6 className="primary-color fw-bold text-capitalize mb-0 custom-font-size"
-              data-bs-toggle="modal"
-              data-bs-target="#editInvest">
+          <h6
+            className="primary-color fw-bold text-capitalize mb-0 custom-font-size cursor-pointer"
+            data-bs-toggle="modal"
+            data-bs-target="#editInvest"
+          >
+            <span>Capital Assigned :</span>
+            <span> {parseFloat(getRedux?.total_investment || 0).toFixed(2)}</span>
+            <span className="ms-1">
+              <i className="ri-edit-line"></i>
+            </span>
+          </h6>
 
-              <span>Capital Assigned :</span>
-              <span> {parseFloat(getRedux?.total_investment || 0).toFixed(2)}</span>
-              <span className="ms-1">
-                  <i className="ri-edit-line"></i>
-                </span>
-            </h6>
-          </>) : (
-            <>
-              <h6 className="primary-color fw-bold text-capitalize cursor-pointer mb-0 custom-font-size"
-                data-bs-toggle="modal"
-                data-bs-target="#editInvest"
-              >
-                <span>Capital Assigned :</span>
-                <span> {parseFloat(getRedux?.total_investment || 0).toFixed(2)}</span>
-                <span className="ms-1">
-                  <i className="ri-edit-line"></i>
-                </span>
-              </h6>
-            </>
-          )
-          }
+          <button
+            className="py-0"
+            data-bs-toggle="modal"
+            data-bs-target="#buysellfuturemodal"
+          >
+            Buy Sell
+          </button>
 
-
-
-          {type === "FUTURES" ? (<>
-            <h6 className="primary-color fw-bold text-capitalize mb-0 custom-font-size">
-              <span>Current Balance :</span>
-              <span> {parseFloat(usdt_balance?.availableBalance || 0).toFixed(2)}</span>
-            </h6>
-          </>) : (<>
-            <h6 className="primary-color fw-bold text-capitalize mb-0 custom-font-size">
-              <span>Balance :</span>
-              <span> {parseFloat(getRedux?.totalBalance || 0).toFixed(2)}</span>
-            </h6>
-          </>)
-          }
-
-
+          <h6 className="primary-color fw-bold text-capitalize mb-0 custom-font-size">
+            <span>{type === "FUTURES" ? "Current Balance" : "Balance"}:</span>
+            <span>
+              {parseFloat(
+                type === "FUTURES"
+                  ? usdt_balance?.availableBalance || 0
+                  : getRedux?.totalBalance || 0
+              ).toFixed(2)}
+            </span>
+          </h6>
         </div>
 
+        <Buysellfuturemodal />
 
         <div
           className="d-flex justify-content-start align-items-center overflow-auto mb-1 p-2 ps-0 mx-2"
@@ -531,10 +520,10 @@ const AllDataTable = () => {
                     <p className="mb-0 primary-color fs-12">Order ID</p>
                   </th>
                   <th>
-                    <p className="mb-0 primary-color fs-12">{platform==="BINANCE" ? "Price" : "Avg Price"}</p>
+                    <p className="mb-0 primary-color fs-12">{platform === "BINANCE" ? "Price" : "Avg Price"}</p>
                   </th>
                   <th>
-                    <p className="mb-0 primary-color fs-12">{platform ==="BINANCE" ? "origQty" : "Size"}</p>
+                    <p className="mb-0 primary-color fs-12">{platform === "BINANCE" ? "origQty" : "Size"}</p>
                   </th>
                   <th>
                     <p className="mb-0 primary-color fs-12">Created At</p>
@@ -577,12 +566,12 @@ const AllDataTable = () => {
                       </td>
                       <td>
                         <p className="mb-0 fs-12 fw-semibold">
-                          {parseFloat(platform ==="BINANCE" ? item?.price : item?.priceAvg).toFixed(2)}
+                          {parseFloat(platform === "BINANCE" ? item?.price : item?.priceAvg).toFixed(2)}
                         </p>
                       </td>
                       <td>
                         <p className="mb-0 fs-12 fw-semibold">
-                        {platform ==="BINANCE" ? JSON.parse(item.origQty || 0).toFixed(2) : item?.size}
+                          {platform === "BINANCE" ? JSON.parse(item.origQty || 0).toFixed(2) : item?.size}
                         </p>
                       </td>
                       <td>
@@ -783,7 +772,7 @@ const AllDataTable = () => {
         </div>
       </div>
 
-    </div>
+    </div >
   );
 };
 

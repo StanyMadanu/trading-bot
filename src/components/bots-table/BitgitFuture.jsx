@@ -150,7 +150,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
           className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
-          data-bs-target="#bitgetModal"
+          data-bs-target="#ADDBOOT"
         >
           Add Bot
         </button>

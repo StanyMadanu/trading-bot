@@ -165,7 +165,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
           className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
-          data-bs-target="#bitgetModal"
+          data-bs-target="#binanceBot"
         >
           Add Bot
         </button>

@@ -6,7 +6,6 @@ export function toastFun(msg, type) {
     // icon: '👏',
     duration: 3000,
     position: 'top-center',
-
     style: {
       // borderRadius: '10px',
       // background: '#333',

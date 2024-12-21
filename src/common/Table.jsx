@@ -7,10 +7,13 @@ const Table = ({ data, thead }) => {
   const navigate = useNavigate();
 
   const { getCoinicons, getFormattedDate } = useFetchKeys();
+  
+  const limitedData = data?.length > 3? data?.slice(0, 5) : data;
+
 
   return (
     <div className="table-responsive">
-      <table className="table table-bordered text-center">
+      <table className="table table-bordered text-center mb-0">
         <thead className="thead primary-bg">
           <tr>
             {thead.map((head) => (
@@ -21,8 +24,8 @@ const Table = ({ data, thead }) => {
           </tr>
         </thead>
         <tbody className="tbody">
-          {data?.length > 0 ? (
-            data?.map((data, index) => (
+          {limitedData?.length > 0 ? (
+            limitedData?.map((data, index) => (
               <tr key={index}>
                 <td>
                   <div className="d-flex gap-2 align-items-center justify-content-center">
@@ -30,7 +33,7 @@ const Table = ({ data, thead }) => {
                       src={getCoinicons(data.symbol)}
                       alt={data.name}
                       className="cryptocurreny-icon-table crypto-icon"
-                      width={30}
+                      width={25}
                     />
                     <p className="mb-0 fs-13 fw-semibold">
                       {data?.symbol || "NA"}
@@ -39,7 +42,7 @@ const Table = ({ data, thead }) => {
                   </div>
                 </td>
                 <td>
-                  <p className={`mb-0 fs-13 fw-semibold lh-2${data.positionAmt > 0 ? " text-success" : " text-danger"}`}>
+                  <p className={`mb-0 fs-13 fw-semibold lh-2${data.unRealizedProfit > 0 ? " text-success" : " text-danger"}`}>
                     {parseFloat(data.unRealizedProfit || 0).toFixed(2)}
                   </p>
                 </td>
@@ -58,7 +61,7 @@ const Table = ({ data, thead }) => {
             </tr>
           )}
 
-          <tr>
+          {/* <tr>
             <td colSpan={3} className="text-center">
               <div
                 onClick={() => {
@@ -70,7 +73,23 @@ const Table = ({ data, thead }) => {
                 <button className="py-1">view all</button>
               </div>
             </td>
+          </tr> */}
+
+          <tr>
+            <td colSpan={3} className="text-center">
+              <div
+                onClick={() => {
+                  navigate(
+                    `/allDataTable?reduxName=binanceFuture&type=FUTURES&platform=BINANCE&extraReduxName=bitgetFuture&extraPlatform=BITGET`
+                  );
+                }}
+              >
+                <button className="py-1">View All</button>
+              </div>
+            </td>
           </tr>
+
+
         </tbody>
       </table>
       <div className="text-end">

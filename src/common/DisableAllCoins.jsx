@@ -2,7 +2,7 @@ import React from "react";
 import { backEndCallObj } from "../services/mainService";
 import Form from "../basic/form"; // Import the base class
 import Joi from "joi-browser";
-import toast from "react-hot-toast";
+import {toast} from "react-toastify";
 
 class DisableAllCoins extends Form {
   constructor(props) {
@@ -28,16 +28,12 @@ class DisableAllCoins extends Form {
   // Override handleSubmit function if you need custom logic
   doSubmit = async () => {
     const { data ,errors } = this.state;
-
-    console.log(errors)
+  // console.log(errors)
 
     this.setState({ btnDisable: true });
-    console.log(data)
     try {
-      const response = await backEndCallObj("/admin/disable_all_coins",data );
-      if (response?.success) {
+      const response = await backEndCallObj("/admin/enable_disable_all_coins", data);
         toast.success(response.success);
-      }
     } catch (error) {
       toast.error(error.message || "Error occurred while disabling coins.");
     } finally {
@@ -73,7 +69,7 @@ class DisableAllCoins extends Form {
     return (
       <div className="text-end">
         <button className={className} disabled={btnDisable}>
-          {label}
+        {btnDisable ? "wait" : label}
         </button>
       </div>
     );
@@ -82,6 +78,7 @@ class DisableAllCoins extends Form {
   render() {
     const { btnDisable } = this.state;
     return (
+     <>
       <div className="card shadow-sm border-0">
         <div className="card-header text-center primary-bg">
           <p className="mb-0 fw-bold fs-15 text-capitalize">
@@ -115,6 +112,7 @@ class DisableAllCoins extends Form {
           </form>
         </div>
       </div>
+     </>
     );
   }
 }

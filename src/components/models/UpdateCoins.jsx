@@ -24,6 +24,7 @@ class UpdateCoins extends Form {
       errors: {},
       btnDisable: false,
     };
+    this.modelRef = React.createRef();
   }
 
   schema = {
@@ -57,6 +58,9 @@ class UpdateCoins extends Form {
       const response = await coinService.updateCoins(this.state.data);
       toast.success(response.Success || "Coin updated successfully!");
       if (!response) return;
+      const modalInstance = window.bootstrap.Modal.getInstance(this.modelRef.current);
+      if (modalInstance) modalInstance.hide();
+      this.props.fetchCoins();
     } catch (error) {
       toast.error(error?.response?.data || "Failed to update coin.");
     } finally {
@@ -88,7 +92,6 @@ class UpdateCoins extends Form {
   render() {
     const { data, errors, btnDisable } = this.state;
 
-        // console.log(data)
     return (
       <div
         className="modal fade"
@@ -96,6 +99,7 @@ class UpdateCoins extends Form {
         tabIndex="-1"
         aria-labelledby="addCoinModalLabel"
         aria-hidden="true"
+        ref={this.modelRef}
       >
         <div className="modal-dialog">
           <div className="modal-content">

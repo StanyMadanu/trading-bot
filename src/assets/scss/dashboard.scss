@@ -52,6 +52,7 @@
     color: rgb(var(--fx-white));
   }
 }
+
 .status-percent {
   background-color: rgb(var(--primary-color));
   color: rgb(var(--fx-white));
@@ -65,4 +66,55 @@
   height: 10px;
   border-radius: 50%;
   background-color: rgb(var(--secondary-color));
+}
+
+.custome-dataTable {
+  height: clamp(100px, 100vh - 242px, 900px);
+}
+
+.custom-coinTable {
+  height: clamp(100px, 100vh - 191px, 900px);
+}
+
+.custom-font-size {
+  font-size: clamp(10px, 2vw, 18px);
+}
+
+.w-ft-content {
+  width: fit-content;
+}
+
+.table>:not(caption)>*>* {
+  padding: .2rem .2rem;
+}
+
+table thead th {
+  position: sticky;
+    top: 0;
+    background-color:rgb(var(--primary-color))!important;
+    z-index: 1;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #adacac;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, rgb(var(--primary-color)),rgb(var(--secondary-color)));
+  /* Gradient color */
+  border-radius: 10px;
+  border: 2px solid transparent;
+  /* Transparent border for effect */
+  background-clip: padding-box;
+  /* Keeps gradient inside the border */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

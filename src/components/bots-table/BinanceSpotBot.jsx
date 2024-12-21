@@ -35,48 +35,49 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
 
   const modelRef = useRef(null);
 
-  const { fetchKeys } = useFetchKeys();
+  const { fetchKeys,fetchData } = useFetchKeys();
 
   const navigate = useNavigate();
 
-  // const { usdt_balance, open_trades } = binanceSpot || {}; // Ensure it's not undefined
-  // console.log(usdt_balance, open_trades)
+  const closeRef = useRef(null);
+
+
 
   const { open_trades, totalBalance, total_investment } = binanceSpot || {};
   const { bots, api_keys } = getProfile?.profile || {};
 
-  console.log(getProfile, binanceSpot);
 
-  // console.log(open_trades);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await backEndCallObjNoDcyt(
-        "/trades/get_open_trades_data",
-        formData
-      );
-      dispatch(binancespotRedx(response)); // Dispatch the action to Redux
-    } catch (error) {
-      console.error("Error fetching open trades data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchData = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await backEndCallObjNoDcyt(
+  //       "/trades/get_open_trades_data",
+  //       formData
+  //     );
+  //     console.log(response)
+  //     dispatch(binancespotRedx(response)); // Dispatch the action to Redux
+  //   } catch (error) {
+  //     console.error("Error fetching open trades data:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
-      if(!binanceSpot){
-        fetchData();
+      if (!binanceSpot) {
+        fetchData(formData , setLoading , binancespotRedx);
       }
     }
   }, [dispatch, bots]);
 
   useEffect(() => {
+    console.log(bots?.BINANCE?.AMM?.status)
     if (bots?.BINANCE?.AMM?.status === "INACTIVE") {
-      setBotStatus("Enable");
-    } else if (bots?.BINANCE?.AMM?.status === "ACTIVE") {
       setBotStatus("Disable");
+    } else if (bots?.BINANCE?.AMM?.status === "ACTIVE") {
+      setBotStatus("Enable");
     } else {
       setBotStatus("ADD");
     }
@@ -104,7 +105,6 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
         "/admin/change_bot_status",
         formattedData
       );
-      // console.log(response, "aaa");
       toast.success(response?.success);
       fetchKeys();
     } catch (error) {
@@ -125,6 +125,8 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
     try {
       const response = await backEndCallObj("/admin/add_bot", formattedData);
       toast.success(response?.success);
+      const modalInstance = window.bootstrap.Modal.getInstance(this.closeRef.current);
+      if (modalInstance) modalInstance.hide();
     } catch (error) {
       toast.error(error?.response?.data || "Error adding bot");
     } finally {
@@ -141,62 +143,46 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
   //table header data
   const theadData = ["Symbol", "Price", "Org Qty"];
 
-  let button;
-
-  // console.log(bots.BINANCE.AMM.status)
-
-  switch (bots?.BINANCE?.AMM?.status) {
-    case "INACTIVE":
-      button = (
+  const handleButtonClick = () => {
+    if (
+      bots?.BITGET?.AMM?.status === "INACTIVE" ||
+      bots?.BITGET?.AMM?.status === "ACTIVE"
+    ) {
+      return (
         <button
           className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          enable bot
+          {botStatus} Bot
         </button>
       );
-      break;
-
-    case "ACTIVE":
-      button = (
+    }
+    if (api_keys?.[formData?.platform]?.api_key) {
+      return (
         <button
-          className="text-uppercase theme-btn"
+          className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
-          data-bs-target="#confirmDelete"
+          data-bs-target="#bitgetModal"
         >
-          disable bot
+          Add Bot
         </button>
       );
-      break;
-
-    default:
-      api_keys?.[formData.platform]?.api_key
-        ? (button = (
-            <button
-              className="theme-btn text-uppercase"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#binanceBot"
-            >
-              Add Bot
-            </button>
-          ))
-        : (button = (
-            <button
-              className="theme-btn text-uppercase"
-              type="button"
-              onClick={() =>
-                navigate("/api", { state: { platform: formData.platform } })
-              }
-            >
-              Add Bot
-            </button>
-          ));
-      break;
-  }
+    }
+    return (
+      <button
+        className="theme-btn text-uppercase"
+        type="button"
+        onClick={() =>
+          navigate("/api", { state: { platform: formData.platform } })
+        }
+      >
+        Add Bot
+      </button>
+    );
+  };
 
   // const capital_investment = parseFloat(totalBalance / total_investment || 0).toFixed(2);
 
@@ -215,32 +201,31 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
         </div>
       ) : (
         <>
-          <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
+          <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-1">
             <div
-              className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
+              className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1"
               data-bs-toggle="modal"
               data-bs-target="#editBinanceSpotModal"
             >
-              <h6 className="mb-0 fw-bold">
+              <h6 className="mb-0 fw-bold fs-15">
                 {parseFloat(total_investment || 0).toFixed(2)}
               </h6>
               <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                 capital assigned
               </p>
             </div>
-            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-              <h6 className="mb-0 fw-bold">
+            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1">
+              <h6 className="mb-0 fw-bold fs-15">
                 {parseFloat(totalBalance || 0).toFixed(2)}
               </h6>
               <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                 current balance
               </p>
             </div>
-            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1">
               <h6
-                className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${
-                  capital_investment < 0 ? "bg-danger" : "bg-success"
-                }`}
+                className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${capital_investment < 0 ? "bg-danger" : "bg-success"
+                  }`}
               >
                 {capital_investment > 0
                   ? `+${capital_investment}`
@@ -248,15 +233,14 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
                 %
               </h6>
               <p
-                className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${
-                  capital_investment < 0 ? "text-danger" : "text-success"
-                }`}
+                className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${capital_investment < 0 ? "text-danger" : "text-success"
+                  }`}
               >
                 % change
               </p>
             </div>
-            <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
-              {button}
+            <div className="border d-flex justify-content-center align-items-center flex-fill p-1">
+              {handleButtonClick()}
             </div>
           </div>
           <BinanceSpotTable data={open_trades} tdata={theadData} />
@@ -269,19 +253,15 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
             modelRef={modelRef}
             btnDisable={btnDisable}
           />
-          {/* <EditInvestment botType={formData.bot}
-      platform={formData.platform}
-        onSuccess={() => {
-          console.log("Investment Updated Successfully!");
-          // Optional logic: Close modal, refresh data, etc.
-        }} /> */}
+
 
           <EditBinanceSpotModal
             botType={formData.bot}
             platform={formData.platform}
+            fetchData={fetchData}
           />
 
-          <div className="modal fade" id="binanceBot">
+          <div className="modal fade" id="binanceBot" tabIndex="-1" ref={closeRef}>
             <div className="modal-dialog text-dark">
               <div className="modal-content">
                 <div className="modal-header">
@@ -308,7 +288,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
                         id="platform"
                         name="platform"
                         placeholder="Platform"
-                        value={data.platform}
+                        value={data?.platform}
                         readOnly
                       />
                     </div>
@@ -320,7 +300,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
                         id="botType"
                         name="botType"
                         placeholder="Bot Type"
-                        value={data.botType}
+                        value={data?.botType}
                         readOnly
                       />
                     </div>
@@ -332,7 +312,7 @@ const BinanceSpotBot = ({ dispatch, binanceSpot, getProfile }) => {
                         id="total_investment"
                         name="total_investment"
                         placeholder="Total Investment"
-                        value={data.total_investment}
+                        value={data?.total_investment}
                         onChange={(e) =>
                           setData({ ...data, total_investment: e.target.value })
                         }

@@ -36,7 +36,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
 
   const navigate = useNavigate();
 
-  const { fetchKeys } = useFetchKeys();
+  const { fetchKeys ,fetchData } = useFetchKeys();
 
   const { bots, api_keys } = getProfile?.profile || {};
 
@@ -44,35 +44,22 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
 
   // console.log(open_trades);
   const modelRef = useRef(null);
+  const closeRef = useRef(null);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await backEndCallObjNoDcyt(
-        "/trades/get_open_trades_data",
-        formData
-      );
-      dispatch(bitgetFutureRdx(response)); // Dispatch the action to Redux
-    } catch (error) {
-      console.error("Error fetching open trades data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+ 
   useEffect(() => {
     if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
-      if(!bitgetFuture){
-        fetchData();
+      if (!bitgetFuture) {
+        fetchData(formData , setLoading , bitgetFutureRdx);
       }
     }
   }, [dispatch, bots]);
 
   useEffect(() => {
     if (bots?.BITGET?.FUTURES?.status === "INACTIVE") {
-      setBotStatus("Enable");
-    } else if (bots?.BITGET?.FUTURES?.status === "ACTIVE") {
       setBotStatus("Disable");
+    } else if (bots?.BITGET?.FUTURES?.status === "ACTIVE") {
+      setBotStatus("Enable");
     } else {
       setBotStatus("ADD");
     }
@@ -122,6 +109,8 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
     try {
       const response = await backEndCallObj("/admin/add_bot", formattedData);
       toast.success(response?.success);
+      const modalInstance = window.bootstrap.Modal.getInstance(closeRef.current);
+      if (modalInstance) modalInstance.hide();
     } catch (error) {
       toast.error(error?.response?.data || "Error adding bot");
     } finally {
@@ -137,64 +126,48 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
   };
 
   //table header data
-  const theadData = ["Symbol", "Price", "Org Qty"];
+  const theadData = ["Symbol", "Profit", "PositionAmt"];
 
-  let button;
-  switch (bots?.BITGET?.FUTURES?.status) {
-    case "INACTIVE":
-      button = (
+  const handleButtonClick = () => {
+    if (
+      bots?.BITGET?.FUTURES?.status === "INACTIVE" ||
+      bots?.BITGET?.FUTURES?.status === "ACTIVE"
+    ) {
+      return (
         <button
           className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          enable bot
+          {botStatus} Bot
         </button>
       );
-      break;
-
-    case "ACTIVE":
-      button = (
+    }
+    if (api_keys?.[formData.platform]?.api_key) {
+      return (
         <button
-          className="text-uppercase theme-btn"
+          className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
-          data-bs-target="#confirmDelete"
+          data-bs-target="#bitgetModal"
         >
-          disable bot
+          Add Bot
         </button>
       );
-      break;
-
-    default:
-      api_keys?.[formData.platform]?.api_key
-        ? (button = (
-            <button
-              className="theme-btn text-uppercase"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#ADDBOOT"
-              onClick={() => {
-                setDataModala((prev) => !prev); // Properly toggle state
-              }}
-            >
-              Add Bot
-            </button>
-          ))
-        : (button = (
-            <button
-              className="theme-btn text-uppercase"
-              type="button"
-              onClick={() =>
-                navigate("/api", { state: { platform: formData.platform } })
-              }
-            >
-              Add Bot
-            </button>
-          ));
-      break;
-  }
+    }
+    return (
+      <button
+        className="theme-btn text-uppercase"
+        type="button"
+        onClick={() =>
+          navigate("/api", { state: { platform: formData.platform } })
+        }
+      >
+        Add Bot
+      </button>
+    );
+  };
 
   // const capital_investment = parseFloat(usdt_balance?.availableBalance / total_investment || 0).toFixed(2);
 
@@ -221,32 +194,31 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
           </div>
         ) : (
           <>
-            <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
+            <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-1">
               <div
-                className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2 "
+                className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1"
                 data-bs-toggle="modal"
                 data-bs-target="#editBitgetFutureModal"
               >
-                <h6 className="mb-0 fw-bold">
+                <h6 className="mb-0 fw-bold fs-15">
                   {parseFloat(total_investment || 0).toFixed(2)}
                 </h6>
                 <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                   capital assigned
                 </p>
               </div>
-              <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-                <h6 className="mb-0 fw-bold">
+              <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1">
+                <h6 className="mb-0 fw-bold fs-15">
                   {parseFloat(usdt_balance?.balance || "0").toFixed(2)}
                 </h6>
                 <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                   current balance
                 </p>
               </div>
-              <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+              <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1">
                 <h6
-                  className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${
-                    capital_investment < 0 ? "bg-danger" : "bg-success"
-                  }`}
+                  className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${capital_investment < 0 ? "bg-danger" : "bg-success"
+                    }`}
                 >
                   {capital_investment > 0
                     ? `+${capital_investment}`
@@ -254,15 +226,14 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
                   %
                 </h6>
                 <p
-                  className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${
-                    capital_investment < 0 ? "text-danger" : "text-success"
-                  }`}
+                  className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${capital_investment < 0 ? "text-danger" : "text-success"
+                    }`}
                 >
                   % change
                 </p>
               </div>
               <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
-                {button}
+                {handleButtonClick()}
               </div>
             </div>
             <BitgetFutureTable data={open_trades} thead={theadData} />
@@ -278,9 +249,10 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
             <EditBitgetFuture
               botType={formData.bot}
               platform={formData.platform}
+              fetchData={fetchData}
             />
 
-            <div className="modal fade" id="ADDBOOT">
+            <div className="modal fade" id="ADDBOOT" ref={closeRef}>
               <div className="modal-dialog text-dark">
                 <div className="modal-content">
                   <div className="modal-header">
@@ -307,7 +279,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
                           id="platform"
                           name="platform"
                           placeholder="Platform"
-                          value={data.platform}
+                          value={data?.platform}
                           readOnly
                         />
                       </div>
@@ -318,7 +290,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
                           id="botType"
                           name="botType"
                           placeholder="Bot Type"
-                          value={data.botType}
+                          value={data?.botType}
                           readOnly
                         />
                       </div>
@@ -330,7 +302,7 @@ const BitgitFuture = ({ dispatch, bitgetFuture, getProfile }) => {
                           id="total_investment"
                           name="total_investment"
                           placeholder="Total Investment"
-                          value={data.total_investment}
+                          value={data?.total_investment}
                           onChange={(e) =>
                             setData({
                               ...data,

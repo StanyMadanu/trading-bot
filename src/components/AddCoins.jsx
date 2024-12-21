@@ -14,26 +14,32 @@ import MiniLoader from "../common/MiniLoader";
 const UpdateCoins = lazy(() => import("./models/UpdateCoins"));
 
 class AddCoins extends Form {
-  state = {
-    coinLists: [],
-    data: {
-      pair: "",
-      price_precision: "",
-      quantity_precision: "",
-      target_percent: "",
-      platform: "BINANCE",
-      bot: "AMM",
-    },
-    errors: {},
-    btnDisable: false,
-    coinDelate: {
-      coin_id: "",
-      platform: "",
-      bot: "",
-    },
-    modalData: {},
-    modalShow: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      coinLists: [],
+      data: {
+        pair: "",
+        price_precision: "",
+        quantity_precision: "",
+        target_percent: "",
+        platform: "BINANCE",
+        bot: "AMM",
+      },
+      errors: {},
+      btnDisable: false,
+      coinDelate: {
+        coin_id: "",
+        platform: "",
+        bot: "",
+      },
+      modalData: {},
+      modalShow: false,
+    };
+    this.modelRef = React.createRef(null);
+    this.closeRef = React.createRef(null);
+  }
+
 
   schema = {
     pair: Joi.string().uppercase().required().label("Pair"),
@@ -42,7 +48,6 @@ class AddCoins extends Form {
       .required()
       .label("Price Precision"),
     quantity_precision: Joi.number()
-      .positive()
       .required()
       .label("Quantity Precision"),
     target_percent: Joi.number().positive().required().label("Target Percent"),
@@ -52,7 +57,7 @@ class AddCoins extends Form {
       .label("Platform"),
     bot: Joi.string().valid("AMM", "FUTURES").required().label("Bot"),
     divisible: Joi.number().positive().optional(),
-    TradeAmount: Joi.number().optional(),
+    trade_amount: Joi.number().optional(),
   };
 
   componentDidMount() {
@@ -60,11 +65,15 @@ class AddCoins extends Form {
   }
 
   async fetchCoins() {
+    this.setState({ btnDisable: true });
     try {
       const res = await coinService.getCoins();
       if (res) this.setState({ coinLists: res });
     } catch (error) {
       console.error("Error fetching coins:", error);
+    }
+    finally {
+      this.setState({ btnDisable: false });
     }
   }
 
@@ -90,6 +99,8 @@ class AddCoins extends Form {
       const response = await coinService.addCoins(this.state.data);
       if (!response) return;
       toast.success("Coin added successfully!");
+      const modalInstance = window.bootstrap.Modal.getInstance(this.modelRef.current);
+      if (modalInstance) modalInstance.hide();
       this.fetchCoins(); // Refresh coin list
     } catch (error) {
       toast.error(error?.response?.data || "Failed to add coin.");
@@ -107,11 +118,13 @@ class AddCoins extends Form {
         platform: this.state.coinDelate.platform,
         bot: this.state.coinDelate.bot,
       };
-      console.log(payload);
+      // console.log(payload);
       const response = await coinService.deleteCoins();
       toast.success(response.Success);
 
       if (!response) return;
+      const modalInstance = window.bootstrap.Modal.getInstance(this.closeRef.current);
+      if (modalInstance) modalInstance.hide();
     } catch (error) {
       // console.log(error);
 
@@ -143,30 +156,32 @@ class AddCoins extends Form {
       <div className="card">
         <div className="card-body">
           <div className="container-lg">
-            <div className="my-4">
+            <div className="d-flex justify-content-between align-items-center">
               <Link to="/dashboard">
                 <button className="text-uppercase py-1 px-3">back</button>
               </Link>
-            </div>
-            {/* Add Coin Button */}
-            <div className="text-end my-3">
-              <button
-                className="py-2 rounded text-capitalize primary-bg fs-13"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#addCoinModal"
-              >
-                Add Coin
-              </button>
+
+              <h5 className="text-center my-3 fw-bold primary-color text-capitalize">
+                Add Coins Table
+              </h5>
+
+              {/* Add Coin Button */}
+              <div className="text-end my-3">
+                <button
+                  className="py-2 rounded text-capitalize primary-bg fs-13"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#addCoinModal"
+                >
+                  Add Coin
+                </button>
+              </div>
             </div>
 
-            <h5 className="text-center my-3 fw-bold primary-color text-capitalize">
-              Add Coins Table
-            </h5>
 
             {/* Table */}
-            <div className="table-responsive">
-              <table className="table table-bordered">
+            <div className="table-responsive custom-coinTable">
+              <table className="table table-bordered table-striped">
                 <thead className="thead primary-bg">
                   <tr>
                     {theadData.map((data, index) => (
@@ -178,20 +193,34 @@ class AddCoins extends Form {
                     ))}
                   </tr>
                 </thead>
+                {/* Table Body */}
                 <tbody className="tbody text-center fs-13">
-                  {coinLists?.length > 0 ? (
+                  {console.log(this.state.btnDisable)}
+                  {this.state.btnDisable ? (
+                    // Show Loading Rows
+                    <tr>
+                      <td colSpan={theadData.length}>
+                        <div className="d-flex justify-content-center align-items-center py-3">
+                          <div
+                            className="spinner-border text-primary"
+                            role="status"
+                          >
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : coinLists.length > 0 ? (
+                    // Show Actual Data
                     coinLists.map((item, index) => (
                       <tr key={index}>
                         <td>{item.pair}</td>
-                        <td className="primary-color fw-semibold">
-                          {item.coin_id}
-                        </td>
+                        <td className="primary-color fw-semibold">{item.coin_id}</td>
                         <td
-                          className={`text-uppercase fw-semibold ${
-                            item.status === "ACTIVE"
-                              ? "text-success"
-                              : "text-danger"
-                          }`}
+                          className={`text-uppercase fw-semibold ${item.status === "ACTIVE"
+                            ? "text-success"
+                            : "text-danger"
+                            }`}
                         >
                           {item.status}
                         </td>
@@ -216,7 +245,6 @@ class AddCoins extends Form {
                                   platform: item.platform,
                                   bot: item.bot,
                                 },
-                                // toggleCoin: true,
                               })
                             }
                             data-bs-toggle="modal"
@@ -228,6 +256,7 @@ class AddCoins extends Form {
                       </tr>
                     ))
                   ) : (
+                    // Show "No Data Found" Rowd
                     <tr>
                       <td colSpan={theadData.length}>No data found</td>
                     </tr>
@@ -241,12 +270,16 @@ class AddCoins extends Form {
         {/* Modals */}
         <Suspense fallback={<MiniLoader />}>
           <ConfirmPopup
-            toggleBotStatus={this.handleDeleteCoins}
+            label="Confirm Delete"
+            msg={`Delete Coin`}
             botStatus="delete"
+            toggleBotStatus={this.handleDeleteCoins}
+            modelRef={this.closeRef}
+            btnDisable={this.state.btnDisable}
           />
 
           {/* {this.state.modalShow && ( */}
-          <UpdateCoins coinList={this.state.modalData} />
+          <UpdateCoins coinList={this.state.modalData} fetchCoins={this.fetchCoins} />
           {/* )} */}
         </Suspense>
 
@@ -257,6 +290,7 @@ class AddCoins extends Form {
           tabIndex="-1"
           aria-labelledby="addCoinModalLabel"
           aria-hidden="true"
+          ref={this.modelRef}
         >
           <div className="modal-dialog">
             <div className="modal-content">
@@ -283,7 +317,7 @@ class AddCoins extends Form {
                       { label: "Quantity Precision", id: "quantity_precision" },
                       { label: "Target Percent", id: "target_percent" },
                       { label: "Divisible", id: "divisible" },
-                      { label: "Trade Amount", id: "TradeAmount" },
+                      { label: "Trade Amount", id: "trade_amount" },
                     ].map((field) => (
                       <div key={field.id} className="col-md-6 mb-4">
                         <label className="form-label">{field.label}</label>

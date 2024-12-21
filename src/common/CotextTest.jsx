@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { backEndCall, getJwt } from "../services/mainService";
+import { backEndCall, backEndCallObjNoDcyt, getJwt } from "../services/mainService";
 import { profileRedux } from "../components/reduxStore/slice/profileSlice";
+
 
 import Cardano from "../assets/images/cryptoIcons/cardano.png";
 import near from "../assets/images/cryptoIcons/near.png";
@@ -140,9 +141,26 @@ const useFetchKeys = () => {
     return formattedDate;
   };
 
+  const fetchData = async (formData, setLoading, reduxName) => {
+    setLoading(true);
+    try {
+      const response = await backEndCallObjNoDcyt(
+        "/trades/get_open_trades_data",
+        formData
+      );
+      dispatch(reduxName(response)); // Dispatch the action to Redux
+    } catch (error) {
+      console.error("Error fetching open trades data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Return states and functions for use in components
-  return { fetchKeys, keysLoading, profileData, apiKeys,getCoinicons ,getFormattedDate };
+  return { fetchKeys, keysLoading, profileData, apiKeys,getCoinicons ,getFormattedDate,fetchData };
 };
+
+
 
 export default useFetchKeys;
 

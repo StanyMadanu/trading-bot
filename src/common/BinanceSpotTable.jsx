@@ -4,11 +4,13 @@ import useFetchKeys from "./CotextTest";
 
 const BinanceSpotTable = ({ data }) => {
   const navigate = useNavigate();
-  const { getCoinicons, getFormattedDate } = useFetchKeys();
+  const { getCoinicons } = useFetchKeys();
+
+  const limitedData = data?.length > 3 ? data?.slice(0, 5) : data;
 
   return (
     <div className="table-responsive">
-      <table className="table table-bordered text-center">
+      <table className="table table-bordered text-center mb-0">
         <thead className="thead primary-bg">
           <tr>
             <th>
@@ -18,27 +20,27 @@ const BinanceSpotTable = ({ data }) => {
               <p className="mb-0 primary-color fs-14">Price</p>
             </th>
             <th>
-              <p className="mb-0 primary-color fs-14">Org Qty</p>
+              <p className="mb-0 primary-color fs-14">Side</p>
             </th>
           </tr>
         </thead>
         <tbody className="tbody">
-          {data?.length > 0 ? (
-            data?.map((data, index) => (
+          {limitedData?.length > 0 ? (
+            limitedData?.map((data, index) => (
               <tr key={index}>
                 <td>
-                  <div className="d-flex gap-3 align-items-center">
-                    <p className="mb-0 table-dot"></p>
+                  <div className="d-flex gap-2 align-items-center justify-content-center">
+                    {/* <p className="mb-0 table-dot"></p> */}
                     <img
-                      src={getCoinicons(data.symbol)}
-                      alt={data.name}
+                      src={getCoinicons(data?.symbol)}
+                      alt={data?.name}
                       className="cryptocurreny-icon-table crypto-icon"
-                      width={30}
+                      width={25}
                     />
                     <p className="mb-0 fs-13 fw-semibold">
                       {data?.symbol || "NA"}
                     </p>
-                    <p>{getFormattedDate(data.updateTime)}</p>
+                    {/* <p>{getFormattedDate(data.updateTime)}</p> */}
                   </div>
                 </td>
                 <td>
@@ -48,7 +50,7 @@ const BinanceSpotTable = ({ data }) => {
                 </td>
                 <td>
                   <p className="mb-0 fs-13 fw-semibold">
-                    {parseFloat(data?.origQty).toFixed(2)}
+                    {data?.side}
                   </p>
                 </td>
               </tr>
@@ -61,7 +63,7 @@ const BinanceSpotTable = ({ data }) => {
             </tr>
           )}
 
-          <tr>
+          {/* <tr>
             <td colSpan={3} className="text-center">
               <div
                 onClick={() => {
@@ -73,7 +75,22 @@ const BinanceSpotTable = ({ data }) => {
                 <button className="py-1">view all</button>
               </div>
             </td>
+          </tr> */}
+
+          <tr>
+            <td colSpan={3} className="text-center">
+              <div
+                onClick={() => {
+                  navigate(
+                    `/allDataTable?reduxName=binanceSpot&type=AMM&platform=BINANCE&extraReduxName=bitgetSpot&extraPlatform=BITGET`
+                  );
+                }}
+              >
+                <button className="py-1">View All</button>
+              </div>
+            </td>
           </tr>
+
         </tbody>
       </table>
     </div>

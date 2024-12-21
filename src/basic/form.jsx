@@ -13,7 +13,6 @@ class Form extends Component {
     else delete errors[input.name];
     const data = { ...this.state.data };
     data[input.name] = input.value;
-    // console.log(data)
     this.setState({ data, errors });
   };
 
@@ -194,7 +193,6 @@ class Form extends Component {
   };
 
   handleSubmit = (e) => {
-    console.log(e)
     if (e) e.preventDefault();
     const errors = this.validate();
     this.setState({ errors: errors || {} });

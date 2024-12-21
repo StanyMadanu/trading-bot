@@ -28,40 +28,29 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { fetchKeys } = useFetchKeys();
+  const { fetchKeys, fetchData } = useFetchKeys();
   const { bots, api_keys } = getProfile?.profile || {};
   const modelRef = useRef(null);
+  const closeRef = useRef(null);
 
   const { open_trades, totalBalance, total_investment } = bitgetSpot || {};
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await backEndCallObjNoDcyt(
-        "/trades/get_open_trades_data",
-        formData
-      );
-      dispatch(bitgetSpotRedx(response)); // Dispatch the action to Redux
-    } catch (error) {
-      console.error("Error fetching open trades data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   useEffect(() => {
     if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
-      if(!bitgetSpot){
-        fetchData();
+      if (!bitgetSpot) {
+        fetchData(formData, setLoading, bitgetSpotRedx);
       }
     }
   }, [dispatch, bots]);
 
   useEffect(() => {
+    console.log(bots?.BITGET?.AMM?.status)
     if (bots?.BITGET?.AMM?.status === "INACTIVE") {
-      setBotStatus("Enable");
-    } else if (bots?.BITGET?.AMM?.status === "ACTIVE") {
       setBotStatus("Disable");
+    } else if (bots?.BITGET?.AMM?.status === "ACTIVE") {
+      setBotStatus("Enable");
     } else {
       setBotStatus("ADD");
     }
@@ -70,13 +59,15 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   const submitBot = async (data) => {
     setBtnDisable(true);
     const formattedData = {
-      platform: data.platform,
-      bot: data.botType,
-      total_investment: data.total_investment,
+      platform: data?.platform,
+      bot: data?.botType,
+      total_investment: data?.total_investment,
     };
     try {
       const response = await backEndCallObj("/admin/add_bot", formattedData);
       toast.success(response?.success);
+      const modalInstance = window?.bootstrap?.Modal?.getInstance(closeRef?.current);
+      if (modalInstance) modalInstance?.hide();
     } catch (error) {
       toast.error(error?.response?.data || "Error adding bot");
     } finally {
@@ -87,8 +78,8 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
   const toggleBotStatus = async (e) => {
     await handleSubmit(e);
 
-    const modalInstance = window.bootstrap.Modal.getInstance(modelRef.current);
-    if (modalInstance) modalInstance.hide();
+    const modalInstance = window?.bootstrap?.Modal?.getInstance(modelRef?.current);
+    if (modalInstance) modalInstance?.hide();
   };
 
   const handleSubmit = async (e) => {
@@ -97,7 +88,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
 
     const formattedData = {
       ...formData,
-      status: bots?.BITGET.AMM.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
+      status: bots?.BITGET?.AMM?.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
     };
 
     try {
@@ -131,7 +122,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
         </button>
       );
     }
-    if (api_keys?.[formData.platform]?.api_key) {
+    if (api_keys?.[formData?.platform]?.api_key) {
       return (
         <button
           className="theme-btn text-uppercase"
@@ -148,7 +139,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
         className="theme-btn text-uppercase"
         type="button"
         onClick={() =>
-          navigate("/api", { state: { platform: formData.platform } })
+          navigate("/api", { state: { platform: formData?.platform } })
         }
       >
         Add Bot
@@ -174,32 +165,31 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
         </div>
       ) : (
         <>
-          <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
+          <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-1">
             <div
-              className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
+              className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1"
               data-bs-toggle="modal"
               data-bs-target="#editInvest"
             >
-              <h6 className="mb-0 fw-bold">
+              <h6 className="mb-0 fw-bold fs-15">
                 {parseFloat(total_investment || 0).toFixed(2)}
               </h6>
               <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                 Capital Assigned
               </p>
             </div>
-            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-              <h6 className="mb-0 fw-bold">
+            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1">
+              <h6 className="mb-0 fw-bold fs-15">
                 {parseFloat(totalBalance || "0").toFixed(2)}
               </h6>
               <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                 Current Balance
               </p>
             </div>
-            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1">
               <h6
-                className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${
-                  capital_investment < 0 ? "bg-danger" : "bg-success"
-                }`}
+                className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${capital_investment < 0 ? "bg-danger" : "bg-success"
+                  }`}
               >
                 {capital_investment > 0
                   ? `+${capital_investment}`
@@ -207,14 +197,13 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
                 %
               </h6>
               <p
-                className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${
-                  capital_investment < 0 ? "text-danger" : "text-success"
-                }`}
+                className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${capital_investment < 0 ? "text-danger" : "text-success"
+                  }`}
               >
                 % Change
               </p>
             </div>
-            <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
+            <div className="border d-flex justify-content-center align-items-center flex-fill p-1">
               {handleButtonClick()}
             </div>
           </div>
@@ -227,17 +216,18 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
             btnDisable={btnDisable}
           />
           <EditInvestment
-            botType={formData.bot}
-            platform={formData.platform}
+            botType={formData?.bot}
+            platform={formData?.platform}
             onSuccess={() => {
               // console.log("Investment Updated Successfully!");
             }}
+            fetchData={fetchData}
           />
           <BitgetSpotTable
             data={open_trades}
             thead={["Symbol", "Price", "Org Qty"]}
           />
-          <div className="modal fade" id="bitgetModal">
+          <div className="modal fade" id="bitgetModal" ref={closeRef}>
             <div className="modal-dialog text-dark">
               <div className="modal-content">
                 <div className="modal-header">
@@ -264,7 +254,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
                         id="platform"
                         name="platform"
                         placeholder="Platform"
-                        value={data.platform}
+                        value={data?.platform}
                         readOnly
                       />
                     </div>
@@ -276,7 +266,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
                         id="botType"
                         name="botType"
                         placeholder="Bot Type"
-                        value={data.botType}
+                        value={data?.botType}
                         readOnly
                       />
                     </div>
@@ -288,7 +278,7 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
                         id="total_investment"
                         name="total_investment"
                         placeholder="Total Investment"
-                        value={data.total_investment}
+                        value={data?.total_investment}
                         onChange={(e) =>
                           setData({ ...data, total_investment: e.target.value })
                         }
@@ -316,8 +306,8 @@ const BinanceSpotBot = ({ dispatch, bitgetSpot, getProfile }) => {
 };
 
 const mapStateToProps = (state) => ({
-  bitgetSpot: state.bitgetSpot.value,
-  getProfile: state.getProfile.value,
+  bitgetSpot: state?.bitgetSpot?.value,
+  getProfile: state?.getProfile?.value,
 });
 
 export default connect(mapStateToProps)(BinanceSpotBot);

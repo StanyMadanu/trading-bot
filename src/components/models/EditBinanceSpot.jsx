@@ -3,6 +3,8 @@ import Joi from "joi-browser";
 import Form from "../../basic/form";
 import { backEndCallObj } from "../../services/mainService";
 import { toast } from "react-toastify";
+import { binancespotRedx } from "../reduxStore/slice/binancespotSlice";
+import { connect } from "react-redux";
 
 class EditBinanceSpot extends Form {
     constructor(props) {
@@ -16,6 +18,7 @@ class EditBinanceSpot extends Form {
             errors: {},
             btnDisable: false, // State to manage button disable status
         };
+        this.modelRef = React.createRef(null);
     }
 
     // Validation Schema
@@ -25,26 +28,32 @@ class EditBinanceSpot extends Form {
         invest: Joi.number().positive().required(),
     };
 
+
+
     // Handle Submit Logic
     doSubmit = async () => {
-       
         const { data } = this.state;
-        console.log(data)
         this.setState({ btnDisable: true }); // Disable submit button during submission
 
         try {
-            const formattedData = { 
-                bot:data.botType,
-                platform:data.platform,
-                investment:data.invest,
-             };
-            // console.log("Submitting Data: ", formattedData);
+            const formattedData = {
+                bot: data.botType,
+                platform: data.platform,
+                total_investment: data.invest,
+            };
 
             // API call to submit edited investment
-            const response = await backEndCallObj("/admin/update_investment",formattedData );
-
+            const response = await backEndCallObj("/admin/update_investment", formattedData);
+           
             // Show success toast
             toast.success(response?.success || "Investment updated successfully");
+            const modalInstance = window.bootstrap.Modal.getInstance(this.modelRef.current);
+            if (modalInstance) modalInstance.hide();
+            // Dispatch the Redux action to update the state
+
+                this.props.fetchData();
+
+            // this.props.dispatch(binancespotRedx(response));
 
             // Reset modal or perform callback if necessary
             this.setState({ data: { invest: "", botType: "" } }); // Clear form fields
@@ -60,11 +69,10 @@ class EditBinanceSpot extends Form {
 
     render() {
         const { data, errors, btnDisable } = this.state;
-
-        console.log(data, errors)
+       
 
         return (
-            <div className="modal fade" id="editBinanceSpotModal" tabIndex="-1" aria-hidden="true">
+            <div className="modal fade" id="editBinanceSpotModal" tabIndex="-1" aria-hidden="true" ref={this.modelRef}>
                 <div className="modal-dialog text-dark">
                     <div className="modal-content">
                         {/* Modal Header */}
@@ -124,4 +132,9 @@ class EditBinanceSpot extends Form {
     }
 }
 
-export default EditBinanceSpot;
+const mapDispatchToProps = (dispatch) => ({
+    dispatch, // Make dispatch available as a prop
+  });
+  
+
+export default  connect(null, mapDispatchToProps)(EditBinanceSpot);

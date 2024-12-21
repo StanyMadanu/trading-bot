@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Joi from "joi-browser";
 import Form from "../basic/form"; // Import the Form base class
-import { backEndCallObj, setLocalToken } from "../services/mainService";
+import { backEndCallObj, getJwt, setLocalToken } from "../services/mainService";
 import { toast } from "react-toastify";
 import tradingBott from "../assets/images/tradingbott.webp";
 import mainLogoLight from "../assets/images/7pools-logo.png";
@@ -37,6 +37,7 @@ class Login extends Form {
       })
       .label("Password"),
   };
+
 
   // Handle login submit
   doSubmit = async () => {
@@ -90,8 +91,10 @@ class Login extends Form {
     }
   };
 
+
   render() {
     const { data, otp, errors } = this.state;
+
     // console.log(this.state);
     return (
       <div className="login">
@@ -156,7 +159,7 @@ class Login extends Form {
                         id="userPassword"
                         required=""
                         onChange={this.handleChange}
-                        autoComplete= "new-password"   // Workaround for password and other fields
+                        autoComplete="new-password"   // Workaround for password and other fields
                       />
                       <label htmlFor="userPassword" className="inputLabel">
                         Password
@@ -191,9 +194,9 @@ class Login extends Form {
                     </div>
                   </>
                 )}
-                <Link to="" className="fs-13 ms-auto mb-2 primary-color">
+                {/* <Link to="" className="fs-13 ms-auto mb-2 primary-color">
                   Forgot password?
-                </Link>
+                </Link> */}
 
                 <div className="w-100 my-3">
                   <button
@@ -205,12 +208,12 @@ class Login extends Form {
                   </button>
                 </div>
 
-                <div className="my-3">
+                {/* <div className="my-3">
                   <span className="fs-13">Are you new? </span>
                   <Link to="" className="fs-13 ms-auto mb-2 primary-color">
                     Create an Account
                   </Link>
-                </div>
+                </div> */}
               </div>
             </form>
           </div>

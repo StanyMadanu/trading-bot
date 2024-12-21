@@ -3,6 +3,8 @@ import Joi from "joi-browser";
 import Form from "../../basic/form";
 import { backEndCallObj } from "../../services/mainService";
 import { toast } from "react-toastify";
+import { bitgetSpotRedx } from "../reduxStore/slice/bitgitspotSlice";
+import { connect } from "react-redux";
 
 class EditInvestment extends Form {
     // Validation Schema
@@ -23,6 +25,8 @@ class EditInvestment extends Form {
             errors: {},
             btnDisable: false, // State to manage button disable status
         };
+        this.modelRef = React.createRef(null);
+
     }
 
     // Handle Submit Logic
@@ -34,15 +38,19 @@ class EditInvestment extends Form {
             const formattedData = {
                 bot: data.botType,
                 platform: data.platform,
-                investment: data.invest,
+                total_investment: data.invest,
             };
-            // console.log("Submitting Data: ", formattedData);
+            console.log("Submitting Data: ", formattedData);
 
             // API call to submit edited investment
-            const response = await backEndCallObj("/admin/update_investment", formattedData);
+            const response = await backEndCallObj("/admin/update_investment",formattedData );
 
             // Show success toast
             toast.success(response?.success || "Investment updated successfully");
+
+            const modalInstance = window.bootstrap.Modal.getInstance(this.modelRef.current);
+            if (modalInstance) modalInstance.hide();
+            this.props.fetchData()
 
             // Reset modal or perform callback if necessary
             this.setState({ data: { invest: "", botType: "" } }); // Clear form fields
@@ -62,7 +70,7 @@ class EditInvestment extends Form {
         // console.log(data, errors)
 
         return (
-            <div className="modal fade" id="editInvest" tabIndex="-1" aria-hidden="true">
+            <div className="modal fade" id="editInvest" tabIndex="-1" aria-hidden="true" ref={this.modelRef}>
                 <div className="modal-dialog text-dark">
                     <div className="modal-content">
                         {/* Modal Header */}
@@ -122,4 +130,7 @@ class EditInvestment extends Form {
     }
 }
 
-export default EditInvestment;
+const mapDispatchToProps = (dispatch) => ({
+    dispatch, // Make dispatch available as a prop
+  });
+export default connect(null, mapDispatchToProps)(EditInvestment);

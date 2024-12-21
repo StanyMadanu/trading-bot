@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { backEndCallObj } from "../services/mainService";
 import Joi from "joi-browser";
-import toast from "react-hot-toast";
+import {toast} from "react-toastify";
 import DisableAllCoins from "./DisableAllCoins";
 import MakeAnAdmin from "./MakeAnAdmin";
 import { Link } from "react-router-dom";
@@ -83,7 +83,7 @@ const CronSettings = () => {
   const renderButton = (label, className) => (
     <div className="text-end px-2">
       <button className={className} disabled={btnDisable}>
-        {label}
+        {btnDisable ? "wait" : label}
       </button>
     </div>
   );

@@ -10,13 +10,10 @@ import { FaBitcoin } from "react-icons/fa";
 import useFetchKeys from "../common/CotextTest";
 
 const Header = () => {
-  const [keysLoading, setKeysLoading] = useState(false);
-  const [profileData, setProfileData] = useState(null);
-  const [apiKeys, setApiKeys] = useState(null);
+
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const profile = useSelector((state) => state.getProfile?.value?.profile); // Access Redux state
+  const profile = useSelector((state) => state?.getProfile?.value?.profile); // Access Redux state
 
   const { fetchKeys } = useFetchKeys();
 
@@ -52,7 +49,7 @@ const Header = () => {
             <div className="d-flex gap-5 flex-wrap">
               <div className="d-flex gap-3 align-items-center">
                 <Link to="/dashboard">
-                  <img src={mainLogo} alt="7pools-logo" width={150} />
+                  <img src={mainLogo} alt="7pools-logo" width={110} />
                 </Link>
                 {/* <h5
                   className="mb-0 text-uppercase fw- d-flex align-items-center"
@@ -64,7 +61,7 @@ const Header = () => {
             </div>
 
             <div className="ms-auto d-flex column-gap-2 align-items-center">
-              <div className="d-none d-md-block">
+              <div className="d-none">
                 <h6 className="text-capitalize primary-color">bot status</h6>
                 <div className="d-flex align-items-center gap-2">
                   <p className="mb-0 flex-fill text-capitalize fs-13">
@@ -105,7 +102,7 @@ const Header = () => {
                   </div>
 
                   {/* <span className="fs-13 text-muted fw-bold">Pavan Rebba</span> */}
-                  <div className="me-2">
+                  <div className="me-2 d-none d-sm-block">
                     <p className="mb-0 fs-14 fw-semibold">
                       {" "}
                       {profile?.user_name}
@@ -139,7 +136,7 @@ const Header = () => {
                       <span className="fs-14 fw-semibold">API</span>
                     </Link>
                   </li>
-                  {currentUser.user_type === "ADMIN" ? (
+                  {currentUser?.user_type === "ADMIN" ? (
                     <>
                       <li>
                         <Link

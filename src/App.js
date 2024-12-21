@@ -4,9 +4,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "./common/Loader";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./basic/PublicRoute"; // Add PublicRoute
 import CronSettings from "./common/CronSettings";
 import MakeAnAdmin from "./common/MakeAnAdmin";
-
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import("./components/Dashboard"));
@@ -20,52 +20,34 @@ const AddCoins = lazy(() => import("./components/AddCoins"));
 
 function App() {
   const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Login />,
-    },
+    // Public Route: Login Page
     {
       path: "/",
       element: (
-        <ProtectedRoute>  
-        <Layout />
-      </ProtectedRoute>
+        <PublicRoute>
+          <Login />
+        </PublicRoute>
+      ),
+    },
+    // Protected Routes: Only accessible if JWT exists
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Layout />
+        </ProtectedRoute>
       ),
       children: [
-        {
-          path: "/",
-          element: <Dashboard />,
-        },
-        {
-          path: "/dashboard",
-          element: <Dashboard />,
-        },
-        {
-          path: "/api",
-          element: <Api />,
-        },
-        {
-          path: "/controls",
-          element: <Controls />,
-        },
-        {
-          path: "/addcoins",
-          element: <AddCoins />,
-        },
-        {
-          path: "/allDataTable",
-          element: <AllDataTable />,
-        },
-        {
-          path: "/cronsetting",
-          element: <CronSettings />,
-        },
-        {
-          path: "/makeadmin",
-          element: <MakeAnAdmin />,
-        },
+        { path: "/dashboard", element: <Dashboard /> },
+        { path: "/api", element: <Api /> },
+        { path: "/controls", element: <Controls /> },
+        { path: "/addcoins", element: <AddCoins /> },
+        { path: "/allDataTable", element: <AllDataTable /> },
+        { path: "/cronsetting", element: <CronSettings /> },
+        { path: "/makeadmin", element: <MakeAnAdmin /> },
       ],
     },
+    // Fallback route for unmatched paths
     {
       path: "*",
       element: <NotFound />,

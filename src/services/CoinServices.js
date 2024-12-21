@@ -17,14 +17,13 @@ const addCoins = async (payload) => {
   return response;
 };
 const updateCoins = async (payload) => {
-  const data = await backEndCallObj("/admin/update_coin",payload );
+  const data = await backEndCallObj("/admin/edit_coin",payload );
   // console.log(data);
   if (!data) return null;
   return data;
 };
 const deleteCoins = async (payload) => {
-  console.log(payload)
-  const data = await backEndCallObj("/admin/update_coin",payload);
+  const data = await backEndCallObj("/admin/edit_coin",payload );
   if (!data) return null;
   return data;
 };

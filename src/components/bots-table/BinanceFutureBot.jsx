@@ -2,21 +2,17 @@ import React, { useEffect, useRef, useState, Suspense } from "react";
 import Table from "../../common/Table";
 import {
   backEndCallObj,
-  backEndCallObjNoDcyt,
 } from "../../services/mainService";
 import { connect } from "react-redux";
 import { binancefutureRedx } from "../reduxStore/slice/binancefutureSlice";
 import { toast } from "react-toastify";
 import useFetchKeys from "../../common/CotextTest";
 import { useNavigate } from "react-router-dom";
-import { FALSE } from "sass";
 import MiniLoader from "../../common/MiniLoader";
 
 // Lazy load components
 const ConfirmPopup = React.lazy(() => import("../models/ConfirmPopup"));
-const EditBinanceFutureModal = React.lazy(() =>
-  import("../models/EditBinanceFuture")
-);
+const EditBinanceFutureModal = React.lazy(() =>import("../models/EditBinanceFuture"));
 
 const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const [formData] = useState({
@@ -37,42 +33,44 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const [datamodal, setDataModala] = useState(false);
 
   const navigate = useNavigate();
-  const { fetchKeys } = useFetchKeys();
+  const { fetchKeys, fetchData } = useFetchKeys();
+  const closeRef = useRef(null);
 
   const { bots, api_keys } = getProfile?.profile || {};
   const { usdt_balance, open_trades, total_investment } = binanceFuture || {}; // Ensure it's not undefined
-  console.log(binanceFuture);
+  // console.log(binanceFuture);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await backEndCallObjNoDcyt(
-        "/trades/get_open_trades_data",
-        formData
-      );
-      dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
-    } catch (error) {
-      console.error("Error fetching open trades data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchData = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await backEndCallObjNoDcyt(
+  //       "/trades/get_open_trades_data",
+  //       formData
+  //     );
+  //     dispatch(binancefutureRedx(response)); // Dispatch the action to Redux
+  //   } catch (error) {
+  //     console.error("Error fetching open trades data:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const modelRef = useRef(null);
 
   useEffect(() => {
     if (bots?.[formData?.platform] && api_keys?.[formData?.platform]) {
-      if(!binanceFuture){
-        fetchData();
+      if (!binanceFuture) {
+        fetchData(formData, setLoading, binancefutureRedx);
       }
     }
   }, [dispatch, bots]);
 
   useEffect(() => {
+    console.log(bots?.BINANCE?.FUTURES?.status)
     if (bots?.BINANCE?.FUTURES?.status === "INACTIVE") {
-      setBotStatus("Enable");
-    } else if (bots?.BINANCE?.FUTURES?.status === "ACTIVE") {
       setBotStatus("Disable");
+    } else if (bots?.BINANCE?.FUTURES?.status === "ACTIVE") {
+      setBotStatus("Enable");
     } else {
       setBotStatus("ADD");
     }
@@ -86,7 +84,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
       status:
         bots?.BINANCE?.FUTURES?.status === "INACTIVE" ? "ACTIVE" : "INACTIVE",
     };
-    console.log(formattedData);
+    // console.log(formattedData);
     try {
       setBtnDisable(true);
       const response = await backEndCallObj(
@@ -105,14 +103,17 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
   const submitBot = async (data) => {
     setBtnDisable(true);
     const formattedData = {
-      platform: data.platform,
-      bot: data.botType,
-      total_investment: data.total_investment,
+      platform: data?.platform,
+      bot: data?.botType,
+      total_investment: data?.total_investment,
     };
-    console.log(formattedData);
+    // console.log(formattedData);
     try {
       const response = await backEndCallObj("/admin/add_bot", formattedData);
       toast.success(response?.success);
+      const modalInstance = window.bootstrap.Modal.getInstance(closeRef.current);
+      if (modalInstance) modalInstance.hide();
+
     } catch (error) {
       toast.error(error?.response?.data || "Error adding bot");
     } finally {
@@ -128,60 +129,46 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
 
   const theadData = ["Symbol", "Profit", "PositionAmt"];
 
-  let button;
-  switch (bots?.BINANCE?.FUTURES?.status) {
-    case "INACTIVE":
-      button = (
+  const handleButtonClick = () => {
+    if (
+      bots?.BINANCE?.FUTURES?.status === "INACTIVE" ||
+      bots?.BINANCE?.FUTURES?.status === "ACTIVE"
+    ) {
+      return (
         <button
           className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#confirmDelete"
         >
-          enable bot
+          {botStatus} Bot
         </button>
       );
-      break;
-
-    case "ACTIVE":
-      button = (
-        <button
-          className="text-uppercase theme-btn"
-          type="button"
-          data-bs-toggle="modal"
-          data-bs-target="#confirmDelete"
-        >
-          disable bot
-        </button>
-      );
-      break;
-
-    default:
-      button = api_keys?.[formData.platform]?.api_key ? (
+    }
+    if (api_keys?.[formData?.platform]?.api_key) {
+      return (
         <button
           className="theme-btn text-uppercase"
           type="button"
           data-bs-toggle="modal"
-          data-bs-target="#botModal"
-          onClick={() => {
-            setDataModala((prev) => !prev); // Properly toggle state
-          }}
-        >
-          Add Bot
-        </button>
-      ) : (
-        <button
-          className="theme-btn text-uppercase"
-          type="button"
-          onClick={() =>
-            navigate("/api", { state: { platform: formData.platform } })
-          }
+          data-bs-target="#bitgetModal"
         >
           Add Bot
         </button>
       );
-      break;
-  }
+    }
+    return (
+      <button
+        className="theme-btn text-uppercase"
+        type="button"
+        onClick={() =>
+          navigate("/api", { state: { platform: formData?.platform } })
+        }
+      >
+        Add Bot
+      </button>
+    );
+  };
 
   // const capital_investment = parseFloat(usdt_balance?.availableBalance / total_investment || 0).toFixed(2);
   const difference = usdt_balance?.availableBalance - total_investment;
@@ -199,22 +186,22 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
         </div>
       ) : (
         <>
-          <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-3">
+          <div className="bot-status d-flex flex-wrap justify-content-between gap-2 pb-1">
             {/* UI Content */}
             <div
-              className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2"
+              className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1"
               data-bs-toggle="modal"
               data-bs-target="#editBinanceFutureModal"
             >
-              <h6 className="mb-0 fw-bold">
+              <h6 className="mb-0 fw-bold fs-15">
                 {parseFloat(total_investment || 0).toFixed(2)}
               </h6>
               <p className="mb-0 text-capitalize primary-color fs-12 fw-semibold">
                 capital assigned
               </p>
             </div>
-            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
-              <h6 className="mb-0 fw-bold">
+            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1">
+              <h6 className="mb-0 fw-bold fs-15">
                 {parseFloat(usdt_balance?.availableBalance || "0").toFixed(2) ||
                   "0"}
               </h6>
@@ -222,11 +209,10 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
                 current balance
               </p>
             </div>
-            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-2">
+            <div className="border d-flex flex-column align-items-center justify-content-between flex-fill p-1">
               <h6
-                className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${
-                  capital_investment < 0 ? "bg-danger" : "bg-success"
-                }`}
+                className={`mb-0 status-percent fw-bold px-2 py-1 fs-13 ${capital_investment < 0 ? "bg-danger" : "bg-success"
+                  }`}
               >
                 {capital_investment > 0
                   ? `+${capital_investment}`
@@ -234,15 +220,14 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
                 %
               </h6>
               <p
-                className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${
-                  capital_investment < 0 ? "text-danger" : "text-success"
-                }`}
+                className={`mb-0 text-capitalize primary-color fs-12 fw-semibold ${capital_investment < 0 ? "text-danger" : "text-success"
+                  }`}
               >
                 % change
               </p>
             </div>
-            <div className="border d-flex justify-content-center align-items-center flex-fill p-2">
-              {button}
+            <div className="border d-flex justify-content-center align-items-center flex-fill p-1">
+              {handleButtonClick()}
             </div>
           </div>
 
@@ -255,22 +240,19 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
             modelRef={modelRef}
             btnDisable={btnDisable}
           />
-          {/* <EditInvestment botType={formData.bot} platform={formData.platform} 
-        onSuccess={() => {
-          console.log("Investment Updated Successfully!");
-          // Optional logic: Close modal, refresh data, etc.
-        }} /> */}
+
 
           <EditBinanceFutureModal
             botType={formData.bot}
             platform={formData.platform}
+            fetchData={fetchData}
           />
 
           <Table data={open_trades} thead={theadData} />
         </>
       )}
 
-      <div className="modal fade" id="botModal">
+      <div className="modal fade" id="botModal" ref={closeRef}>
         <div className="modal-dialog text-dark">
           <div className="modal-content">
             <div className="modal-header">
@@ -297,7 +279,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
                     name="platform"
                     className="form-control"
                     placeholder="Platform"
-                    value={data.platform}
+                    value={data?.platform}
                     readOnly
                   />
                 </div>
@@ -309,7 +291,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
                     name="botType"
                     className="form-control"
                     placeholder="Bot Type"
-                    value={data.botType}
+                    value={data?.botType}
                     readOnly
                   />
                 </div>
@@ -321,7 +303,7 @@ const BinanceFutureBot = ({ dispatch, binanceFuture, getProfile }) => {
                     id="total_investment"
                     name="total_investment"
                     placeholder="Total Investment"
-                    value={data.total_investment}
+                    value={data?.total_investment}
                     onChange={(e) =>
                       setData({ ...data, total_investment: e.target.value })
                     }

@@ -19,6 +19,7 @@ class Buysellfuturemodal extends Form {
       side: "",
       coinLists: [],
     };
+    this.modelRef = React.createRef(); // Create a reference to the modal
   }
 
   schema = {
@@ -33,11 +34,7 @@ class Buysellfuturemodal extends Form {
           ...prevState.errors,
           [field]: message,
         },
-      }),
-      () => {
-        // This callback runs after state is updated
-        console.log("Updated errors state:", this.state.errors);
-      }
+      })
     );
   };
 
@@ -105,11 +102,15 @@ class Buysellfuturemodal extends Form {
         side: this.state.side,
       };
 
-      console.log(formattedData);
-      const response = await backEndCallObj("dmin/buy_sell_future_coin", formattedData);
+      toast.success(formattedData)
+
+      const response = await backEndCallObj("admin/buy_sell_future_coin");
 
       // Show success toast
       toast.success(response?.success || "buy/sell successfully");
+
+      const modalInstance = window.bootstrap.Modal.getInstance(this.modelRef.current);
+      if (modalInstance) modalInstance.hide();
 
       // Reset modal or form fields
       this.setState({
@@ -141,7 +142,6 @@ class Buysellfuturemodal extends Form {
   render() {
     const { data, errors, btnDisable, coinLists } = this.state;
 
-    console.log(errors)
 
     return (
       <div
@@ -150,6 +150,7 @@ class Buysellfuturemodal extends Form {
         tabIndex="-1"
         aria-labelledby="addCoinModalLabel"
         aria-hidden="true"
+        ref={this.modelRef}
       >
         <div className="modal-dialog">
           <div className="modal-content">

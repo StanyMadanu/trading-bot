@@ -6,9 +6,7 @@ import MiniLoader from "../common/MiniLoader";
 import { useLocation } from "react-router-dom";
 
 const BinanceSpotBot = React.lazy(() => import("./bots-table/BinanceSpotBot"));
-const BinanceFutureBot = React.lazy(() =>
-  import("./bots-table/BinanceFutureBot")
-);
+const BinanceFutureBot = React.lazy(() => import("./bots-table/BinanceFutureBot"));
 const BitgitSpotBot = React.lazy(() => import("./bots-table/BitgitSpotBot"));
 const BitgitFutureBot = React.lazy(() => import("./bots-table/BitgitFuture"));
 
@@ -18,28 +16,20 @@ const Dashboard = () => {
   const { type, platform } = location.state || {};
 
   const [activeFutureBot, setActiveFutureBot] = useState(
-    type === "FUTURES" ? platform : "BITGET"
+    type === "FUTURES" ? platform : "BINANCE"
   );
   const [activeSpotBot, setActiveSpotBot] = useState(
-    type == "AMM" ? platform : "BITGET"
+    type == "AMM" ? platform : "BINANCE"
   );
 
-  console.log(activeFutureBot, activeSpotBot);
+  // console.log(activeFutureBot, activeSpotBot);
 
-  const profile = useSelector((state) => state.getProfile.value);
-  const binanceFuture = useSelector((state) => state.binanceFuture.value);
-  const binanceSpot = useSelector((state) => state.binanceSpot.value);
-  const BitgetFuture = useSelector((state) => state.bitgetFuture.value);
-  const BitgetSpot = useSelector((state) => state.bitgetSpot.value);
+  const binanceFuture = useSelector((state) => state?.binanceFuture?.value);
+  const binanceSpot = useSelector((state) => state?.binanceSpot?.value);
+  const BitgetFuture = useSelector((state) => state?.bitgetFuture?.value);
+  const BitgetSpot = useSelector((state) => state?.bitgetSpot?.value);
 
-  console.log(
-    binanceFuture,
-    binanceSpot,
-    BitgetFuture,
-    BitgetSpot,
-    type,
-    platform
-  );
+
 
   return (
     <>
@@ -47,22 +37,23 @@ const Dashboard = () => {
         <div className="row row-gap-2 pb-2">
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
-              <div className="card-body text-center">
+              <div className="card-body text-center p-1">
                 <SpeedOMeter
                   title="binance SPOT balance"
-                  balance={binanceSpot?.total_investment || 0}
+                  balance={JSON.parse(binanceSpot?.totalBalance || 0).toFixed(2) }
                   target={10000}
                 />
               </div>
             </div>
           </div>
 
+
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
-              <div className="card-body text-center">
+              <div className="card-body text-center p-1">
                 <SpeedOMeter
                   title="binance FUTURE balance"
-                  balance={binanceFuture?.total_investment || 0}
+                  balance={JSON.parse(binanceFuture?.usdt_balance?.availableBalance || 0).toFixed(2)}
                   target={10000}
                 />
               </div>
@@ -71,10 +62,10 @@ const Dashboard = () => {
 
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
-              <div className="card-body text-center">
+              <div className="card-body text-center p-1">
                 <SpeedOMeter
                   title="bitget SPOT balance"
-                  balance={BitgetSpot?.total_investment || 0}
+                  balance={JSON.parse(BitgetSpot?.totalBalance || 0).toFixed(2)}
                   target={10000}
                 />
               </div>
@@ -83,10 +74,10 @@ const Dashboard = () => {
 
           <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
             <div className="card">
-              <div className="card-body text-center">
+              <div className="card-body text-center p-1">
                 <SpeedOMeter
                   title="bitget FUTURE balance"
-                  balance={BitgetFuture?.total_investment || 0}
+                  balance={JSON.parse(BitgetFuture?.usdt_balance?.availableBalance || 0).toFixed(2)}
                   target={10000}
                 />
               </div>
@@ -98,8 +89,8 @@ const Dashboard = () => {
         <div className="row row-gap-2">
           <div className="col-xl-6 col-lg-6 col-md-12">
             <div className="card">
-              <div className="card-body">
-                <div className="the-bots d-flex gap-2 pb-3">
+              <div className="card-body pb-1">
+                <div className="the-bots d-flex gap-2 pb-1">
                   <div
                     className={`binance-spot-bot flex-fill text-center p-2 ${
                       activeSpotBot === "BINANCE" ? "active" : ""
@@ -128,7 +119,7 @@ const Dashboard = () => {
                     </div>
                   }
                 >
-                  {activeSpotBot === "binance" ? (
+                  {activeSpotBot === "BINANCE" ? (
                     <BinanceSpotBot />
                   ) : (
                     <BitgitSpotBot />
@@ -141,8 +132,8 @@ const Dashboard = () => {
           {/* FUTURES BOT SECTION */}
           <div className="col-xl-6 col-lg-6 col-md-12">
             <div className="card">
-              <div className="card-body">
-                <div className="the-bots d-flex gap-2 pb-3">
+              <div className="card-body pb-1">
+                <div className="the-bots d-flex gap-2 pb-1">
                   <div
                     className={`binance-spot-bot flex-fill text-center p-2 ${
                       activeFutureBot === "BINANCE" ? "active" : ""
@@ -171,7 +162,7 @@ const Dashboard = () => {
                     </div>
                   }
                 >
-                  {activeFutureBot === "binance" ? (
+                  {activeFutureBot === "BINANCE" ? (
                     <BinanceFutureBot />
                   ) : (
                     <BitgitFutureBot />

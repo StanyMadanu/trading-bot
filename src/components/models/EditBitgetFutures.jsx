@@ -3,6 +3,8 @@ import Joi from "joi-browser";
 import Form from "../../basic/form";
 import { backEndCallObj } from "../../services/mainService";
 import { toast } from "react-toastify";
+import { bitgetFutureRdx } from "../reduxStore/slice/bitgetfutureSlice";
+import { connect } from "react-redux";
 
 class EditBitgetFuture extends Form {
     // Validation Schema
@@ -23,6 +25,7 @@ class EditBitgetFuture extends Form {
             errors: {},
             btnDisable: false, // State to manage button disable status
         };
+        this.modelRef = React.createRef(null);
     }
 
     // Handle Submit Logic
@@ -34,7 +37,7 @@ class EditBitgetFuture extends Form {
             const formattedData = {
                 bot: data.botType,
                 platform: data.platform,
-                investment: data.invest,
+                total_investment: data.invest,
             };
             // console.log("Submitting Data: ", formattedData);
 
@@ -44,6 +47,10 @@ class EditBitgetFuture extends Form {
             // Show success toast
             toast.success(response?.success || "Investment updated successfully");
 
+            const modalInstance = window.bootstrap.Modal.getInstance(this.modelRef.current);
+            if (modalInstance) modalInstance.hide();
+            this.props.fetchData(); // Fetch updated data from API
+            
             // Reset modal or perform callback if necessary
             this.setState({ data: { invest: "", botType: "" } }); // Clear form fields
             if (this.props.onSuccess) this.props.onSuccess(); // Optional callback
@@ -62,7 +69,7 @@ class EditBitgetFuture extends Form {
         // console.log(data, errors)
 
         return (
-            <div className="modal fade" id="editBitgetFutureModal" tabIndex="-1" aria-hidden="true">
+            <div className="modal fade" id="editBitgetFutureModal" tabIndex="-1" aria-hidden="true" ref={this.modelRef}>
                 <div className="modal-dialog text-dark">
                     <div className="modal-content">
                         {/* Modal Header */}
@@ -123,4 +130,8 @@ class EditBitgetFuture extends Form {
     }
 }
 
-export default EditBitgetFuture;
+const mapDispatchToProps = (dispatch) => ({
+    dispatch, // Make dispatch available as a prop
+  });
+
+export default connect(null, mapDispatchToProps)( EditBitgetFuture);

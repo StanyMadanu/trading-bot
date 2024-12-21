@@ -3,6 +3,8 @@ import Joi from "joi-browser";
 import Form from "../../basic/form";
 import { backEndCallObj } from "../../services/mainService";
 import { toast } from "react-toastify";
+import { binancefutureRedx } from "../reduxStore/slice/binancefutureSlice";
+import { connect } from "react-redux";
 
 class EditBinanceFuture extends Form {
     // Validation Schema
@@ -23,6 +25,7 @@ class EditBinanceFuture extends Form {
             errors: {},
             btnDisable: false, // State to manage button disable status
         };
+        this.modelRef = React.createRef(null);
     }
 
     // Handle Submit Logic
@@ -34,7 +37,7 @@ class EditBinanceFuture extends Form {
             const formattedData = {
                 bot: data.botType,
                 platform: data.platform,
-                investment: data.invest,
+                total_investment: data.invest,
             };
             // console.log("Submitting Data: ", formattedData);
 
@@ -43,6 +46,12 @@ class EditBinanceFuture extends Form {
 
             // Show success toast
             toast.success(response?.success || "Investment updated successfully");
+
+            const modalInstance = window.bootstrap.Modal.getInstance(this.modelRef.current);
+            if (modalInstance) modalInstance.hide();
+            // Dispatch the Redux action to update the state
+            this.props.fetchData()
+            // this.props.dispatch(binancefutureRedx(response));
 
             // Reset modal or perform callback if necessary
             this.setState({ data: { invest: "", botType: "" } }); // Clear form fields
@@ -62,7 +71,7 @@ class EditBinanceFuture extends Form {
         // console.log(data, errors)
 
         return (
-            <div className="modal fade" id="editBinanceFutureModal" tabIndex="-1" aria-hidden="true">
+            <div className="modal fade" id="editBinanceFutureModal" tabIndex="-1" aria-hidden="true" ref={this.modelRef}>
                 <div className="modal-dialog text-dark">
                     <div className="modal-content">
                         {/* Modal Header */}
@@ -103,7 +112,7 @@ class EditBinanceFuture extends Form {
                                         <button
                                             type="submit"
                                             className="btn btn-success"
-                                           
+
                                             disabled={btnDisable} // Disable button during submission
                                         >
                                             {btnDisable ? "Submitting..." : "Submit"}
@@ -122,4 +131,9 @@ class EditBinanceFuture extends Form {
     }
 }
 
-export default EditBinanceFuture;
+const mapDispatchToProps = (dispatch) => ({
+    dispatch, // Make dispatch available as a prop
+  });
+  
+
+export default connect(null, mapDispatchToProps)(EditBinanceFuture); ;

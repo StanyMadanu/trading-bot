@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { backEndCall, backEndCallObj } from "../services/mainService";
-import toast from "react-hot-toast";
+import {toast} from "react-toastify";
 import { Link } from "react-router-dom";
 
 const Controls = () => {
@@ -12,43 +12,35 @@ const Controls = () => {
   const [Loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await backEndCall("/admin_get/get_controls");
-        console.log(data.success);
 
-        if (data?.success) {
-          // console.log(data);
-          setControlsData(data.success);
-
-          const controlWithTrue = data.success.find(
-            (control) =>
-              control.name === "control_name" && control.value === true
-          );
-
-          if (controlWithTrue) {
-            setCheckToggle(true); // Set toggleState to true
-          } else {
-            setCheckToggle(false); // Fallback to false if no control found
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     fetchData();
   }, []);
+
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const data = await backEndCall("/admin_get/get_controls");
+      // console.log(data.success);
+
+      if (data?.success) {
+        console.log(data);
+        setControlsData(data.success);
+
+
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    finally {
+      setLoading(false);
+    }
+  };
 
   const handleAction = async (control) => {
     // Prevent unnecessary calls if already loading
     if (Loading) return;
 
-    // Early return for AMM
-    if (control === "AMM") {
-      console.warn("###### cannot update AMM as of now ######");
-      toast.warning("AMM cannot be updated at the moment");
-      return;
-    }
 
     setLoading(true);
 
@@ -75,6 +67,7 @@ const Controls = () => {
         throw new Error("Invalid response from server");
       }
       toast.success(response.success);
+      fetchData()
     } catch (error) {
       console.error("Error updating control:", error);
 
@@ -92,38 +85,40 @@ const Controls = () => {
     <div className="card controls">
       <div className="card-body">
         <div className="container">
-          <div className="my-4 d-flex justify-content-between align-items-center">
+          <div className="mb-4 d-flex justify-content-between align-items-center">
             <Link to="/dashboard">
               <button className="text-uppercase py-1 px-3">back</button>
             </Link>
 
-            <div className="text-end px-2">
-              <Link to="/cronsetting">
-                <p className="fs-14 fw-semibold text-capitalize primary-color text-underline-none">
-                  cron settings
-                </p>
-              </Link>
-            </div>
+            <h5 className="mb-0 text-capitalize primary-color fw-bold text-center mb-0">
+              admin controls
+            </h5>
+
+            <Link to="/cronsetting">
+              <p className="fs-14 mb-0 fw-semibold text-capitalize primary-color text-underline-none">
+                cron settings
+              </p>
+            </Link>
+
+
           </div>
 
-          <h5 className="my-4 text-capitalize primary-color fw-bold text-center">
-            admin controls
-          </h5>
 
-          <table className="table table-bordered text-center">
+
+          <table className="table table-bordered text-center table-striped mb-0">
             <thead className="thead primary-bg">
               <tr>
-                <th>
+                <th className="p-3">
                   <p className="mb-0 primary-color fs-14 text-capitalize">
                     admin controls
                   </p>
                 </th>
-                <th>
+                <th className="p-3">
                   <p className="mb-0 primary-color fs-14 text-capitalize">
                     current status
                   </p>
                 </th>
-                <th>
+                <th className="p-3">
                   <p className="mb-0 primary-color fs-14 text-capitalize">
                     enable/disable
                   </p>
@@ -131,39 +126,57 @@ const Controls = () => {
               </tr>
             </thead>
             <tbody className="fs-13">
-              {Object.keys(controlsData)
-                .filter((key) => !unwantedKeys.includes(key))
-                .map((control, index) => (
-                  <tr key={index}>
-                    <td>
-                      <p className="mb-0 fs-13 lh-2 fw-semibold text-capitalize">
-                        {control}
-                      </p>
-                    </td>
-                    <td>
-                      <p className="mb-0 fs-13 lh-2 fw-semibold text-capitalize">
-                        {controlsData[control] ? "Enabled" : "Disabled"}
-                      </p>
-                    </td>
-                    <td>
-                      <div
-                        className="toggle-switch"
-                        onClick={() => handleAction(control)}
-                      >
-                        <input
-                          className="toggle-input"
-                          id={`toggle-${index}`}
-                          type="checkbox"
-                          checked={checkToggle}
-                        />
-                        <label
-                          className="toggle-label"
-                          htmlFor={`toggle-${index}`}
-                        ></label>
+              {Loading ? (
+                // Loading state: Show spinner or placeholder
+                <tr>
+                  <td colSpan="3">
+                    <div className="d-flex justify-content-center align-items-center py-3">
+                      <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
                       </div>
-                    </td>
-                  </tr>
-                ))}
+                    </div>
+                  </td>
+                </tr>
+              ) : Object.keys(controlsData).length > 0 ? (
+                // If data exists: Render the table rows
+                Object.keys(controlsData)
+                  .filter((key) => !unwantedKeys.includes(key))
+                  .map((control, index) => (
+                    <tr key={index}>
+                      <td>
+                        <p className="mb-0 fs-13 lh-2 fw-semibold text-capitalize">
+                          {control}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="mb-0 fs-13 lh-2 fw-semibold text-capitalize">
+                          {controlsData[control] ? "Enabled" : "Disabled"}
+                        </p>
+                      </td>
+                      <td>
+                        <div
+                          className="toggle-switch"
+                          onClick={() => handleAction(control)}
+                        >
+                          <input
+                            className="toggle-input"
+                            id={`toggle-${index}`}
+                            type="checkbox"
+                            checked={controlsData[control]} // Use controlsData[control] directly
+                          />
+                          <label className="toggle-label" htmlFor={`toggle-${index}`}></label>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+              ) : (
+                // If no data is found: Show no data message
+                <tr>
+                  <td colSpan="3" className="text-center">
+                    No data found
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

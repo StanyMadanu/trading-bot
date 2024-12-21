@@ -2,16 +2,15 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { getJwt } from "../services/mainService"; // Function to fetch JWT
 
-const ProtectedRoute = ({ children }) => {
+const PublicRoute = ({ children }) => {
   const jwt = getJwt();
 
-  // Redirect to login if JWT does not exist
-  if (!jwt) {
-    return <Navigate to="/" replace />;
+  // Redirect to dashboard if JWT exists
+  if (jwt) {
+    return <Navigate to="/dashboard" replace />;
   }
- 
 
   return children;
 };
 
-export default ProtectedRoute;
+export default PublicRoute;

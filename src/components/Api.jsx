@@ -3,7 +3,7 @@ import { connect, useDispatch } from "react-redux";
 import { backEndCall, backEndCallObj } from "../services/mainService";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { profileRedux } from "./reduxStore/slice/profileSlice";
 import apidoc1 from "../assets/images/api-doc/api-page1.png";
 import apidoc2 from "../assets/images/api-doc/api-page2.png";
@@ -17,12 +17,13 @@ const Api = ({ getProfile }) => {
 
   const [apiKeyName, setApiKeyName] = useState("");
 
-  console.log(getProfile, "getProfile");
+  // console.log(getProfile, "getProfile");
 
   const location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const { platform } = location.state || {}; //
+  const { platform } = location?.state || {}; //
 
   const [activeApi, setActiveApi] = useState(platform || "BINANCE");
 
@@ -90,19 +91,19 @@ const Api = ({ getProfile }) => {
   const handleSubmit = async (e, apiType) => {
     e.preventDefault();
 
-    console.log("testing", apiType);
+    // console.log("testing", apiType);
 
     setApiKeyName(apiType);
 
     const validationErrors = validate(data);
     setErrors(validationErrors || {});
-    console.log(validationErrors);
+    // console.log(validationErrors);
     if (validationErrors) {
       setBtnDisable(false);
       return;
     }
 
-    console.log("testing2");
+    // console.log("testing2");
 
     const modalElement = document.getElementById("confirmDelete");
     // if (modalElement) {
@@ -131,22 +132,24 @@ const Api = ({ getProfile }) => {
       const keysResponse = await backEndCall("/admin_get/profile");
       const updatedProfile = { ...keysResponse };
 
-      console.log(updatedProfile);
+      // console.log(updatedProfile);
 
       await dispatch(profileRedux(updatedProfile));
 
       apiKeyName === "BINANCE"
         ? setData({
-            api_key:
-              updatedProfile?.profile?.api_keys?.[apiKeyName]?.api_key || "",
-            secret_key: "",
-          })
+          api_key:
+            updatedProfile?.profile?.api_keys?.[apiKeyName]?.api_key || "",
+          secret_key: "",
+        })
         : setData({
-            api_key:
-              updatedProfile?.profile?.api_keys?.[apiKeyName]?.api_key || "",
-            secret_key: "",
-            passphrase: "",
-          });
+          api_key:
+            updatedProfile?.profile?.api_keys?.[apiKeyName]?.api_key || "",
+          secret_key: "",
+          passphrase: "",
+        });
+
+        navigate("/dashboard")
 
       const modalInstance = window.bootstrap.Modal.getInstance(
         modelRef.current
@@ -161,7 +164,7 @@ const Api = ({ getProfile }) => {
 
   const getButtonLabel = (apiType) => {
     if (btnDisable) return "Please Wait...";
-    console.log(apiType, api_keys);
+    // console.log(apiType, api_keys);
     return api_keys?.[apiType]?.api_key ? "Update" : "Add";
   };
 
@@ -169,7 +172,7 @@ const Api = ({ getProfile }) => {
   const renderForm = (apiType) => (
     <form className="my-5" onSubmit={(e) => handleSubmit(e, apiType)}>
       {/* {console.log(data)} */}
-      {console.log(data.api_key)}
+      {/* {console.log(data.api_key)} */}
       <div className="mb-4">
         <label className="form-label text-uppercase fs-15 fw-bold">
           api key
@@ -179,7 +182,7 @@ const Api = ({ getProfile }) => {
           className="form-control"
           id="api_key"
           placeholder="Enter API key"
-          value={data.api_key || ""}
+          value={data?.api_key || ""}
           onChange={handleChange}
         />
         {error.api_key && (
@@ -195,7 +198,7 @@ const Api = ({ getProfile }) => {
           className="form-control"
           id="secret_key"
           placeholder="Secret key"
-          value={data.secret_key || ""}
+          value={data?.secret_key || ""}
           onChange={handleChange}
         />
         {error.secret_key && (
@@ -213,7 +216,7 @@ const Api = ({ getProfile }) => {
             className="form-control"
             id="passphrase"
             placeholder="Passphrase"
-            value={data.passphrase || ""}
+            value={data?.passphrase || ""}
             onChange={handleChange}
           />
           {error.secret_key && (
@@ -261,9 +264,8 @@ const Api = ({ getProfile }) => {
               {["BINANCE", "BITGET"].map((api) => (
                 <div
                   key={api}
-                  className={`binance-api flex-fill d-flex justify-content-center align-items-center py-2 ${
-                    activeApi === api ? "active" : ""
-                  }`}
+                  className={`binance-api flex-fill d-flex justify-content-center align-items-center py-2 ${activeApi === api ? "active" : ""
+                    }`}
                   onClick={() => setActiveApi(api)}
                 >
                   <p className="text-capitalize mb-0 fw-semibold">{api} API</p>
@@ -279,78 +281,90 @@ const Api = ({ getProfile }) => {
         </div>
       </div>
 
-      <div className="card my-3">
-        <div className="card-body py-5">
-          <div className="container">
-            {/* documentation */}
-            <h5 className="primary-color text-uppercase fw-bold mb-4">
-              API Documentation
-            </h5>
-            <h6 className="primary-color fw-semibold">
-              How to connect to Binance with API Keys{" "}
-            </h6>
-            <p className="fs-14">
-              To allow your bot to interact with Binance , you will need to
-              create an API Key. This key acts as a connection between 7LP Bot
-              and the exchange, enabling your bot to perform tasks such as
-              placing automated orders and accessing your balance for its
-              calculations. Essentially, the API Key serves as a way for your
-              bot to communicate with the exchange and execute the actions
-              necessary for automated trading. Step one If you haven't already,
-              go to Binance's website and create an account. Step two Verify
-              your account and get started on the API by navigating to API
-              Management.
-            </p>
+      {
+        activeApi === "BINANCE" ? (
 
-            <h6 className="primary-color fw-semibold">Step 1</h6>
-            <p className="fs-14">
-              If you haven't already, go to Binance's website and create an
-              account.
-            </p>
-            <div className="text-center">
-              <img src={apidoc1} alt="api-document" />
+          <div className="card my-3">
+            <div className="card-body py-5">
+              <div className="container">
+                {/* documentation */}
+                <h5 className="primary-color text-uppercase fw-bold mb-4">
+                  API Documentation
+                </h5>
+                <h6 className="primary-color fw-semibold">
+                  How to connect to Binance with API Keys{" "}
+                </h6>
+                <p className="fs-14">
+                  To allow your bot to interact with Binance , you will need to
+                  create an API Key. This key acts as a connection between 7LP Bot
+                  and the exchange, enabling your bot to perform tasks such as
+                  placing automated orders and accessing your balance for its
+                  calculations. Essentially, the API Key serves as a way for your
+                  bot to communicate with the exchange and execute the actions
+                  necessary for automated trading. Step one If you haven't already,
+                  go to Binance's website and create an account. Step two Verify
+                  your account and get started on the API by navigating to API
+                  Management.
+                </p>
+
+                <h6 className="primary-color fw-semibold">Step 1</h6>
+                <p className="fs-14">
+                  If you haven't already, go to Binance's website and create an
+                  account.
+                </p>
+                <div className="text-center">
+                  <img src={apidoc1} alt="api-document" className="w-100"/>
+                </div>
+                <h6 className="primary-color fw-semibold">Step 2</h6>
+                <p className="fs-14">
+                  Verify your account and get started on the API by navigating to
+                  API Management.
+                </p>
+                <h6 className="primary-color fw-semibold">Step 3</h6>
+                <p className="fs-14">
+                  Click on “Create API”, select “System generated API Key” and click
+                  on Next.
+                </p>
+                <h6 className="primary-color fw-semibold">Step 4</h6>
+                <p className="fs-14">
+                  Start by naming the API something memorable such as “7LP API”.
+                  Your API Key and secret are now created, but they cannot be used
+                  for trading yet. To enhance the security of your funds on Binance,
+                  you must whitelist the IP (“13.234.42.140”)addresses of 7LP
+                  servers in your API Key settings. This will allow only 7LP servers
+                  to perform actions on your Binance account, preventing any
+                  unauthorized third parties from accessing it, even if your API
+                  Keys are compromised. By following this step, you can ensure that
+                  your funds remain safe while trading
+                </p>
+                <div className="text-center">
+                  <img src={apidoc2} alt="api-document" className="w-100"/>
+                </div>
+                <p className="fs-14">
+                  To enable trading, click on "Edit" and check the box next to
+                  "Enable spot & Margin Trading." No other API restrictions need to
+                  be enabled, and 7LP will never ask for "Withdrawal" or "Universal
+                  Transfer" rights. Do not click "Save" yet, as there is one more
+                  step to complete.
+                </p>
+                <p className="fs-14">
+                  Copy the API Keys shown on Binance and paste them into 7LP. Then,
+                  save the changes on both Binance and 7LP. Allow a moment for the
+                  bot to link everything together, and your balance should become
+                  visible.
+                </p>
+              </div>
             </div>
-            <h6 className="primary-color fw-semibold">Step 2</h6>
-            <p className="fs-14">
-              Verify your account and get started on the API by navigating to
-              API Management.
-            </p>
-            <h6 className="primary-color fw-semibold">Step 3</h6>
-            <p className="fs-14">
-              Click on “Create API”, select “System generated API Key” and click
-              on Next.
-            </p>
-            <h6 className="primary-color fw-semibold">Step 4</h6>
-            <p className="fs-14">
-              Start by naming the API something memorable such as “7LP API”.
-              Your API Key and secret are now created, but they cannot be used
-              for trading yet. To enhance the security of your funds on Binance,
-              you must whitelist the IP (“13.234.42.140”)addresses of 7LP
-              servers in your API Key settings. This will allow only 7LP servers
-              to perform actions on your Binance account, preventing any
-              unauthorized third parties from accessing it, even if your API
-              Keys are compromised. By following this step, you can ensure that
-              your funds remain safe while trading
-            </p>
-            <div className="text-center">
-              <img src={apidoc2} alt="api-document" />
-            </div>
-            <p className="fs-14">
-              To enable trading, click on "Edit" and check the box next to
-              "Enable spot & Margin Trading." No other API restrictions need to
-              be enabled, and 7LP will never ask for "Withdrawal" or "Universal
-              Transfer" rights. Do not click "Save" yet, as there is one more
-              step to complete.
-            </p>
-            <p className="fs-14">
-              Copy the API Keys shown on Binance and paste them into 7LP. Then,
-              save the changes on both Binance and 7LP. Allow a moment for the
-              bot to link everything together, and your balance should become
-              visible.
-            </p>
           </div>
-        </div>
-      </div>
+
+        ) : (
+              <div className="card my-3">
+                <p className="text-center fw-bold p-3">No documentation available for BITGET API</p>
+                </div>
+        )
+
+      }
+
     </div>
   );
 };

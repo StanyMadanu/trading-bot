@@ -1,7 +1,7 @@
 import React from "react";
 import { backEndCallObj } from "../services/mainService";
 import Joi from "joi-browser";
-import toast from "react-hot-toast";
+import {toast} from "react-toastify";
 import Form from "../basic/form";
 
 class MakeAnAdmin extends Form {
@@ -115,7 +115,7 @@ class MakeAnAdmin extends Form {
     return (
       <div className="text-end">
         <button className={className} disabled={btnDisable}>
-          {label}
+          {btnDisable ? "wait.." : label}
         </button>
       </div>
     );
